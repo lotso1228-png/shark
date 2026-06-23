@@ -1,5 +1,6 @@
 import { pricingTiers, pricingNotes } from "../content.js";
 import { Section, SectionHeading } from "./ui.jsx";
+import Jp from "./Jp.jsx";
 
 /** 料金・保険：自立支援医療の月額上限テーブル ＋ 注釈. */
 export default function PricingSection({ id = "fee" }) {
@@ -20,7 +21,7 @@ export default function PricingSection({ id = "fee" }) {
         </div>
         <div className="bg-white rounded-[20px] p-6 shadow-[0_8px_22px_rgba(20,130,150,0.07)] border-2 border-[#bfe9f1]">
           <p className="font-zen font-bold text-deep text-[16px] m-0 mb-2">
-            ② 自立支援医療制度（精神通院医療）
+            <Jp>② 自立支援医療制度（精神通院医療）</Jp>
           </p>
           <p className="text-[14px] text-muted m-0 leading-[1.9]">
             併用すると対象医療の自己負担が
@@ -34,7 +35,7 @@ export default function PricingSection({ id = "fee" }) {
 
       <div className="bg-white rounded-[20px] overflow-hidden shadow-[0_8px_22px_rgba(20,130,150,0.07)]">
         <div className="bg-teal text-white px-5 py-3 font-bold text-[14.5px]">
-          自立支援医療｜所得区分ごとの月額自己負担上限額（目安）
+          <Jp>自立支援医療｜所得区分ごとの月額自己負担上限額（目安）</Jp>
         </div>
         <table className="w-full border-collapse text-left">
           <tbody>
@@ -47,7 +48,7 @@ export default function PricingSection({ id = "fee" }) {
                   scope="row"
                   className="font-medium text-[13.5px] text-ink px-5 py-3.5 border-b border-[#eef7f9] align-top"
                 >
-                  {t.tier}
+                  <Jp>{t.tier}</Jp>
                 </th>
                 <td className="font-zen font-bold text-deep text-[15px] px-5 py-3.5 border-b border-[#eef7f9] whitespace-nowrap text-right w-[110px]">
                   {t.cap}
@@ -67,7 +68,7 @@ export default function PricingSection({ id = "fee" }) {
             <span className="absolute left-0 top-0" aria-hidden="true">
               ※
             </span>
-            {n}
+            <Jp>{n}</Jp>
           </li>
         ))}
       </ul>

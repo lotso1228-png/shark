@@ -1,5 +1,6 @@
 import { testimonials } from "../content.js";
 import { Section, SectionHeading } from "./ui.jsx";
+import Jp from "./Jp.jsx";
 
 /** 利用者さま・ご家族の声 (SAMPLE — replace with real, consented voices). */
 export default function Testimonials({ id = "voice", bg = "#f0fafd" }) {
@@ -19,7 +20,7 @@ export default function Testimonials({ id = "voice", bg = "#f0fafd" }) {
               “
             </span>
             <blockquote className="m-0 text-[14px] text-ink leading-[1.95] flex-1">
-              {t.text}
+              <Jp>{t.text}</Jp>
             </blockquote>
             <figcaption className="text-[12.5px] text-muted font-bold mt-4">
               — {t.who}

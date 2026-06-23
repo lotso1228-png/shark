@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { TEL } from "../data.js";
 import { Reveal } from "./ui.jsx";
+import Jp from "./Jp.jsx";
 
 export default function Recruit() {
   return (
@@ -12,7 +13,7 @@ export default function Recruit() {
           style={{ background: "linear-gradient(160deg,#fef1f4,#fde8ee)" }}
         >
           <h2 className="font-zen font-black text-[#3f5867] m-0 mb-3.5 text-[clamp(20px,2.5vw,26px)]">
-            一緒に働く看護師を募集しています
+            <Jp>一緒に働く看護師を募集しています</Jp>
           </h2>
           <div className="flex gap-[18px] items-start flex-wrap">
             <div className="w-[130px] h-[130px] flex-none rounded-[18px] overflow-hidden shadow-[0_10px_20px_rgba(120,70,90,0.14)]">
@@ -23,7 +24,9 @@ export default function Recruit() {
               />
             </div>
             <p className="flex-1 min-w-[180px] text-sm text-[#6a5a60] m-0">
-              訪問看護ステーションSHARKでは、利用者様の暮らしに寄り添う看護師を募集しています。訪問看護未経験の方、子育て中の方、ブランクのある方もご相談ください。常勤・非常勤どちらも相談可能です。
+              <Jp>
+                訪問看護ステーションSHARKでは、利用者様の暮らしに寄り添う看護師を募集しています。訪問看護未経験の方、子育て中の方、ブランクのある方もご相談ください。常勤・非常勤どちらも相談可能です。
+              </Jp>
             </p>
           </div>
           <div className="flex flex-col gap-3 mt-6 max-w-[420px]">

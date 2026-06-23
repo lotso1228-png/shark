@@ -60,6 +60,16 @@ body {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -webkit-text-size-adjust: 100%;
+  /* Latin tokens (email/URL) break to avoid overflow; kinsoku for line starts */
+  overflow-wrap: anywhere;
+  word-break: normal;
+  line-break: strict;
+}
+
+/* Japanese phrase-aware wrapping (BudouX inserts <wbr> at 文節 boundaries) */
+.jp {
+  word-break: keep-all;
+  overflow-wrap: anywhere;
 }
 
 /* Readable measure for long-form body copy */

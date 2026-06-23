@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { flowDetailed } from "../content.js";
 import { Section, SectionHeading } from "./ui.jsx";
+import Jp from "./Jp.jsx";
 
 /**
  * ご利用開始までの流れ — numbered timeline.
@@ -28,7 +29,7 @@ export default function FlowSteps({ id = "flow", compact = false, bg = "#f0fafd"
             <div className="flex-1 bg-white rounded-[18px] p-5 min-[560px]:p-6 shadow-[0_6px_18px_rgba(20,130,150,0.07)] -mt-0.5">
               <div className="flex items-center gap-3 mb-1.5">
                 <h3 className="font-zen font-bold text-[16.5px] text-deep m-0">
-                  {st.title}
+                  <Jp>{st.title}</Jp>
                 </h3>
                 <img
                   src={st.img}
@@ -38,7 +39,7 @@ export default function FlowSteps({ id = "flow", compact = false, bg = "#f0fafd"
               </div>
               {!compact && (
                 <p className="text-[14px] text-muted m-0 leading-[1.9]">
-                  {st.desc}
+                  <Jp>{st.desc}</Jp>
                 </p>
               )}
             </div>

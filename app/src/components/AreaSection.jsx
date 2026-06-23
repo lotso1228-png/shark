@@ -1,5 +1,6 @@
 import { areaCities, areaNote } from "../content.js";
 import { Section, SectionHeading } from "./ui.jsx";
+import Jp from "./Jp.jsx";
 
 /** 対応エリア — 奈良県の市町村リスト ＋ マップ ＋ 写真. */
 export default function AreaSection({ id = "area" }) {
@@ -21,7 +22,9 @@ export default function AreaSection({ id = "area" }) {
           />
         </div>
         <p className="flex-1 min-w-[240px] text-[14.5px] text-ink m-0 leading-[1.95]">
-          大和高田市を拠点に、奈良県全域へ訪問対応しています。精神科訪問看護をご希望の方、ご家族、医療機関・施設関係者様もお気軽にご相談ください。
+          <Jp>
+            大和高田市を拠点に、奈良県全域へ訪問対応しています。精神科訪問看護をご希望の方、ご家族、医療機関・施設関係者様もお気軽にご相談ください。
+          </Jp>
         </p>
       </div>
 
@@ -37,7 +40,9 @@ export default function AreaSection({ id = "area" }) {
             </li>
           ))}
         </ul>
-        <p className="text-[13px] text-muted m-0 mt-4 leading-[1.85]">{areaNote}</p>
+        <p className="text-[13px] text-muted m-0 mt-4 leading-[1.85]">
+          <Jp>{areaNote}</Jp>
+        </p>
       </div>
 
       <div className="mt-5 grid grid-cols-2 gap-3">

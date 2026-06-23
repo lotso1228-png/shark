@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { targetPersons, conditions } from "../content.js";
 import { Section, SectionHeading } from "./ui.jsx";
+import Jp from "./Jp.jsx";
 
 /**
  * 対象となる方 ＋ 対応疾患.
@@ -31,7 +32,9 @@ export default function ConditionsSection({
                 <span className="flex-none w-[22px] h-[22px] rounded-full bg-teal text-white flex items-center justify-center text-[12px] font-bold mt-0.5">
                   ✓
                 </span>
-                <span className="text-[14.5px] text-ink leading-[1.8]">{t}</span>
+                <span className="text-[14.5px] text-ink leading-[1.8]">
+                  <Jp>{t}</Jp>
+                </span>
               </li>
             ))}
           </ul>
@@ -49,7 +52,7 @@ export default function ConditionsSection({
                   key={c.name}
                   className="bg-[#eaf7fb] text-[#2f5867] text-[13px] font-medium rounded-full px-3.5 py-2"
                 >
-                  {c.name}
+                  <Jp>{c.name}</Jp>
                 </span>
               ))}
             </div>
@@ -61,17 +64,17 @@ export default function ConditionsSection({
                   className="bg-white border border-[#e3f4f8] rounded-2xl px-4 py-3.5 shadow-[0_4px_14px_rgba(20,130,150,0.05)]"
                 >
                   <p className="font-bold text-[14px] text-deep m-0 mb-1">
-                    {c.name}
+                    <Jp>{c.name}</Jp>
                   </p>
                   <p className="text-[12.5px] text-muted m-0 leading-[1.75]">
-                    {c.desc}
+                    <Jp>{c.desc}</Jp>
                   </p>
                 </div>
               ))}
             </div>
           )}
           <p className="text-[13px] text-muted mt-4 mb-0 leading-[1.85]">
-            診断名でお迷いの場合も、まずはお気軽にご相談ください。
+            <Jp>診断名でお迷いの場合も、まずはお気軽にご相談ください。</Jp>
           </p>
           {compact && (
             <Link

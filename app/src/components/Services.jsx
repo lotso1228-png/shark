@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { services } from "../data.js";
 import { Reveal, SectionHeading } from "./ui.jsx";
+import Jp from "./Jp.jsx";
 
 export default function Services() {
   return (
@@ -32,10 +33,10 @@ export default function Services() {
               </div>
               <div className="px-[22px] pt-[30px] pb-[26px]">
                 <h3 className="font-zen font-bold text-[18px] text-deep m-0 mb-2.5">
-                  {s.title}
+                  <Jp>{s.title}</Jp>
                 </h3>
                 <p className="text-[13.5px] text-muted m-0 leading-[1.8]">
-                  {s.desc}
+                  <Jp>{s.desc}</Jp>
                 </p>
               </div>
             </div>

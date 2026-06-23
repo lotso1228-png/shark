@@ -1,5 +1,6 @@
 import { worries } from "../data.js";
 import { Reveal, SectionHeading } from "./ui.jsx";
+import Jp from "./Jp.jsx";
 
 export default function Worries() {
   return (
@@ -20,7 +21,9 @@ export default function Worries() {
               <span className="flex-none w-[30px] h-[30px] rounded-full bg-teal text-white flex items-center justify-center text-base font-bold">
                 ✓
               </span>
-              <span className="text-[15px] font-medium text-ink">{w}</span>
+              <span className="text-[15px] font-medium text-ink">
+                <Jp>{w}</Jp>
+              </span>
             </div>
           ))}
         </div>
@@ -32,7 +35,7 @@ export default function Worries() {
             className="w-[46px] opacity-80 -scale-x-100"
           />
           <p className="font-zen font-bold text-teal m-0 text-center text-[clamp(18px,2.4vw,26px)]">
-            その不安を、ひとりで抱え込まなくて大丈夫です。
+            <Jp>その不安を、ひとりで抱え込まなくて大丈夫です。</Jp>
           </p>
           <img
             src="/assets/leaf-branch.png"

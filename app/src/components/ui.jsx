@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useReveal } from "../hooks/useReveal.js";
 import { TEL, EMAIL, RECEPTION } from "../data.js";
+import Jp from "./Jp.jsx";
 
 /** Scroll-reveal wrapper. Renders a div that fades/slides in on scroll. */
 export function Reveal({ as: Tag = "div", className = "", children, ...rest }) {
@@ -51,7 +52,7 @@ export function SectionHeading({ label, title, className = "" }) {
         {label}
       </p>
       <h2 className="font-zen font-black text-deep m-0 text-[clamp(24px,3.2vw,36px)]">
-        {title}
+        <Jp>{title}</Jp>
       </h2>
     </div>
   );

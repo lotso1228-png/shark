@@ -1,5 +1,6 @@
 import { reasons } from "../data.js";
 import { Reveal, SectionHeading } from "./ui.jsx";
+import Jp from "./Jp.jsx";
 
 export default function Reasons() {
   return (
@@ -24,10 +25,10 @@ export default function Reasons() {
                 />
               </div>
               <h3 className="font-zen font-bold text-[17px] text-deep m-0 mb-3">
-                {r.title}
+                <Jp>{r.title}</Jp>
               </h3>
               <p className="text-[13.5px] text-muted m-0 leading-[1.8]">
-                {r.desc}
+                <Jp>{r.desc}</Jp>
               </p>
             </div>
           ))}

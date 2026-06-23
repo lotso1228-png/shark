@@ -1,4 +1,5 @@
 import Breadcrumbs from "./Breadcrumbs.jsx";
+import Jp from "./Jp.jsx";
 
 /**
  * Intentional page-title band for sub-pages: breadcrumb + eyebrow + h1 + lead.
@@ -26,11 +27,11 @@ export default function PageHero({ eyebrow, title, lead, crumbs }) {
           </p>
         )}
         <h1 className="font-zen font-black text-deep m-0 text-[clamp(26px,4vw,40px)] leading-[1.3]">
-          {title}
+          <Jp>{title}</Jp>
         </h1>
         {lead && (
           <p className="text-[15.5px] text-muted-2 mt-4 mb-0 max-w-[760px]">
-            {lead}
+            <Jp>{lead}</Jp>
           </p>
         )}
       </div>

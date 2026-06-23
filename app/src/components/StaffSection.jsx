@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { staff } from "../content.js";
 import { Section, SectionHeading } from "./ui.jsx";
+import Jp from "./Jp.jsx";
 
 /** スタッフ紹介 (SAMPLE content — replace names/photos/words with real staff). */
 export default function StaffSection({ id = "staff", compact = false, bg = "#fff" }) {
@@ -8,7 +9,7 @@ export default function StaffSection({ id = "staff", compact = false, bg = "#fff
     <Section id={id} bg={bg} maxWidth={1080}>
       <SectionHeading label="STAFF" title="スタッフ紹介" className="mb-3" />
       <p className="text-center text-[14px] text-muted m-0 mb-9">
-        利用者様の気持ちに寄り添う、経験豊富なスタッフが対応します。
+        <Jp>利用者様の気持ちに寄り添う、経験豊富なスタッフが対応します。</Jp>
       </p>
 
       <div className="grid grid-cols-1 min-[640px]:grid-cols-3 gap-5">
@@ -32,7 +33,7 @@ export default function StaffSection({ id = "staff", compact = false, bg = "#fff
                 {m.role}
               </p>
               <p className="text-[13.5px] text-muted m-0 leading-[1.85]">
-                「{m.words}」
+                <Jp>{`「${m.words}」`}</Jp>
               </p>
             </figcaption>
           </figure>

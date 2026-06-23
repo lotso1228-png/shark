@@ -1,5 +1,6 @@
 import { servicesFull } from "../content.js";
 import { Section, SectionHeading } from "./ui.jsx";
+import Jp from "./Jp.jsx";
 
 /** Full 8-item service grid (icon + title + description) for the service page. */
 export default function ServicesGrid({ id = "service" }) {
@@ -20,14 +21,18 @@ export default function ServicesGrid({ id = "service" }) {
               <img src={s.icon} alt="" className="w-9 h-9 object-contain" />
             </div>
             <h3 className="font-zen font-bold text-[17px] text-deep m-0 mb-2.5">
-              {s.title}
+              <Jp>{s.title}</Jp>
             </h3>
-            <p className="text-[14px] text-muted m-0 leading-[1.9]">{s.desc}</p>
+            <p className="text-[14px] text-muted m-0 leading-[1.9]">
+              <Jp>{s.desc}</Jp>
+            </p>
           </div>
         ))}
       </div>
       <p className="text-[13px] text-muted mt-7 mb-0 leading-[1.9]">
-        ※ 家事代行そのものや外出先での受診同行・付き添いは、原則として保険の訪問看護の対象外です。リハビリの一環として計画に位置づけられた外出練習などは支援できる場合があります。詳しくはご相談ください。
+        <Jp>
+          ※ 家事代行そのものや外出先での受診同行・付き添いは、原則として保険の訪問看護の対象外です。リハビリの一環として計画に位置づけられた外出練習などは支援できる場合があります。詳しくはご相談ください。
+        </Jp>
       </p>
     </Section>
   );

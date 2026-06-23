@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { faqFull } from "../content.js";
 import { Section } from "./ui.jsx";
+import Jp from "./Jp.jsx";
 
 const CATEGORY_ORDER = ["対象", "費用", "訪問", "体制", "手続き"];
 const CATEGORY_LABEL = {
@@ -28,7 +29,7 @@ function FaqItem({ item, index, open, onToggle }) {
             Q
           </span>
           <span className="flex-1 text-[14.5px] font-semibold text-slate leading-[1.7]">
-            {item.q}
+            <Jp>{item.q}</Jp>
           </span>
           <span
             className="flex-none text-teal text-sm transition-transform duration-[250ms]"
@@ -46,7 +47,7 @@ function FaqItem({ item, index, open, onToggle }) {
         hidden={!open}
         className="px-[18px] pb-[18px] pl-[58px] text-[14px] text-muted leading-[1.95]"
       >
-        {item.a}
+        <Jp>{item.a}</Jp>
       </div>
     </div>
   );

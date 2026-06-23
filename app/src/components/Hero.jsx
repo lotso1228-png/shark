@@ -1,5 +1,6 @@
 import { heroBadges } from "../data.js";
 import { ContactButtons } from "./ui.jsx";
+import Jp from "./Jp.jsx";
 
 export default function Hero({ showDecorations = true }) {
   return (
@@ -44,10 +45,12 @@ export default function Hero({ showDecorations = true }) {
             訪問看護。
           </h1>
           <p className="text-teal-500 font-bold m-0 mb-4 text-[clamp(15px,1.7vw,18px)]">
-            精神科訪問看護に対応。24時間365日、ひとりで抱え込まない毎日を支えます。
+            <Jp>精神科訪問看護に対応。24時間365日、ひとりで抱え込まない毎日を支えます。</Jp>
           </p>
           <p className="text-[15.5px] text-muted-2 m-0 mb-[34px] max-w-[540px]">
-            訪問看護ステーションSHARKは、精神疾患のある方や障がいのある方に向けて、ご本人の気持ちに寄り添いながら、服薬管理・ご家族への支援・主治医との連携までサポートします。
+            <Jp>
+              訪問看護ステーションSHARKは、精神疾患のある方や障がいのある方に向けて、ご本人の気持ちに寄り添いながら、服薬管理・ご家族への支援・主治医との連携までサポートします。
+            </Jp>
           </p>
 
           <ContactButtons variant="hero" className="mb-[30px]" />
@@ -63,7 +66,7 @@ export default function Hero({ showDecorations = true }) {
                   alt=""
                   className="w-6 h-6 object-contain"
                 />
-                {b.label}
+                <Jp>{b.label}</Jp>
               </span>
             ))}
           </div>

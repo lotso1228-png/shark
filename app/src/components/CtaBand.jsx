@@ -1,4 +1,5 @@
 import { Reveal, ContactButtons, Reception } from "./ui.jsx";
+import Jp from "./Jp.jsx";
 
 /**
  * Teal contact band reused at the bottom of most pages (and as the home/contact CTA).
@@ -36,9 +37,11 @@ export default function CtaBand({
           }`}
         >
           <h2 className="font-zen font-black m-0 mb-4 text-[clamp(24px,3.4vw,36px)]">
-            {title}
+            <Jp>{title}</Jp>
           </h2>
-          <p className="text-[15px] opacity-95 m-0 mb-6 leading-[1.9]">{lead}</p>
+          <p className="text-[15px] opacity-95 m-0 mb-6 leading-[1.9]">
+            <Jp>{lead}</Jp>
+          </p>
           <ContactButtons variant="cta" className="justify-center" />
           <Reception tone="dark" className="mt-5 text-center" />
         </div>

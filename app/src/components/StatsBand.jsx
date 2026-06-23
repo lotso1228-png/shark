@@ -1,5 +1,6 @@
 import { stats } from "../content.js";
 import { Reveal } from "./ui.jsx";
+import Jp from "./Jp.jsx";
 
 /** 数字で見るSHARK — quick-trust strip of key facts. */
 export default function StatsBand() {
@@ -15,7 +16,7 @@ export default function StatsBand() {
               {s.value}
             </p>
             <p className="text-[12.5px] text-muted m-0 mt-2 leading-snug">
-              {s.label}
+              <Jp>{s.label}</Jp>
             </p>
           </div>
         ))}

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { EMAIL } from "../data.js";
+import Jp from "./Jp.jsx";
 
 const ROLES = ["ご本人", "ご家族", "医療・福祉関係者", "その他"];
 
@@ -175,7 +176,9 @@ export default function ContactForm() {
       </button>
 
       <p className="text-[12px] text-muted m-0 leading-[1.85]">
-        ※ 本フォームは送信時にメールソフトを起動します（サーバー送信機能の接続も可能です）。お急ぎの場合はお電話・LINEもご利用ください。
+        <Jp>
+          ※ 本フォームは送信時にメールソフトを起動します（サーバー送信機能の接続も可能です）。お急ぎの場合はお電話・LINEもご利用ください。
+        </Jp>
       </p>
     </form>
   );

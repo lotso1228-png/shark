@@ -1,5 +1,6 @@
 import { philosophy } from "../content.js";
 import { Section, SectionHeading } from "./ui.jsx";
+import Jp from "./Jp.jsx";
 
 /** 理念 (mission). */
 export default function Philosophy({ id = "philosophy" }) {
@@ -11,7 +12,7 @@ export default function Philosophy({ id = "philosophy" }) {
         style={{ background: "linear-gradient(150deg,#f3fbfd,#e8f6fb)" }}
       >
         <p className="font-zen font-black text-deep m-0 text-[clamp(20px,3vw,30px)] leading-[1.5]">
-          「{philosophy.title}」
+          <Jp>{`「${philosophy.title}」`}</Jp>
         </p>
         <div className="grid grid-cols-1 min-[700px]:grid-cols-3 gap-4 mt-8 text-left">
           {philosophy.points.map((p, i) => (
@@ -23,9 +24,11 @@ export default function Philosophy({ id = "philosophy" }) {
                 {i + 1}
               </span>
               <h3 className="font-zen font-bold text-deep text-[15.5px] m-0 mb-2">
-                {p.h}
+                <Jp>{p.h}</Jp>
               </h3>
-              <p className="text-[13.5px] text-muted m-0 leading-[1.85]">{p.d}</p>
+              <p className="text-[13.5px] text-muted m-0 leading-[1.85]">
+                <Jp>{p.d}</Jp>
+              </p>
             </div>
           ))}
         </div>

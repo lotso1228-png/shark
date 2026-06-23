@@ -1,5 +1,6 @@
 import { company } from "../data.js";
 import { Section, SectionHeading } from "./ui.jsx";
+import Jp from "./Jp.jsx";
 
 export default function Company({ id = "outline" }) {
   return (
@@ -12,13 +13,15 @@ export default function Company({ id = "outline" }) {
               {c.k}
             </div>
             <div className="flex-1 min-w-[200px] px-6 py-4 text-[14.5px] text-ink leading-[1.85]">
-              {c.v}
+              <Jp>{c.v}</Jp>
             </div>
           </div>
         ))}
       </div>
       <p className="text-[12px] text-muted m-0 mt-4 leading-[1.85]">
-        ※ 指定番号・運営規程・重要事項説明書など、開示が必要な情報は確定後に掲載します。
+        <Jp>
+          ※ 指定番号・運営規程・重要事項説明書など、開示が必要な情報は確定後に掲載します。
+        </Jp>
       </p>
     </Section>
   );

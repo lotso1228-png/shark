@@ -1,5 +1,6 @@
 import { insurance } from "../data.js";
 import { Reveal } from "./ui.jsx";
+import Jp from "./Jp.jsx";
 
 export default function Insurance() {
   return (
@@ -11,14 +12,16 @@ export default function Insurance() {
         >
           <div className="flex-[1_1_420px] min-w-[280px]">
             <h2 className="font-zen font-black text-deep m-0 mb-6 text-[clamp(22px,2.8vw,30px)]">
-              医療保険・自立支援医療制度について
+              <Jp>医療保険・自立支援医療制度について</Jp>
             </h2>
             {insurance.map((i) => (
               <div key={i} className="flex items-start gap-3 mb-[15px]">
                 <span className="flex-none w-[26px] h-[26px] rounded-full bg-teal text-white flex items-center justify-center text-sm font-bold mt-0.5">
                   ✓
                 </span>
-                <span className="text-[15px] text-ink font-medium">{i}</span>
+                <span className="text-[15px] text-ink font-medium">
+                  <Jp>{i}</Jp>
+                </span>
               </div>
             ))}
           </div>
@@ -38,7 +41,9 @@ export default function Insurance() {
               />
             </div>
             <p className="text-sm text-muted text-center m-0 max-w-[340px]">
-              訪問看護ステーションSHARKでは、医療保険での訪問看護に対応しています。自立支援医療制度をご利用いただくことで、自己負担を抑えて訪問看護をご利用いただける場合があります。
+              <Jp>
+                訪問看護ステーションSHARKでは、医療保険での訪問看護に対応しています。自立支援医療制度をご利用いただくことで、自己負担を抑えて訪問看護をご利用いただける場合があります。
+              </Jp>
             </p>
           </div>
         </div>

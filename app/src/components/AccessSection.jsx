@@ -1,4 +1,5 @@
 import { Section, SectionHeading } from "./ui.jsx";
+import Jp from "./Jp.jsx";
 import { ADDRESS, TEL, RECEPTION } from "../data.js";
 
 /** アクセス — address + keyless Google Maps embed. */
@@ -11,7 +12,9 @@ export default function AccessSection({ id = "access", bg = "#f0fafd" }) {
         <div className="bg-white rounded-[20px] p-7 shadow-[0_8px_22px_rgba(20,130,150,0.07)] flex flex-col gap-4">
           <div>
             <p className="text-[12.5px] text-muted font-bold m-0 mb-1">所在地</p>
-            <p className="text-[15px] text-ink m-0 leading-[1.8]">{ADDRESS}</p>
+            <p className="text-[15px] text-ink m-0 leading-[1.8]">
+              <Jp>{ADDRESS}</Jp>
+            </p>
           </div>
           <div>
             <p className="text-[12.5px] text-muted font-bold m-0 mb-1">電話番号</p>

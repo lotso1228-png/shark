@@ -1,5 +1,6 @@
 import { greeting } from "../content.js";
 import { Section, SectionHeading } from "./ui.jsx";
+import Jp from "./Jp.jsx";
 
 /** 代表挨拶 (SAMPLE — replace with the real representative's message). */
 export default function Greeting({ id = "greeting" }) {
@@ -22,7 +23,7 @@ export default function Greeting({ id = "greeting" }) {
               key={i}
               className="text-[14.5px] text-ink leading-[2] m-0 mb-4"
             >
-              {para}
+              <Jp>{para}</Jp>
             </p>
           ))}
           <p className="font-zen font-bold text-deep text-[15px] m-0 mt-5 text-right">

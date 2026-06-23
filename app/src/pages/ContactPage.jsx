@@ -3,6 +3,7 @@ import PageHero from "../components/PageHero.jsx";
 import AccessSection from "../components/AccessSection.jsx";
 import ContactForm from "../components/ContactForm.jsx";
 import { Section, ContactButtons, Reception } from "../components/ui.jsx";
+import Jp from "../components/Jp.jsx";
 import { pageMeta } from "../routes.js";
 
 export default function ContactPage() {
@@ -19,7 +20,7 @@ export default function ContactPage() {
       <Section bg="#fff" maxWidth={820}>
         <div className="text-center">
           <h2 className="font-zen font-black text-deep m-0 mb-3 text-[clamp(20px,2.6vw,28px)]">
-            電話・LINE・メールでご相談
+            <Jp>電話・LINE・メールでご相談</Jp>
           </h2>
           <p className="text-[14.5px] text-muted m-0 mb-7 leading-[1.9]">
             お急ぎの方・直接お話ししたい方はお電話が確実です。
@@ -37,13 +38,15 @@ export default function ContactPage() {
           相談フォーム
         </h2>
         <p className="text-[14px] text-muted text-center m-0 mb-8 leading-[1.9]">
-          下記の項目をご入力ください。担当者よりご連絡いたします。
+          <Jp>下記の項目をご入力ください。担当者よりご連絡いたします。</Jp>
         </p>
         <div className="bg-white rounded-[20px] p-6 min-[560px]:p-8 shadow-[0_10px_26px_rgba(20,130,150,0.08)]">
           <ContactForm />
         </div>
         <p className="text-[12px] text-muted m-0 mt-5 leading-[1.9]">
-          【個人情報の取り扱い】ご入力いただいた個人情報は、ご相談への対応の目的にのみ利用し、ご本人の同意なく第三者へ提供することはありません。
+          <Jp>
+            【個人情報の取り扱い】ご入力いただいた個人情報は、ご相談への対応の目的にのみ利用し、ご本人の同意なく第三者へ提供することはありません。
+          </Jp>
         </p>
       </Section>
 

@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import SubPage from "../components/SubPage.jsx";
+import Jp from "../components/Jp.jsx";
 import { pageMeta } from "../routes.js";
 
 export default function NotFoundPage() {
@@ -11,10 +12,12 @@ export default function NotFoundPage() {
             404
           </p>
           <h1 className="font-zen font-black text-deep m-0 mt-3 mb-3 text-[clamp(20px,3vw,28px)]">
-            お探しのページが見つかりません
+            <Jp>お探しのページが見つかりません</Jp>
           </h1>
           <p className="text-[15px] text-muted m-0 mb-8">
-            ページが移動または削除された可能性があります。お手数ですが、トップページからお探しください。
+            <Jp>
+              ページが移動または削除された可能性があります。お手数ですが、トップページからお探しください。
+            </Jp>
           </p>
           <Link
             to="/"

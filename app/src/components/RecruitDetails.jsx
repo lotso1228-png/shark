@@ -1,5 +1,6 @@
 import { recruitPoints, recruitRequirements } from "../content.js";
 import { Section, SectionHeading } from "./ui.jsx";
+import Jp from "./Jp.jsx";
 
 const applyFlow = [
   { n: 1, t: "お問い合わせ・見学申込", d: "お電話・フォームからお気軽にご連絡ください。" },
@@ -24,9 +25,11 @@ export default function RecruitDetails() {
                 <img src={p.icon} alt="" className="w-11 h-11 object-contain" />
               </div>
               <h3 className="font-zen font-bold text-deep text-[16px] m-0 mb-2.5">
-                {p.h}
+                <Jp>{p.h}</Jp>
               </h3>
-              <p className="text-[13.5px] text-muted m-0 leading-[1.9]">{p.d}</p>
+              <p className="text-[13.5px] text-muted m-0 leading-[1.9]">
+                <Jp>{p.d}</Jp>
+              </p>
             </div>
           ))}
         </div>
@@ -42,13 +45,13 @@ export default function RecruitDetails() {
                 {r.k}
               </div>
               <div className="flex-1 min-w-[200px] px-6 py-4 text-[14px] text-ink leading-[1.85]">
-                {r.v}
+                <Jp>{r.v}</Jp>
               </div>
             </div>
           ))}
         </div>
         <p className="text-[12px] text-muted m-0 mt-4 leading-[1.85]">
-          ※ 募集要項はサンプルです。実際の給与・待遇・勤務条件に差し替えてください。
+          <Jp>※ 募集要項はサンプルです。実際の給与・待遇・勤務条件に差し替えてください。</Jp>
         </p>
       </Section>
 
@@ -65,9 +68,11 @@ export default function RecruitDetails() {
                 {s.n}
               </span>
               <h3 className="font-zen font-bold text-deep text-[15px] m-0 mb-2">
-                {s.t}
+                <Jp>{s.t}</Jp>
               </h3>
-              <p className="text-[12.5px] text-muted m-0 leading-[1.8]">{s.d}</p>
+              <p className="text-[12.5px] text-muted m-0 leading-[1.8]">
+                <Jp>{s.d}</Jp>
+              </p>
             </div>
           ))}
         </div>
