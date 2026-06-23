@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { useReveal } from "../hooks/useReveal.js";
-import { TEL, EMAIL } from "../data.js";
+import { TEL, EMAIL, RECEPTION } from "../data.js";
 
 /** Scroll-reveal wrapper. Renders a div that fades/slides in on scroll. */
 export function Reveal({ as: Tag = "div", className = "", children, ...rest }) {
@@ -9,6 +9,37 @@ export function Reveal({ as: Tag = "div", className = "", children, ...rest }) {
     <Tag ref={ref} className={`reveal ${className}`} {...rest}>
       {children}
     </Tag>
+  );
+}
+
+/** Consistent section shell: bg + vertical rhythm + revealed, width-capped inner. */
+export function Section({
+  id,
+  bg = "#fff",
+  maxWidth = 1160,
+  className = "",
+  children,
+}) {
+  return (
+    <section
+      id={id}
+      style={{ background: bg }}
+      className={`scroll-mt-[80px] px-[22px] py-[clamp(54px,7vw,82px)] ${className}`}
+    >
+      <Reveal style={{ maxWidth }} className="mx-auto">
+        {children}
+      </Reveal>
+    </section>
+  );
+}
+
+/** 受付時間 line shown near CTAs. */
+export function Reception({ className = "", tone = "light" }) {
+  const color = tone === "dark" ? "text-white/90" : "text-muted";
+  return (
+    <p className={`text-[13px] ${color} m-0 ${className}`}>
+      <span aria-hidden="true">🕒</span> {RECEPTION}／TEL {TEL}
+    </p>
   );
 }
 

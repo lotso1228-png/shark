@@ -1,18 +1,30 @@
 import { useDocumentMeta } from "../hooks/useDocumentMeta.js";
 import { pageMeta } from "../routes.js";
 import Hero from "../components/Hero.jsx";
+import StatsBand from "../components/StatsBand.jsx";
 import Worries from "../components/Worries.jsx";
 import Reasons from "../components/Reasons.jsx";
-import FinalCta from "../components/FinalCta.jsx";
+import Services from "../components/Services.jsx";
+import ConditionsSection from "../components/ConditionsSection.jsx";
+import StaffSection from "../components/StaffSection.jsx";
+import FlowSteps from "../components/FlowSteps.jsx";
+import Testimonials from "../components/Testimonials.jsx";
+import CtaBand from "../components/CtaBand.jsx";
 
 export default function HomePage() {
   useDocumentMeta(pageMeta.home);
   return (
     <>
       <Hero showDecorations />
+      <StatsBand />
       <Worries />
       <Reasons />
-      <FinalCta showDecorations />
+      <Services />
+      <ConditionsSection compact bg="#fff" />
+      <StaffSection compact bg="#f0fafd" />
+      <FlowSteps compact bg="#fff" />
+      <Testimonials bg="#f0fafd" />
+      <CtaBand />
     </>
   );
 }

@@ -1,11 +1,10 @@
 import { useDocumentMeta } from "../hooks/useDocumentMeta.js";
 
 /**
- * Wrapper for non-home pages: sets per-page <title>/description and
- * adds the top offset needed to clear the fixed 66px header
- * (the home hero handles that offset itself via its own padding).
+ * Wrapper for non-home pages: sets per-page <title>/description.
+ * (Header offset is handled by each page's <PageHero>.)
  */
 export default function SubPage({ meta, children }) {
   useDocumentMeta(meta);
-  return <div className="pt-[66px]">{children}</div>;
+  return <>{children}</>;
 }

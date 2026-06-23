@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { services } from "../data.js";
 import { Reveal, SectionHeading } from "./ui.jsx";
 
@@ -39,6 +40,14 @@ export default function Services() {
               </div>
             </div>
           ))}
+        </div>
+        <div className="text-center mt-9">
+          <Link
+            to="/service"
+            className="inline-flex items-center gap-2 px-7 py-3 rounded-full bg-white text-teal-600 font-bold text-[15px] no-underline shadow-[0_8px_20px_rgba(20,150,170,0.12)] transition-transform duration-200 hover:-translate-y-[3px]"
+          >
+            サービス内容をくわしく見る <span aria-hidden="true">→</span>
+          </Link>
         </div>
       </Reveal>
     </section>

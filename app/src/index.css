@@ -1,8 +1,9 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "Noto Sans JP", sans-serif;
-  --font-zen: "Zen Maru Gothic", sans-serif;
+  --font-sans: "Noto Sans JP", system-ui, "Hiragino Kaku Gothic ProN",
+    "Hiragino Sans", Meiryo, sans-serif;
+  --font-zen: "Zen Maru Gothic", "Noto Sans JP", sans-serif;
 
   /* Brand palette (from the SHARK design) */
   --color-ink: #46606a;
@@ -53,8 +54,34 @@ body {
   font-family: var(--font-sans);
   color: var(--color-ink);
   background: #fff;
-  line-height: 1.85;
+  line-height: 1.9;
+  letter-spacing: 0.02em;
   overflow-x: hidden;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -webkit-text-size-adjust: 100%;
+}
+
+/* Readable measure for long-form body copy */
+p {
+  text-wrap: pretty;
+}
+h1,
+h2,
+h3 {
+  text-wrap: balance;
+}
+
+/* Visible keyboard focus for accessibility */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+[tabindex]:focus-visible {
+  outline: 3px solid #15b4c5;
+  outline-offset: 2px;
+  border-radius: 4px;
 }
 
 /* Scroll-reveal: hidden initial state, revealed when .is-visible is added */
@@ -66,4 +93,22 @@ body {
 .reveal.is-visible {
   opacity: 1;
   transform: none;
+}
+
+/* Respect users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
 }
