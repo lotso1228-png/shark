@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
-import { navItems, TEL } from "../data.js";
+import { Link, useLocation } from "react-router-dom";
+import { navLinks } from "../routes.js";
+import { TEL } from "../data.js";
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const { pathname } = useLocation();
 
-  // Close the mobile menu when resizing up to desktop (matches the design).
+  // Close the mobile menu when resizing up to desktop.
   useEffect(() => {
     const onResize = () => {
       if (window.innerWidth >= 880) setMenuOpen(false);
@@ -13,10 +16,15 @@ export default function Header() {
     return () => window.removeEventListener("resize", onResize);
   }, []);
 
+  const isActive = (to) => {
+    const path = to.split("#")[0];
+    return path !== "/" && pathname === path;
+  };
+
   return (
     <header className="fixed top-0 left-0 right-0 z-[200] h-[66px] bg-white/95 backdrop-blur-[10px] shadow-[0_2px_16px_rgba(20,120,140,0.08)]">
       <div className="max-w-[1180px] mx-auto h-full flex items-center justify-between px-[22px]">
-        <a href="#top" className="flex items-center gap-2.5 no-underline">
+        <Link to="/" className="flex items-center gap-2.5 no-underline">
           <img src="/assets/wave-blue.png" alt="" className="w-10 h-auto" />
           <span className="flex flex-col leading-[1.1]">
             <span className="text-[10px] tracking-[0.18em] text-teal-400 font-bold">
@@ -26,18 +34,20 @@ export default function Header() {
               SHARK
             </span>
           </span>
-        </a>
+        </Link>
 
         {/* Desktop nav */}
         <nav className="hidden min-[880px]:flex items-center gap-[22px]">
-          {navItems.map((nav) => (
-            <a
-              key={nav.href}
-              href={nav.href}
-              className="no-underline text-ink text-[14.5px] font-medium transition-colors duration-200 hover:text-teal"
+          {navLinks.map((nav) => (
+            <Link
+              key={nav.to}
+              to={nav.to}
+              className={`no-underline text-[14.5px] font-medium transition-colors duration-200 hover:text-teal ${
+                isActive(nav.to) ? "text-teal" : "text-ink"
+              }`}
             >
               {nav.label}
-            </a>
+            </Link>
           ))}
           <a
             href={`tel:${TEL}`}
@@ -70,15 +80,15 @@ export default function Header() {
       {/* Mobile dropdown */}
       {menuOpen && (
         <div className="min-[880px]:hidden bg-white border-t border-[#e6f4f7] px-[22px] pt-3.5 pb-5 shadow-[0_12px_22px_rgba(20,120,140,0.1)]">
-          {navItems.map((nav) => (
-            <a
-              key={nav.href}
-              href={nav.href}
+          {navLinks.map((nav) => (
+            <Link
+              key={nav.to}
+              to={nav.to}
               onClick={() => setMenuOpen(false)}
               className="block py-[13px] px-1 no-underline text-ink text-[15px] font-medium border-b border-[#eef7f9]"
             >
               {nav.label}
-            </a>
+            </Link>
           ))}
           <a
             href={`tel:${TEL}`}

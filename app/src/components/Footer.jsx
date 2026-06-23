@@ -1,11 +1,12 @@
-import { navItems } from "../data.js";
+import { Link } from "react-router-dom";
+import { navLinks } from "../routes.js";
 
 export default function Footer() {
   return (
     <footer className="bg-deep text-[#cfe6ec] px-[22px] pt-[46px] pb-[30px]">
       <div className="max-w-[1100px] mx-auto flex flex-wrap gap-6 justify-between items-start">
         <div>
-          <div className="flex items-center gap-2.5 mb-3">
+          <Link to="/" className="flex items-center gap-2.5 mb-3 no-underline">
             <img
               src="/assets/wave-blue.png"
               alt=""
@@ -19,7 +20,7 @@ export default function Footer() {
                 SHARK
               </span>
             </span>
-          </div>
+          </Link>
           <p className="text-[13px] m-0 opacity-85">
             〒635-0057 奈良県大和高田市南陽町5-19
             <br />
@@ -27,14 +28,14 @@ export default function Footer() {
           </p>
         </div>
         <nav className="flex flex-wrap gap-x-[22px] gap-y-2 max-w-[420px]">
-          {navItems.map((nav) => (
-            <a
-              key={nav.href}
-              href={nav.href}
-              className="text-[#cfe6ec] no-underline text-[13.5px] opacity-90"
+          {navLinks.map((nav) => (
+            <Link
+              key={nav.to}
+              to={nav.to}
+              className="text-[#cfe6ec] no-underline text-[13.5px] opacity-90 hover:opacity-100"
             >
               {nav.label}
-            </a>
+            </Link>
           ))}
         </nav>
       </div>

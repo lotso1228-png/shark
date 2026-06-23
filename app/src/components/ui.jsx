@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { useReveal } from "../hooks/useReveal.js";
 import { TEL, EMAIL } from "../data.js";
 
@@ -58,12 +59,12 @@ export function ContactButtons({ variant = "hero", className = "" }) {
         </span>
         電話で相談する
       </a>
-      <a href="#contact" className={`${base} ${line}`}>
+      <Link to="/contact" className={`${base} ${line}`}>
         <span className={circleIcon}>
           <img src="/assets/ic-line.png" alt="" className="w-[34px] h-[34px]" />
         </span>
         LINEで相談する
-      </a>
+      </Link>
       <a href={`mailto:${EMAIL}`} className={`${base} ${mail}`}>
         <span className={circleIcon}>
           <img src="/assets/ic-mail.png" alt="" className="w-[34px] h-[34px]" />
