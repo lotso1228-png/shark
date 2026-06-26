@@ -98,8 +98,8 @@ export const areaNote =
 
 /* ── 数字で見るSHARK ─────────────────────────── */
 export const stats = [
-  { value: "奈良県全域", label: "大和高田市を拠点に対応" },
-  { value: "24時間365日", label: "夜間・休日も相談体制" },
+  { value: "奈良県全域", label: "橿原市・大和高田市を中心に対応" },
+  { value: "24時間365日", label: "夜間・土日祝も対応可能" },
   { value: "11＋", label: "幅広い精神疾患に対応" },
   { value: "原則1割", label: "自立支援医療の併用で" },
 ];
