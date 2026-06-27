@@ -28,7 +28,7 @@ export const worries = [
 export const reasons = [
   {
     img: "/assets/heart-mint.png",
-    title: "精神科訪問看護に強い",
+    title: "精神科訪問看護に特化",
     desc: "精神疾患のある方の暮らしに寄り添い、気持ちの整理や生活の安定をサポートします。",
   },
   {
