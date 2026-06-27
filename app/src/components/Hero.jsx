@@ -45,7 +45,7 @@ export default function Hero({ showDecorations = true }) {
             訪問看護。
           </h1>
           <p className="text-teal-500 font-bold m-0 mb-4 text-[clamp(15px,1.7vw,18px)]">
-            <Jp>精神科訪問看護に対応。24時間365日、ひとりで抱え込まない毎日を支えます。</Jp>
+            <Jp>精神科訪問看護に特化。24時間365日、ひとりで抱え込まない毎日を支えます。</Jp>
           </p>
           <p className="text-[15.5px] text-muted-2 m-0 mb-[34px] max-w-[540px]">
             <Jp>

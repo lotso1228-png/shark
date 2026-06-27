@@ -9,7 +9,7 @@ export const CORP = "株式会社B-Nuts";
 // Nav lives in routes.js (navLinks) now that the site is multi-page.
 
 export const heroBadges = [
-  { img: "/assets/ic-mind.png", label: "精神科訪問看護対応" },
+  { img: "/assets/ic-mind.png", label: "精神科訪問看護に特化" },
   { img: "/assets/ic-pin.png", label: "奈良県全域対応" },
   { img: "/assets/ic-clock.png", label: "24時間365日対応" },
   { img: "/assets/ic-clipboard-heart.png", label: "自立支援医療制度に対応" },

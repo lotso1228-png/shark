@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { navLinks } from "../routes.js";
+import { TEL, ADDRESS, CORP, RECEPTION } from "../data.js";
 
 export default function Footer() {
   return (
@@ -21,10 +22,24 @@ export default function Footer() {
               </span>
             </span>
           </Link>
-          <p className="text-[13px] m-0 opacity-85">
-            〒635-0057 奈良県大和高田市南陽町5-19
+          <p className="text-[13px] m-0 opacity-85 leading-[1.9]">
+            {ADDRESS}
             <br />
-            株式会社B-Nuts ／ TEL 080-4767-0011
+            {CORP}
+          </p>
+          <p className="text-[13px] mt-2 mb-0 opacity-90">
+            <a
+              href={`tel:${TEL}`}
+              className="text-white no-underline font-zen font-bold text-[17px] hover:underline"
+            >
+              TEL {TEL}
+            </a>
+            <span className="block text-[12px] opacity-80 mt-0.5">
+              {RECEPTION}
+            </span>
+          </p>
+          <p className="text-[12px] mt-3 mb-0 opacity-75">
+            医療保険／自立支援医療制度に対応
           </p>
         </div>
         <nav className="flex flex-wrap gap-x-[22px] gap-y-2 max-w-[420px]">
