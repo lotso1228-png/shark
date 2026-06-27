@@ -72,6 +72,22 @@ public/assets/         透過素材・写真
 - **信頼要素**（競合分析より）: 対応疾患リスト、対象となる方、料金（自立支援の月額上限表）、
   スタッフ紹介、多職種連携、利用者の声、理念・代表挨拶、Googleマップ、JSON-LD構造化データ
 
+## SEO 対策
+
+- **プリレンダリング（SSG）**: ビルド時に全ルートを実HTML化（`vite build --ssr` → `prerender.js`）。
+  クローラー・SNSがJS実行なしで本文・タイトル・メタを取得できます。クライアントは `hydrateRoot` で
+  ハイドレーション。`npm run build` がクライアント／SSR／プリレンダーを一括実行します。
+- **ページ別メタ**: `<title>` / description / **canonical** / **OGP・Twitter** をルートごとに出力。
+- **構造化データ（JSON-LD）**: MedicalBusiness・WebSite（全ページ）、**FAQPage**（/faq）、
+  BreadcrumbList（パンくず）。
+- **sitemap.xml**（ビルド生成）／ **robots.txt**（`public/`）。
+- **クリーンURL**（`vercel.json` の `cleanUrls`/`trailingSlash:false`）でcanonicalと一致。
+- favicon・apple-touch-icon・theme-color、`lang="ja"`、セマンティックHTML、`alt`属性、
+  本文スキップリンク等も対応。
+
+> 本番ドメインを変更する場合は `src/routes.js` の `SITE_URL`、`public/robots.txt`、
+> `index.html` の絶対URL（og:image 等）を更新してください。
+
 ## ⚠️ 差し替え前提の「サンプル」コンテンツ
 
 実在情報がないため、以下はサンプルです（`content.js` 内に `SAMPLE` 注記）。本番公開前に差し替えてください。

@@ -53,3 +53,19 @@ export const pageMeta = {
     description: "",
   },
 };
+
+// Production origin (update if a custom domain is connected).
+export const SITE_URL = "https://shark-rose.vercel.app";
+
+// Path → meta, used by routing, prerendering and the sitemap.
+export const ROUTE_META = {
+  "/": pageMeta.home,
+  "/service": pageMeta.service,
+  "/flow": pageMeta.flow,
+  "/faq": pageMeta.faq,
+  "/company": pageMeta.company,
+  "/recruit": pageMeta.recruit,
+  "/contact": pageMeta.contact,
+};
+
+export const PRERENDER_PATHS = Object.keys(ROUTE_META);
