@@ -22,7 +22,7 @@ export default function Header() {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-[200] h-[66px] bg-[#f5efe2]/92 backdrop-blur-[10px] shadow-[0_2px_16px_rgba(120,100,60,0.10)]">
+    <header className="fixed top-0 left-0 right-0 z-[200] h-[66px] bg-[#fcf6ed]/92 backdrop-blur-[10px] shadow-[0_2px_16px_rgba(120,100,60,0.10)]">
       <div className="max-w-[1180px] mx-auto h-full flex items-center justify-between px-[22px]">
         <Link to="/" className="flex items-center gap-2.5 no-underline">
           <img

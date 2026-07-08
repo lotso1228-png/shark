@@ -5,7 +5,7 @@ import Jp from "./Jp.jsx";
 
 export default function Recruit() {
   return (
-    <section className="px-[22px] pt-[80px] pb-[88px] bg-[#f5efe2]">
+    <section className="px-[22px] pt-[80px] pb-[88px] bg-[#fcf6ed]">
       <Reveal className="max-w-[760px] mx-auto">
         <div
           id="recruit"

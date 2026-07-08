@@ -6,7 +6,7 @@ import { pageMeta } from "../routes.js";
 export default function NotFoundPage() {
   return (
     <SubPage meta={pageMeta.notFound}>
-      <section className="px-[22px] pt-[90px] pb-[110px] bg-[#ece3d1] text-center">
+      <section className="px-[22px] pt-[90px] pb-[110px] bg-[#f0e8d6] text-center">
         <div className="max-w-[560px] mx-auto">
           <p className="font-zen font-black text-teal text-[64px] leading-none m-0">
             404

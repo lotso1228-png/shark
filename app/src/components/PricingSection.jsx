@@ -5,7 +5,7 @@ import Jp from "./Jp.jsx";
 /** 料金・保険：自立支援医療の月額上限テーブル ＋ 注釈. */
 export default function PricingSection({ id = "fee" }) {
   return (
-    <Section id={id} bg="#ece3d1" maxWidth={980}>
+    <Section id={id} bg="#f0e8d6" maxWidth={980}>
       <SectionHeading label="FEE" title="料金・保険について" className="mb-9" />
 
       <div className="grid min-[820px]:grid-cols-2 gap-4 mb-7">
@@ -42,7 +42,7 @@ export default function PricingSection({ id = "fee" }) {
             {pricingTiers.map((t, i) => (
               <tr
                 key={t.tier}
-                className={i % 2 ? "bg-[#fbf7ee]" : "bg-white"}
+                className={i % 2 ? "bg-[#ffffff]" : "bg-white"}
               >
                 <th
                   scope="row"

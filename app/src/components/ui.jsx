@@ -16,7 +16,7 @@ export function Reveal({ as: Tag = "div", className = "", children, ...rest }) {
 /** Consistent section shell: bg + vertical rhythm + revealed, width-capped inner. */
 export function Section({
   id,
-  bg = "#f5efe2",
+  bg = "#fcf6ed",
   maxWidth = 1160,
   className = "",
   children,

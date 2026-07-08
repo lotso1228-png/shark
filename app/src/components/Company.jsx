@@ -4,12 +4,12 @@ import Jp from "./Jp.jsx";
 
 export default function Company({ id = "outline" }) {
   return (
-    <Section id={id} bg="#f5efe2" maxWidth={920}>
+    <Section id={id} bg="#fcf6ed" maxWidth={920}>
       <SectionHeading label="OUTLINE" title="事業所情報" className="mb-9" />
       <div className="bg-white rounded-[20px] overflow-hidden shadow-[0_10px_26px_rgba(20,130,150,0.08)] border border-[#eae0cd]">
         {company.map((c) => (
           <div key={c.k} className="flex flex-wrap border-b border-[#eae0cd]">
-            <div className="flex-[0_0_200px] min-w-[130px] bg-[#ece3d1] px-6 py-4 font-bold text-[14.5px] text-deep">
+            <div className="flex-[0_0_200px] min-w-[130px] bg-[#f0e8d6] px-6 py-4 font-bold text-[14.5px] text-deep">
               {c.k}
             </div>
             <div className="flex-1 min-w-[200px] px-6 py-4 text-[14.5px] text-ink leading-[1.85]">

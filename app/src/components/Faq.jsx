@@ -16,7 +16,7 @@ function FaqItem({ item, index, open, onToggle }) {
   const panelId = `faq-panel-${index}`;
   const btnId = `faq-btn-${index}`;
   return (
-    <div className="bg-[#fbf7ee] border border-[#e8dec9] rounded-[14px] mb-3 overflow-hidden">
+    <div className="bg-[#ffffff] border border-[#e8dec9] rounded-[14px] mb-3 overflow-hidden">
       <h3 className="m-0">
         <button
           id={btnId}
@@ -59,7 +59,7 @@ export default function Faq({ id = "faq" }) {
 
   let idx = -1;
   return (
-    <Section id={id} bg="#f5efe2" maxWidth={860}>
+    <Section id={id} bg="#fcf6ed" maxWidth={860}>
       {CATEGORY_ORDER.map((cat) => {
         const items = faqFull.filter((f) => f.cat === cat);
         if (!items.length) return null;

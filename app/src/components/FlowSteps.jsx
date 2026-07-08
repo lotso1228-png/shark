@@ -7,7 +7,7 @@ import Jp from "./Jp.jsx";
  * ご利用開始までの流れ — numbered timeline.
  * compact=true → home teaser (titles only, link to full page).
  */
-export default function FlowSteps({ id = "flow", compact = false, bg = "#ece3d1" }) {
+export default function FlowSteps({ id = "flow", compact = false, bg = "#f0e8d6" }) {
   const items = flowDetailed;
   return (
     <Section id={id} bg={bg} maxWidth={920}>

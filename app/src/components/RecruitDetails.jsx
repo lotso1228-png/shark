@@ -13,15 +13,15 @@ export default function RecruitDetails() {
   return (
     <>
       {/* 働く魅力 */}
-      <Section id="points" bg="#f5efe2" maxWidth={1080}>
+      <Section id="points" bg="#fcf6ed" maxWidth={1080}>
         <SectionHeading label="POINT" title="SHARKで働く魅力" className="mb-9" />
         <div className="grid grid-cols-1 min-[760px]:grid-cols-3 gap-5">
           {recruitPoints.map((p) => (
             <div
               key={p.h}
-              className="bg-[#fbf7ee] border border-[#e8dec9] rounded-[20px] p-7 text-center"
+              className="bg-[#ffffff] border border-[#e8dec9] rounded-[20px] p-7 text-center"
             >
-              <div className="w-[72px] h-[72px] mx-auto mb-4 rounded-full bg-[#ece3d1] flex items-center justify-center">
+              <div className="w-[72px] h-[72px] mx-auto mb-4 rounded-full bg-[#f0e8d6] flex items-center justify-center">
                 <img src={p.icon} alt="" className="w-11 h-11 object-contain" />
               </div>
               <h3 className="font-zen font-bold text-deep text-[16px] m-0 mb-2.5">
@@ -36,7 +36,7 @@ export default function RecruitDetails() {
       </Section>
 
       {/* 募集要項 */}
-      <Section id="requirements" bg="#ece3d1" maxWidth={920}>
+      <Section id="requirements" bg="#f0e8d6" maxWidth={920}>
         <SectionHeading label="REQUIREMENTS" title="募集要項" className="mb-9" />
         <div className="bg-white rounded-[20px] overflow-hidden shadow-[0_10px_26px_rgba(20,130,150,0.08)] border border-[#eae0cd]">
           {recruitRequirements.map((r) => (
@@ -56,13 +56,13 @@ export default function RecruitDetails() {
       </Section>
 
       {/* 応募の流れ */}
-      <Section id="apply" bg="#f5efe2" maxWidth={1000}>
+      <Section id="apply" bg="#fcf6ed" maxWidth={1000}>
         <SectionHeading label="STEP" title="応募の流れ" className="mb-9" />
         <div className="grid grid-cols-1 min-[640px]:grid-cols-4 gap-4">
           {applyFlow.map((s) => (
             <div
               key={s.n}
-              className="bg-[#fbf7ee] border border-[#e8dec9] rounded-[18px] p-5 text-center"
+              className="bg-[#ffffff] border border-[#e8dec9] rounded-[18px] p-5 text-center"
             >
               <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-pink text-white font-zen font-bold text-[17px] mb-3">
                 {s.n}

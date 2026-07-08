@@ -20,10 +20,10 @@ export default function HomePage() {
       <Worries />
       <Reasons />
       <Services />
-      <ConditionsSection compact bg="#f5efe2" />
-      <StaffSection compact bg="#ece3d1" />
-      <FlowSteps compact bg="#f5efe2" />
-      <Testimonials bg="#ece3d1" />
+      <ConditionsSection compact bg="#fcf6ed" />
+      <StaffSection compact bg="#f0e8d6" />
+      <FlowSteps compact bg="#fcf6ed" />
+      <Testimonials bg="#f0e8d6" />
       <CtaBand />
     </>
   );

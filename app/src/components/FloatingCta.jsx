@@ -12,7 +12,7 @@ export default function FloatingCta() {
 
   return (
     <div
-      className="min-[880px]:hidden fixed bottom-0 left-0 right-0 z-[180] grid grid-cols-3 bg-[#f5efe2]/95 backdrop-blur-[10px] border-t border-[#e6dcc7] shadow-[0_-4px_18px_rgba(120,100,60,0.12)]"
+      className="min-[880px]:hidden fixed bottom-0 left-0 right-0 z-[180] grid grid-cols-3 bg-[#fcf6ed]/95 backdrop-blur-[10px] border-t border-[#e6dcc7] shadow-[0_-4px_18px_rgba(120,100,60,0.12)]"
       style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
     >
       <a

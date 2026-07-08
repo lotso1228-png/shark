@@ -5,11 +5,11 @@ import Jp from "./Jp.jsx";
 /** 理念 (mission). */
 export default function Philosophy({ id = "philosophy" }) {
   return (
-    <Section id={id} bg="#f5efe2" maxWidth={960}>
+    <Section id={id} bg="#fcf6ed" maxWidth={960}>
       <SectionHeading label="PHILOSOPHY" title="私たちの理念" className="mb-8" />
       <div
         className="rounded-[26px] p-[clamp(28px,4vw,48px)] text-center"
-        style={{ background: "linear-gradient(150deg,#fbf5e9,#efe5d0)" }}
+        style={{ background: "linear-gradient(150deg,#fdf8ef,#f1e9d6)" }}
       >
         <p className="font-zen font-black text-deep m-0 text-[clamp(20px,3vw,30px)] leading-[1.5]">
           <Jp>{`「${philosophy.title}」`}</Jp>

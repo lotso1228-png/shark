@@ -4,7 +4,7 @@ import Jp from "./Jp.jsx";
 
 export default function Reasons() {
   return (
-    <section className="px-[22px] pt-[80px] pb-[86px] bg-[#f5efe2]">
+    <section className="px-[22px] pt-[80px] pb-[86px] bg-[#fcf6ed]">
       <Reveal className="max-w-[1160px] mx-auto">
         <SectionHeading
           label="REASON"
@@ -15,9 +15,9 @@ export default function Reasons() {
           {reasons.map((r) => (
             <div
               key={r.title}
-              className="bg-[#fbf7ee] border border-[#e8dec9] rounded-[20px] px-[22px] py-[30px] text-center transition-all duration-[250ms] hover:-translate-y-1.5 hover:shadow-[0_18px_34px_rgba(20,150,170,0.14)]"
+              className="bg-[#ffffff] border border-[#e8dec9] rounded-[20px] px-[22px] py-[30px] text-center transition-all duration-[250ms] hover:-translate-y-1.5 hover:shadow-[0_18px_34px_rgba(20,150,170,0.14)]"
             >
-              <div className="w-[88px] h-[88px] mx-auto mb-[18px] rounded-full bg-[#ece3d1] flex items-center justify-center">
+              <div className="w-[88px] h-[88px] mx-auto mb-[18px] rounded-full bg-[#f0e8d6] flex items-center justify-center">
                 <img
                   src={r.img}
                   alt=""

@@ -30,8 +30,8 @@ export default function CompanyPage() {
       <Philosophy id="philosophy" />
       <Greeting id="greeting" />
       <Company id="outline" />
-      <StaffSection id="staff" bg="#ece3d1" />
-      <AccessSection id="access" bg="#f5efe2" />
+      <StaffSection id="staff" bg="#f0e8d6" />
+      <AccessSection id="access" bg="#fcf6ed" />
       <CtaBand />
     </SubPage>
   );

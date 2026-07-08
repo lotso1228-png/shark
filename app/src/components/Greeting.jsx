@@ -5,7 +5,7 @@ import Jp from "./Jp.jsx";
 /** 代表挨拶 (SAMPLE — replace with the real representative's message). */
 export default function Greeting({ id = "greeting" }) {
   return (
-    <Section id={id} bg="#ece3d1" maxWidth={980}>
+    <Section id={id} bg="#f0e8d6" maxWidth={980}>
       <SectionHeading label="MESSAGE" title="代表挨拶" className="mb-9" />
       <div className="flex flex-wrap gap-8 items-start">
         <div className="flex-none mx-auto min-[680px]:mx-0">

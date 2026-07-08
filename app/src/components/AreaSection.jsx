@@ -5,7 +5,7 @@ import Jp from "./Jp.jsx";
 /** 対応エリア — 奈良県の市町村リスト ＋ マップ ＋ 写真. */
 export default function AreaSection({ id = "area" }) {
   return (
-    <Section id={id} bg="#ece3d1" maxWidth={1080}>
+    <Section id={id} bg="#f0e8d6" maxWidth={1080}>
       <SectionHeading label="AREA" title="対応エリア（奈良県全域）" className="mb-10" />
 
       <div className="flex flex-wrap gap-7 items-center">
@@ -34,7 +34,7 @@ export default function AreaSection({ id = "area" }) {
           {areaCities.map((c) => (
             <li
               key={c}
-              className="bg-[#ece3d1] text-[#2f5867] text-[13.5px] font-medium rounded-lg px-3 py-1.5"
+              className="bg-[#f0e8d6] text-[#2f5867] text-[13.5px] font-medium rounded-lg px-3 py-1.5"
             >
               {c}
             </li>
