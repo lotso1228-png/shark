@@ -3,3 +3,6 @@ dist
 dist-ssr
 *.local
 .DS_Store
+
+# generated logo rasters (regenerate via scripts/gen-logo.mjs)
+scripts/*.png
