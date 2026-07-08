@@ -26,7 +26,7 @@ export default function Header() {
       <div className="max-w-[1180px] mx-auto h-full flex items-center justify-between px-[22px]">
         <Link to="/" className="flex items-center gap-2.5 no-underline">
           <img
-            src="/assets/logo.svg"
+            src="/assets/logo.png"
             alt="訪問看護ステーションSHARK ロゴ"
             className="w-[46px] h-auto"
           />

@@ -9,6 +9,10 @@ const png = (svgStr, width) =>
 
 const CREAM = '#f5efe2';
 
+// standard logo PNG used by header/footer/favicon (transparent).
+// Overwrite public/assets/logo.png with the real artwork to swap it in.
+fs.writeFileSync('public/assets/logo.png', png(raw, 480));
+
 // apple-touch / favicon: logo on a cream rounded square
 const icon = `<svg xmlns="http://www.w3.org/2000/svg" width="180" height="180" viewBox="0 0 180 180">
   <rect width="180" height="180" rx="36" fill="${CREAM}"/>

@@ -9,7 +9,7 @@ export default function Footer() {
         <div>
           <Link to="/" className="flex items-center gap-2.5 mb-3 no-underline">
             <img
-              src="/assets/logo.svg"
+              src="/assets/logo.png"
               alt="訪問看護ステーションSHARK ロゴ"
               className="w-[52px] h-auto"
             />
