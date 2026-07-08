@@ -22,10 +22,14 @@ export default function Header() {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-[200] h-[66px] bg-white/95 backdrop-blur-[10px] shadow-[0_2px_16px_rgba(20,120,140,0.08)]">
+    <header className="fixed top-0 left-0 right-0 z-[200] h-[66px] bg-[#f5efe2]/92 backdrop-blur-[10px] shadow-[0_2px_16px_rgba(120,100,60,0.10)]">
       <div className="max-w-[1180px] mx-auto h-full flex items-center justify-between px-[22px]">
         <Link to="/" className="flex items-center gap-2.5 no-underline">
-          <img src="/assets/wave-blue.png" alt="" className="w-10 h-auto" />
+          <img
+            src="/assets/logo.svg"
+            alt="訪問看護ステーションSHARK ロゴ"
+            className="w-[46px] h-auto"
+          />
           <span className="flex flex-col leading-[1.1]">
             <span className="text-[10px] tracking-[0.18em] text-teal-400 font-bold">
               訪問看護ステーション
@@ -79,13 +83,13 @@ export default function Header() {
 
       {/* Mobile dropdown */}
       {menuOpen && (
-        <div className="min-[880px]:hidden bg-white border-t border-[#e6f4f7] px-[22px] pt-3.5 pb-5 shadow-[0_12px_22px_rgba(20,120,140,0.1)]">
+        <div className="min-[880px]:hidden bg-white border-t border-[#e6dcc7] px-[22px] pt-3.5 pb-5 shadow-[0_12px_22px_rgba(20,120,140,0.1)]">
           {navLinks.map((nav) => (
             <Link
               key={nav.to}
               to={nav.to}
               onClick={() => setMenuOpen(false)}
-              className="block py-[13px] px-1 no-underline text-ink text-[15px] font-medium border-b border-[#eef7f9]"
+              className="block py-[13px] px-1 no-underline text-ink text-[15px] font-medium border-b border-[#eae0cd]"
             >
               {nav.label}
             </Link>

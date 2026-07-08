@@ -11,7 +11,7 @@ export default function PageHero({ eyebrow, title, lead, crumbs }) {
       className="relative overflow-hidden px-[22px] pt-[104px] pb-[48px]"
       style={{
         background:
-          "linear-gradient(170deg,#eafaff 0%,#e3f5fb 55%,#f4fcff 100%)",
+          "linear-gradient(170deg,#f8f2e6 0%,#efe6d2 55%,#faf5ea 100%)",
       }}
     >
       <img

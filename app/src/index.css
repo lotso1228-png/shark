@@ -19,6 +19,11 @@
   --color-mail: #3f7fcf;
   --color-pink: #ef8fa3;
 
+  /* Cream background palette (matches the logo's paper tone) */
+  --color-cream-soft: #f5efe2;
+  --color-cream: #ece3d1;
+  --color-cream-deep: #e3d8c2;
+
   /* keyframes */
   --animate-floaty: floaty 6s ease-in-out infinite;
   --animate-floaty2: floaty2 5s ease-in-out infinite;
@@ -53,7 +58,7 @@ body {
   margin: 0;
   font-family: var(--font-sans);
   color: var(--color-ink);
-  background: #fff;
+  background: var(--color-cream-soft);
   line-height: 1.9;
   letter-spacing: 0.02em;
   overflow-x: hidden;

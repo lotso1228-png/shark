@@ -9,9 +9,9 @@ export default function Footer() {
         <div>
           <Link to="/" className="flex items-center gap-2.5 mb-3 no-underline">
             <img
-              src="/assets/wave-blue.png"
-              alt=""
-              className="w-10 bg-white rounded-lg p-0.5"
+              src="/assets/logo.svg"
+              alt="訪問看護ステーションSHARK ロゴ"
+              className="w-[52px] h-auto"
             />
             <span className="flex flex-col leading-[1.1]">
               <span className="text-[10px] tracking-[0.16em] text-[#9fd6e1] font-bold">

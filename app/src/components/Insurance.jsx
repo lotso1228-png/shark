@@ -4,11 +4,11 @@ import Jp from "./Jp.jsx";
 
 export default function Insurance() {
   return (
-    <section className="px-[22px] pt-[78px] pb-[84px] bg-white">
+    <section className="px-[22px] pt-[78px] pb-[84px] bg-[#f5efe2]">
       <Reveal className="max-w-[1080px] mx-auto">
         <div
           className="rounded-[26px] p-[clamp(28px,4vw,52px)] flex flex-wrap items-center gap-[34px]"
-          style={{ background: "linear-gradient(150deg,#f3fbfd,#e8f6fb)" }}
+          style={{ background: "linear-gradient(150deg,#fbf5e9,#efe5d0)" }}
         >
           <div className="flex-[1_1_420px] min-w-[280px]">
             <h2 className="font-zen font-black text-deep m-0 mb-6 text-[clamp(22px,2.8vw,30px)]">

@@ -12,7 +12,7 @@ export default function FloatingCta() {
 
   return (
     <div
-      className="min-[880px]:hidden fixed bottom-0 left-0 right-0 z-[180] grid grid-cols-3 bg-white/95 backdrop-blur-[10px] border-t border-[#e6f4f7] shadow-[0_-4px_18px_rgba(20,120,140,0.12)]"
+      className="min-[880px]:hidden fixed bottom-0 left-0 right-0 z-[180] grid grid-cols-3 bg-[#f5efe2]/95 backdrop-blur-[10px] border-t border-[#e6dcc7] shadow-[0_-4px_18px_rgba(120,100,60,0.12)]"
       style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
     >
       <a
@@ -27,7 +27,7 @@ export default function FloatingCta() {
       </a>
       <Link
         to="/contact"
-        className="flex flex-col items-center justify-center gap-1 py-2.5 no-underline text-line border-x border-[#eef7f9]"
+        className="flex flex-col items-center justify-center gap-1 py-2.5 no-underline text-line border-x border-[#eae0cd]"
         aria-label="LINEで相談する"
       >
         <span className="w-7 h-7 rounded-full bg-line flex items-center justify-center overflow-hidden">

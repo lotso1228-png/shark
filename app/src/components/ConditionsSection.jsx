@@ -10,7 +10,7 @@ import Jp from "./Jp.jsx";
 export default function ConditionsSection({
   id = "target",
   compact = false,
-  bg = "#fff",
+  bg = "#f5efe2",
 }) {
   return (
     <Section id={id} bg={bg}>
@@ -22,7 +22,7 @@ export default function ConditionsSection({
 
       <div className="grid min-[860px]:grid-cols-[0.9fr_1.1fr] gap-7 items-start">
         {/* 対象となる方 */}
-        <div className="bg-[#f6fcfe] border border-[#e3f4f8] rounded-[20px] p-7">
+        <div className="bg-[#fbf7ee] border border-[#e8dec9] rounded-[20px] p-7">
           <h3 className="font-zen font-bold text-[18px] text-deep m-0 mb-4">
             こんな方が対象です
           </h3>
@@ -50,7 +50,7 @@ export default function ConditionsSection({
               {conditions.map((c) => (
                 <span
                   key={c.name}
-                  className="bg-[#eaf7fb] text-[#2f5867] text-[13px] font-medium rounded-full px-3.5 py-2"
+                  className="bg-[#ece3d1] text-[#2f5867] text-[13px] font-medium rounded-full px-3.5 py-2"
                 >
                   <Jp>{c.name}</Jp>
                 </span>
@@ -61,7 +61,7 @@ export default function ConditionsSection({
               {conditions.map((c) => (
                 <div
                   key={c.name}
-                  className="bg-white border border-[#e3f4f8] rounded-2xl px-4 py-3.5 shadow-[0_4px_14px_rgba(20,130,150,0.05)]"
+                  className="bg-white border border-[#e8dec9] rounded-2xl px-4 py-3.5 shadow-[0_4px_14px_rgba(20,130,150,0.05)]"
                 >
                   <p className="font-bold text-[14px] text-deep m-0 mb-1">
                     <Jp>{c.name}</Jp>

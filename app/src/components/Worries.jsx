@@ -4,7 +4,7 @@ import Jp from "./Jp.jsx";
 
 export default function Worries() {
   return (
-    <section className="relative overflow-hidden px-[22px] pt-[78px] pb-[84px] bg-[#f0fafd]">
+    <section className="relative overflow-hidden px-[22px] pt-[78px] pb-[84px] bg-[#ece3d1]">
       <Reveal className="max-w-[1100px] mx-auto relative z-[2]">
         <SectionHeading
           label="CHECK"

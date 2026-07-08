@@ -3,7 +3,7 @@ import { Section, SectionHeading } from "./ui.jsx";
 import Jp from "./Jp.jsx";
 
 /** 利用者さま・ご家族の声 (SAMPLE — replace with real, consented voices). */
-export default function Testimonials({ id = "voice", bg = "#f0fafd" }) {
+export default function Testimonials({ id = "voice", bg = "#ece3d1" }) {
   return (
     <Section id={id} bg={bg} maxWidth={1080}>
       <SectionHeading label="VOICE" title="利用者さま・ご家族の声" className="mb-9" />

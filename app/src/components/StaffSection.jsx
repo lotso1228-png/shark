@@ -4,7 +4,7 @@ import { Section, SectionHeading } from "./ui.jsx";
 import Jp from "./Jp.jsx";
 
 /** スタッフ紹介 (SAMPLE content — replace names/photos/words with real staff). */
-export default function StaffSection({ id = "staff", compact = false, bg = "#fff" }) {
+export default function StaffSection({ id = "staff", compact = false, bg = "#f5efe2" }) {
   return (
     <Section id={id} bg={bg} maxWidth={1080}>
       <SectionHeading label="STAFF" title="スタッフ紹介" className="mb-3" />
@@ -16,7 +16,7 @@ export default function StaffSection({ id = "staff", compact = false, bg = "#fff
         {staff.map((m) => (
           <figure
             key={m.name + m.role}
-            className="m-0 bg-[#f6fcfe] border border-[#e3f4f8] rounded-[20px] overflow-hidden shadow-[0_8px_22px_rgba(20,130,150,0.07)]"
+            className="m-0 bg-[#fbf7ee] border border-[#e8dec9] rounded-[20px] overflow-hidden shadow-[0_8px_22px_rgba(20,130,150,0.07)]"
           >
             <div className="w-full aspect-[4/3] overflow-hidden">
               <img

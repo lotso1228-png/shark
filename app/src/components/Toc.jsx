@@ -8,7 +8,7 @@ export default function Toc({ items = [] }) {
       aria-label="目次"
       className="max-w-[1100px] mx-auto px-[22px] -mt-3 mb-2"
     >
-      <div className="bg-white border border-[#e3f4f8] rounded-2xl px-5 py-4 shadow-[0_6px_18px_rgba(20,130,150,0.06)]">
+      <div className="bg-white border border-[#e8dec9] rounded-2xl px-5 py-4 shadow-[0_6px_18px_rgba(20,130,150,0.06)]">
         <p className="font-zen font-bold text-deep text-sm m-0 mb-2.5">目次</p>
         <ul className="flex flex-wrap gap-x-5 gap-y-2 list-none m-0 p-0">
           {items.map((it) => (

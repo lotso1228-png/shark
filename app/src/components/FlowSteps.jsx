@@ -7,7 +7,7 @@ import Jp from "./Jp.jsx";
  * ご利用開始までの流れ — numbered timeline.
  * compact=true → home teaser (titles only, link to full page).
  */
-export default function FlowSteps({ id = "flow", compact = false, bg = "#f0fafd" }) {
+export default function FlowSteps({ id = "flow", compact = false, bg = "#ece3d1" }) {
   const items = flowDetailed;
   return (
     <Section id={id} bg={bg} maxWidth={920}>
@@ -22,7 +22,7 @@ export default function FlowSteps({ id = "flow", compact = false, bg = "#f0fafd"
                 {st.n}
               </span>
               {i < items.length - 1 && (
-                <span className="w-px flex-1 bg-[#c7e6ef] mt-1" aria-hidden="true" />
+                <span className="w-px flex-1 bg-[#d8c8ac] mt-1" aria-hidden="true" />
               )}
             </div>
             {/* card */}

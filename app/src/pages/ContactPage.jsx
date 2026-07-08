@@ -17,7 +17,7 @@ export default function ContactPage() {
       />
 
       {/* 連絡方法 */}
-      <Section bg="#fff" maxWidth={820}>
+      <Section bg="#f5efe2" maxWidth={820}>
         <div className="text-center">
           <h2 className="font-zen font-black text-deep m-0 mb-3 text-[clamp(20px,2.6vw,28px)]">
             <Jp>電話・LINE・メールでご相談</Jp>
@@ -33,7 +33,7 @@ export default function ContactPage() {
       </Section>
 
       {/* 相談フォーム */}
-      <Section bg="#f0fafd" maxWidth={720}>
+      <Section bg="#ece3d1" maxWidth={720}>
         <h2 className="font-zen font-black text-deep m-0 mb-2 text-[clamp(20px,2.6vw,26px)] text-center">
           相談フォーム
         </h2>
@@ -50,7 +50,7 @@ export default function ContactPage() {
         </p>
       </Section>
 
-      <AccessSection id="access" bg="#fff" />
+      <AccessSection id="access" bg="#f5efe2" />
     </SubPage>
   );
 }

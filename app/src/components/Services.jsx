@@ -7,7 +7,7 @@ export default function Services() {
   return (
     <section
       id="service"
-      className="scroll-mt-20 px-[22px] pt-[80px] pb-[88px] bg-[#eaf7fb]"
+      className="scroll-mt-20 px-[22px] pt-[80px] pb-[88px] bg-[#ece3d1]"
     >
       <Reveal className="max-w-[1160px] mx-auto">
         <SectionHeading label="SERVICE" title="サービス内容" className="mb-12" />

@@ -3,7 +3,7 @@ import Jp from "./Jp.jsx";
 import { ADDRESS, TEL, RECEPTION } from "../data.js";
 
 /** アクセス — address + keyless Google Maps embed. */
-export default function AccessSection({ id = "access", bg = "#f0fafd" }) {
+export default function AccessSection({ id = "access", bg = "#ece3d1" }) {
   const q = encodeURIComponent("奈良県大和高田市南陽町5-19");
   return (
     <Section id={id} bg={bg} maxWidth={1080}>

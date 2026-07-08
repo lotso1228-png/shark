@@ -5,7 +5,7 @@ import Jp from "./Jp.jsx";
 /** 料金・保険：自立支援医療の月額上限テーブル ＋ 注釈. */
 export default function PricingSection({ id = "fee" }) {
   return (
-    <Section id={id} bg="#f0fafd" maxWidth={980}>
+    <Section id={id} bg="#ece3d1" maxWidth={980}>
       <SectionHeading label="FEE" title="料金・保険について" className="mb-9" />
 
       <div className="grid min-[820px]:grid-cols-2 gap-4 mb-7">
@@ -19,7 +19,7 @@ export default function PricingSection({ id = "fee" }) {
             です（年齢・所得により異なります）。費用は訪問回数・時間・体制などで変わります。
           </p>
         </div>
-        <div className="bg-white rounded-[20px] p-6 shadow-[0_8px_22px_rgba(20,130,150,0.07)] border-2 border-[#bfe9f1]">
+        <div className="bg-white rounded-[20px] p-6 shadow-[0_8px_22px_rgba(20,130,150,0.07)] border-2 border-[#d9c9ac]">
           <p className="font-zen font-bold text-deep text-[16px] m-0 mb-2">
             <Jp>② 自立支援医療制度（精神通院医療）</Jp>
           </p>
@@ -42,15 +42,15 @@ export default function PricingSection({ id = "fee" }) {
             {pricingTiers.map((t, i) => (
               <tr
                 key={t.tier}
-                className={i % 2 ? "bg-[#f6fcfe]" : "bg-white"}
+                className={i % 2 ? "bg-[#fbf7ee]" : "bg-white"}
               >
                 <th
                   scope="row"
-                  className="font-medium text-[13.5px] text-ink px-5 py-3.5 border-b border-[#eef7f9] align-top"
+                  className="font-medium text-[13.5px] text-ink px-5 py-3.5 border-b border-[#eae0cd] align-top"
                 >
                   <Jp>{t.tier}</Jp>
                 </th>
-                <td className="font-zen font-bold text-deep text-[15px] px-5 py-3.5 border-b border-[#eef7f9] whitespace-nowrap text-right w-[110px]">
+                <td className="font-zen font-bold text-deep text-[15px] px-5 py-3.5 border-b border-[#eae0cd] whitespace-nowrap text-right w-[110px]">
                   {t.cap}
                 </td>
               </tr>

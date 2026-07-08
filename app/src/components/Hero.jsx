@@ -9,7 +9,7 @@ export default function Hero({ showDecorations = true }) {
       className="relative overflow-hidden px-[22px] pt-[120px] pb-[90px]"
       style={{
         background:
-          "linear-gradient(170deg,#eafaff 0%,#e3f5fb 45%,#f4fcff 100%)",
+          "linear-gradient(170deg,#f8f2e6 0%,#efe6d2 50%,#faf5ea 100%)",
       }}
     >
       {showDecorations && (

@@ -5,7 +5,7 @@ import Jp from "./Jp.jsx";
 const ROLES = ["ご本人", "ご家族", "医療・福祉関係者", "その他"];
 
 const field =
-  "w-full rounded-xl border border-[#d6e8ee] bg-white px-4 py-3 text-[15px] text-ink outline-none focus:border-teal transition-colors";
+  "w-full rounded-xl border border-[#ddccb0] bg-white px-4 py-3 text-[15px] text-ink outline-none focus:border-teal transition-colors";
 const labelCls = "block font-bold text-[13.5px] text-deep mb-1.5";
 
 export default function ContactForm() {
