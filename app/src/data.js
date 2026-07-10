@@ -2,6 +2,7 @@
 
 export const TEL = "080-4767-0011";
 export const EMAIL = "tokumoto.bnuts@gmail.com";
+export const LINE_URL = "https://lin.ee/u0YNiI7";
 export const RECEPTION = "24時間365日 相談受付";
 export const ADDRESS = "〒635-0057 奈良県大和高田市南陽町5-19";
 export const CORP = "株式会社B-Nuts";

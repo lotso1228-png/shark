@@ -1,6 +1,5 @@
-import { Link } from "react-router-dom";
 import { useReveal } from "../hooks/useReveal.js";
-import { TEL, EMAIL, RECEPTION } from "../data.js";
+import { TEL, EMAIL, RECEPTION, LINE_URL } from "../data.js";
 import Jp from "./Jp.jsx";
 
 /** Scroll-reveal wrapper. Renders a div that fades/slides in on scroll. */
@@ -91,12 +90,17 @@ export function ContactButtons({ variant = "hero", className = "" }) {
         </span>
         電話で相談する
       </a>
-      <Link to="/contact" className={`${base} ${line}`}>
+      <a
+        href={LINE_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={`${base} ${line}`}
+      >
         <span className={circleIcon}>
           <img src="/assets/ic-line.png" alt="" className="w-[34px] h-[34px]" />
         </span>
         LINEで相談する
-      </Link>
+      </a>
       <a href={`mailto:${EMAIL}`} className={`${base} ${mail}`}>
         <span className={circleIcon}>
           <img src="/assets/ic-mail.png" alt="" className="w-[34px] h-[34px]" />

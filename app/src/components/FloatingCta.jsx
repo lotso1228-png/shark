@@ -1,5 +1,5 @@
-import { Link, useLocation } from "react-router-dom";
-import { TEL, EMAIL } from "../data.js";
+import { useLocation } from "react-router-dom";
+import { TEL, EMAIL, LINE_URL } from "../data.js";
 
 /**
  * Fixed bottom contact bar shown on mobile only (< 880px) — a standard
@@ -25,8 +25,10 @@ export default function FloatingCta() {
         </span>
         <span className="text-[11px] font-bold">電話</span>
       </a>
-      <Link
-        to="/contact"
+      <a
+        href={LINE_URL}
+        target="_blank"
+        rel="noopener noreferrer"
         className="flex flex-col items-center justify-center gap-1 py-2.5 no-underline text-line border-x border-[#eae0cd]"
         aria-label="LINEで相談する"
       >
@@ -34,7 +36,7 @@ export default function FloatingCta() {
           <img src="/assets/ic-line.png" alt="" className="w-7 h-7" />
         </span>
         <span className="text-[11px] font-bold">LINE</span>
-      </Link>
+      </a>
       <a
         href={`mailto:${EMAIL}`}
         className="flex flex-col items-center justify-center gap-1 py-2.5 no-underline text-mail"
