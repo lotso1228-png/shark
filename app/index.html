@@ -42,9 +42,9 @@
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
-        "@type": "MedicalBusiness",
+        "@type": ["MedicalBusiness", "MedicalClinic"],
         "name": "訪問看護ステーションSHARK",
-        "description": "奈良県全域対応の精神科訪問看護ステーション。24時間365日、服薬管理・ご家族支援・主治医連携までサポートします。",
+        "description": "奈良県全域対応・精神科訪問看護に特化した訪問看護ステーション。橿原市・大和高田市を中心に、24時間365日体制で服薬管理・症状観察・傾聴・ご家族支援・主治医連携までサポート。医療保険・自立支援医療制度に対応。",
         "telephone": "+81-80-4767-0011",
         "email": "tokumoto.bnuts@gmail.com",
         "address": {
@@ -55,11 +55,47 @@
           "streetAddress": "南陽町5-19",
           "addressCountry": "JP"
         },
+        "hasMap": "https://www.google.com/maps?q=%E5%A5%88%E8%89%AF%E7%9C%8C%E5%A4%A7%E5%92%8C%E9%AB%98%E7%94%B0%E5%B8%82%E5%8D%97%E9%99%BD%E7%94%BA5-19",
         "url": "https://shark-rose.vercel.app",
         "image": "https://shark-rose.vercel.app/assets/og-image.png",
-        "areaServed": "奈良県",
-        "openingHours": "Mo-Su 00:00-24:00",
+        "logo": "https://shark-rose.vercel.app/assets/logo.png",
+        "areaServed": [
+          { "@type": "AdministrativeArea", "name": "奈良県" },
+          { "@type": "City", "name": "橿原市" },
+          { "@type": "City", "name": "大和高田市" }
+        ],
+        "openingHoursSpecification": {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],
+          "opens": "00:00",
+          "closes": "23:59"
+        },
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "telephone": "+81-80-4767-0011",
+          "contactType": "customer service",
+          "availableLanguage": ["Japanese"],
+          "areaServed": "JP"
+        },
         "medicalSpecialty": "Psychiatric",
+        "isAcceptingNewPatients": true,
+        "availableLanguage": "ja",
+        "paymentAccepted": "医療保険, 自立支援医療制度（精神通院医療）",
+        "knowsAbout": [
+          "精神科訪問看護","うつ病","双極性障害","統合失調症","不安障害","パニック障害",
+          "強迫性障害","適応障害","PTSD","発達障害","依存症","認知症",
+          "服薬管理","自立支援医療制度","再発予防","社会復帰支援"
+        ],
+        "availableService": [
+          { "@type": "MedicalTherapy", "name": "服薬管理・服薬支援" },
+          { "@type": "MedicalTherapy", "name": "症状の観察・モニタリング" },
+          { "@type": "MedicalTherapy", "name": "傾聴・精神的サポート" },
+          { "@type": "MedicalTherapy", "name": "生活リズム・日常生活の援助" },
+          { "@type": "MedicalTherapy", "name": "社会復帰・社会資源の活用支援" },
+          { "@type": "MedicalTherapy", "name": "ご家族への支援" },
+          { "@type": "MedicalTherapy", "name": "主治医・多職種との連携" },
+          { "@type": "MedicalTherapy", "name": "危機介入・再発予防" }
+        ],
         "sameAs": ["https://lin.ee/u0YNiI7"],
         "parentOrganization": { "@type": "Organization", "name": "株式会社B-Nuts" }
       }
