@@ -37,6 +37,47 @@ const faqSchema = () => {
   return `<script type="application/ld+json">${JSON.stringify(data)}</script>`;
 };
 
+// JobPosting for Google しごと検索 (Google for Jobs).
+// datePosted is FIXED (auto-updating it each build reads as freshness spoofing —
+// update only when the posting genuinely reopens). 常時募集 → no validThrough;
+// when hiring closes, remove this schema or set validThrough to a past date.
+const JOB_DATE_POSTED = "2026-08-13";
+const jobPostingSchema = () => {
+  const data = {
+    "@context": "https://schema.org",
+    "@type": "JobPosting",
+    title: "訪問看護師（正看護師・准看護師）",
+    description:
+      "<p>奈良県（橿原市・大和高田市を中心に県全域対応）の精神科特化型訪問看護ステーションで、利用者様のご自宅を訪問し、服薬支援・症状観察・傾聴・ご家族支援などを行う看護師を募集します。</p><p>訪問看護・精神科ともに未経験の方、ブランクのある方も歓迎。入職後は先輩看護師との同行訪問から始め、段階的にひとり立ちできる教育体制です。常勤・非常勤どちらも相談可能で、子育てと両立できる時短勤務等も相談できます。見学・カジュアル面談のみのご連絡も歓迎です。</p>",
+    datePosted: JOB_DATE_POSTED,
+    employmentType: ["FULL_TIME", "PART_TIME"],
+    hiringOrganization: {
+      "@type": "Organization",
+      name: "訪問看護ステーションSHARK（株式会社B-Nuts）",
+      sameAs: SITE_URL,
+      logo: `${SITE_URL}/assets/logo.png`,
+    },
+    jobLocation: {
+      "@type": "Place",
+      address: {
+        "@type": "PostalAddress",
+        postalCode: "635-0057",
+        addressRegion: "奈良県",
+        addressLocality: "大和高田市",
+        streetAddress: "南陽町5-19",
+        addressCountry: "JP",
+      },
+    },
+    qualifications: "正看護師または准看護師の免許（精神科・訪問看護の経験は不問）",
+    industry: "訪問看護",
+    workHours: "日勤帯中心（シフト・時短相談可、24時間対応のオンコールあり）",
+    jobBenefits: "各種社会保険、交通費支給、未経験者教育制度（詳細は面談時にご案内）",
+    directApply: true,
+    url: `${SITE_URL}/recruit`,
+  };
+  return `<script type="application/ld+json">${JSON.stringify(data)}</script>`;
+};
+
 for (const route of PRERENDER_PATHS) {
   const meta = ROUTE_META[route];
   const appHtml = render(route);
@@ -46,6 +87,7 @@ for (const route of PRERENDER_PATHS) {
   head += `<link rel="canonical" href="${canonical}"/>`;
   head += `<meta property="og:url" content="${canonical}"/>`;
   if (route === "/faq") head += faqSchema();
+  if (route === "/recruit") head += jobPostingSchema();
 
   let html = template
     .replace('<div id="root"></div>', `<div id="root">${appHtml}</div>`)

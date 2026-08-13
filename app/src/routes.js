@@ -7,7 +7,7 @@ export const navLinks = [
   { label: "対応エリア", to: "/flow#area" },
   { label: "よくある質問", to: "/faq" },
   { label: "事業所概要", to: "/company" },
-  { label: "採用情報", to: "/recruit" },
+  { label: "看護師採用", to: "/recruit", accent: true },
 ];
 
 // Per-page <title> / description used by useDocumentMeta.
@@ -39,9 +39,9 @@ export const pageMeta = {
     description: "訪問看護ステーションSHARK（株式会社B-Nuts）の事業所概要です。",
   },
   recruit: {
-    title: `採用情報｜${SITE_NAME}`,
+    title: `看護師求人・採用情報（常勤/非常勤）｜${SITE_NAME}`,
     description:
-      "訪問看護ステーションSHARKでは、利用者様の暮らしに寄り添う看護師を募集しています。未経験・ブランクのある方もご相談ください。",
+      "奈良県（橿原市・大和高田市中心）の精神科訪問看護ステーションSHARKの看護師求人。訪問看護未経験・ブランク・子育て中の方も歓迎。常勤/非常勤、見学・カジュアル面談OK。LINEで気軽に相談できます。",
   },
   contact: {
     title: `お問い合わせ｜${SITE_NAME}`,

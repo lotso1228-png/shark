@@ -2,11 +2,11 @@ import { recruitPoints, recruitRequirements } from "../content.js";
 import { Section, SectionHeading } from "./ui.jsx";
 import Jp from "./Jp.jsx";
 
-const applyFlow = [
-  { n: 1, t: "お問い合わせ・見学申込", d: "お電話・フォームからお気軽にご連絡ください。" },
-  { n: 2, t: "面談・職場見学", d: "お仕事内容や働き方について、ざっくばらんにお話しします。" },
-  { n: 3, t: "体験同行（任意）", d: "ご希望に応じて、訪問への同行を体験いただけます。" },
-  { n: 4, t: "採用・入職", d: "先輩看護師の同行から、無理なくスタートできます。" },
+const onboardingSteps = [
+  { n: "STEP 1", t: "同行訪問", d: "先輩看護師と一緒に訪問し、関わり方・記録・制度を学びます。" },
+  { n: "STEP 2", t: "一部をおまかせ", d: "同行のなかで、できるところから少しずつ担当します。" },
+  { n: "STEP 3", t: "ひとり立ち", d: "習得度に合わせて単独訪問へ。迷ったらいつでも電話で相談できます。" },
+  { n: "STEP 4", t: "定期的な振り返り", d: "カンファレンスでケースを共有し、ひとりで抱え込まない看護を続けます。" },
 ];
 
 export default function RecruitDetails() {
@@ -35,8 +35,34 @@ export default function RecruitDetails() {
         </div>
       </Section>
 
+      {/* ひとり立ちまでのステップ */}
+      <Section id="onboarding" bg="#f0e8d6" maxWidth={1000}>
+        <SectionHeading label="TRAINING" title="ひとり立ちまでのステップ" className="mb-3" />
+        <p className="text-center text-[14px] text-muted m-0 mb-9">
+          <Jp>期間は決め打ちにせず、経験と習得度に合わせて調整します。</Jp>
+        </p>
+        <div className="grid grid-cols-1 min-[640px]:grid-cols-4 gap-4">
+          {onboardingSteps.map((s) => (
+            <div
+              key={s.n}
+              className="bg-white border border-[#e8dec9] rounded-[18px] p-5"
+            >
+              <p className="font-zen font-black text-pink text-[13px] tracking-[0.08em] m-0 mb-2">
+                {s.n}
+              </p>
+              <h3 className="font-zen font-bold text-deep text-[15.5px] m-0 mb-2">
+                <Jp>{s.t}</Jp>
+              </h3>
+              <p className="text-[12.5px] text-muted m-0 leading-[1.85]">
+                <Jp>{s.d}</Jp>
+              </p>
+            </div>
+          ))}
+        </div>
+      </Section>
+
       {/* 募集要項 */}
-      <Section id="requirements" bg="#f0e8d6" maxWidth={920}>
+      <Section id="requirements" bg="#fcf6ed" maxWidth={920}>
         <SectionHeading label="REQUIREMENTS" title="募集要項" className="mb-9" />
         <div className="bg-white rounded-[20px] overflow-hidden shadow-[0_10px_26px_rgba(20,130,150,0.08)] border border-[#eae0cd]">
           {recruitRequirements.map((r) => (
@@ -55,28 +81,6 @@ export default function RecruitDetails() {
         </p>
       </Section>
 
-      {/* 応募の流れ */}
-      <Section id="apply" bg="#fcf6ed" maxWidth={1000}>
-        <SectionHeading label="STEP" title="応募の流れ" className="mb-9" />
-        <div className="grid grid-cols-1 min-[640px]:grid-cols-4 gap-4">
-          {applyFlow.map((s) => (
-            <div
-              key={s.n}
-              className="bg-[#ffffff] border border-[#e8dec9] rounded-[18px] p-5 text-center"
-            >
-              <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-pink text-white font-zen font-bold text-[17px] mb-3">
-                {s.n}
-              </span>
-              <h3 className="font-zen font-bold text-deep text-[15px] m-0 mb-2">
-                <Jp>{s.t}</Jp>
-              </h3>
-              <p className="text-[12.5px] text-muted m-0 leading-[1.8]">
-                <Jp>{s.d}</Jp>
-              </p>
-            </div>
-          ))}
-        </div>
-      </Section>
     </>
   );
 }

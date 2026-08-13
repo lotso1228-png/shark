@@ -42,17 +42,27 @@ export default function Header() {
 
         {/* Desktop nav */}
         <nav className="hidden min-[880px]:flex items-center gap-[22px]">
-          {navLinks.map((nav) => (
-            <Link
-              key={nav.to}
-              to={nav.to}
-              className={`no-underline text-[14.5px] font-medium transition-colors duration-200 hover:text-teal ${
-                isActive(nav.to) ? "text-teal" : "text-ink"
-              }`}
-            >
-              {nav.label}
-            </Link>
-          ))}
+          {navLinks.map((nav) =>
+            nav.accent ? (
+              <Link
+                key={nav.to}
+                to={nav.to}
+                className="no-underline text-white bg-pink text-[13.5px] font-bold rounded-full px-4 py-2 shadow-[0_6px_14px_rgba(239,143,163,0.3)] transition-transform duration-200 hover:-translate-y-0.5"
+              >
+                {nav.label}
+              </Link>
+            ) : (
+              <Link
+                key={nav.to}
+                to={nav.to}
+                className={`no-underline text-[14.5px] font-medium transition-colors duration-200 hover:text-teal ${
+                  isActive(nav.to) ? "text-teal" : "text-ink"
+                }`}
+              >
+                {nav.label}
+              </Link>
+            )
+          )}
           <a
             href={`tel:${TEL}`}
             className="flex items-center gap-[7px] no-underline text-teal-600 font-zen font-bold text-[20px] ml-1"

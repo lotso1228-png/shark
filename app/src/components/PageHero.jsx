@@ -5,7 +5,7 @@ import Jp from "./Jp.jsx";
  * Intentional page-title band for sub-pages: breadcrumb + eyebrow + h1 + lead.
  * Handles the fixed-header offset itself (pt clears the 66px header).
  */
-export default function PageHero({ eyebrow, title, lead, crumbs }) {
+export default function PageHero({ eyebrow, title, lead, crumbs, children }) {
   return (
     <section
       className="relative overflow-hidden px-[22px] pt-[104px] pb-[48px]"
@@ -34,6 +34,7 @@ export default function PageHero({ eyebrow, title, lead, crumbs }) {
             <Jp>{lead}</Jp>
           </p>
         )}
+        {children}
       </div>
     </section>
   );
