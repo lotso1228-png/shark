@@ -54,13 +54,13 @@
 7. 継続・多職種連携・見直し
 
 ## ページ
-- [ホーム](https://shark-rose.vercel.app/): 事業所の概要と各ページへの導線
-- [サービス内容](https://shark-rose.vercel.app/service): 提供するケア8項目、対象となる方・対応疾患、医療保険・自立支援医療制度、料金
-- [ご利用の流れ・対応エリア](https://shark-rose.vercel.app/flow): 開始までの流れと奈良県内の対応エリア
-- [よくある質問](https://shark-rose.vercel.app/faq): 対象・費用・訪問・体制・手続きに関するQ&A
-- [事業所概要](https://shark-rose.vercel.app/company): 理念・事業所情報・スタッフ・アクセス
-- [採用情報](https://shark-rose.vercel.app/recruit): 看護師募集（未経験・ブランク可）
-- [お問い合わせ](https://shark-rose.vercel.app/contact): 電話・LINE・メール・相談フォーム
+- [ホーム](https://shark-nara.jp/): 事業所の概要と各ページへの導線
+- [サービス内容](https://shark-nara.jp/service): 提供するケア8項目、対象となる方・対応疾患、医療保険・自立支援医療制度、料金
+- [ご利用の流れ・対応エリア](https://shark-nara.jp/flow): 開始までの流れと奈良県内の対応エリア
+- [よくある質問](https://shark-nara.jp/faq): 対象・費用・訪問・体制・手続きに関するQ&A
+- [事業所概要](https://shark-nara.jp/company): 理念・事業所情報・スタッフ・アクセス
+- [採用情報](https://shark-nara.jp/recruit): 看護師募集（未経験・ブランク可）
+- [お問い合わせ](https://shark-nara.jp/contact): 電話・LINE・メール・相談フォーム
 
 ## お問い合わせ方法
 - 電話: 080-4767-0011（24時間365日 相談受付）

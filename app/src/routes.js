@@ -55,7 +55,7 @@ export const pageMeta = {
 };
 
 // Production origin (update if a custom domain is connected).
-export const SITE_URL = "https://shark-rose.vercel.app";
+export const SITE_URL = "https://shark-nara.jp";
 
 // Path → meta, used by routing, prerendering and the sitemap.
 export const ROUTE_META = {

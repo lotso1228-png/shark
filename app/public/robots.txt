@@ -24,4 +24,4 @@ User-agent: *
 Allow: /
 
 # AI-readable site summary: /llms.txt
-Sitemap: https://shark-rose.vercel.app/sitemap.xml
+Sitemap: https://shark-nara.jp/sitemap.xml
