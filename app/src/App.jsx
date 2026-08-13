@@ -7,6 +7,8 @@ import FaqPage from "./pages/FaqPage.jsx";
 import CompanyPage from "./pages/CompanyPage.jsx";
 import RecruitPage from "./pages/RecruitPage.jsx";
 import ContactPage from "./pages/ContactPage.jsx";
+import ColumnListPage from "./pages/ColumnListPage.jsx";
+import ColumnArticlePage from "./pages/ColumnArticlePage.jsx";
 import NotFoundPage from "./pages/NotFoundPage.jsx";
 
 export default function App() {
@@ -20,6 +22,8 @@ export default function App() {
         <Route path="company" element={<CompanyPage />} />
         <Route path="recruit" element={<RecruitPage />} />
         <Route path="contact" element={<ContactPage />} />
+        <Route path="column" element={<ColumnListPage />} />
+        <Route path="column/:slug" element={<ColumnArticlePage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>
     </Routes>

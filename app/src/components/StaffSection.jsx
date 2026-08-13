@@ -22,7 +22,7 @@ export default function StaffSection({ id = "staff", compact = false, bg = "#fcf
               <img
                 src={m.photo}
                 alt=""
-                className="w-full h-full object-cover block"
+                className="w-full h-full object-cover block" loading="lazy" decoding="async"
               />
             </div>
             <figcaption className="p-5">

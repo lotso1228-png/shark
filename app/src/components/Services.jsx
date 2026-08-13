@@ -21,7 +21,7 @@ export default function Services() {
                 <img
                   src={s.photo}
                   alt=""
-                  className="w-full h-full object-cover block"
+                  className="w-full h-full object-cover block" loading="lazy" decoding="async"
                 />
                 <div className="absolute left-4 -bottom-[22px] w-12 h-12 rounded-full bg-white flex items-center justify-center shadow-[0_4px_12px_rgba(20,150,170,0.18)]">
                   <img

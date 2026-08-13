@@ -78,6 +78,28 @@ const jobPostingSchema = () => {
   return `<script type="application/ld+json">${JSON.stringify(data)}</script>`;
 };
 
+// BlogPosting schema for column articles.
+const articleSchema = (a, canonical) => {
+  const data = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: a.title,
+    description: a.description,
+    datePublished: a.date,
+    dateModified: a.date,
+    inLanguage: "ja",
+    mainEntityOfPage: canonical,
+    author: { "@type": "Organization", name: "訪問看護ステーションSHARK" },
+    publisher: {
+      "@type": "Organization",
+      name: "訪問看護ステーションSHARK",
+      logo: { "@type": "ImageObject", url: `${SITE_URL}/assets/logo.png` },
+    },
+    image: `${SITE_URL}/assets/og-image.png`,
+  };
+  return `<script type="application/ld+json">${JSON.stringify(data)}</script>`;
+};
+
 for (const route of PRERENDER_PATHS) {
   const meta = ROUTE_META[route];
   const appHtml = render(route);
@@ -86,8 +108,10 @@ for (const route of PRERENDER_PATHS) {
   let head = "";
   head += `<link rel="canonical" href="${canonical}"/>`;
   head += `<meta property="og:url" content="${canonical}"/>`;
+  if (route === "/") head += `<link rel="preload" as="image" href="/assets/photos/ph-hero.png"/>`;
   if (route === "/faq") head += faqSchema();
   if (route === "/recruit") head += jobPostingSchema();
+  if (meta.article) head += articleSchema(meta.article, canonical);
 
   let html = template
     .replace('<div id="root"></div>', `<div id="root">${appHtml}</div>`)
@@ -120,7 +144,9 @@ const sitemap =
   PRERENDER_PATHS.map(
     (p) =>
       `  <url><loc>${SITE_URL}${p}</loc><lastmod>${today}</lastmod>` +
-      `<changefreq>monthly</changefreq><priority>${p === "/" ? "1.0" : "0.8"}</priority></url>`
+      `<changefreq>monthly</changefreq><priority>${
+        p === "/" ? "1.0" : p.startsWith("/column/") ? "0.6" : "0.8"
+      }</priority></url>`
   ).join("\n") +
   `\n</urlset>\n`;
 fs.writeFileSync(path.join(distDir, "sitemap.xml"), sitemap);

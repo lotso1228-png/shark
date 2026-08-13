@@ -13,7 +13,7 @@ export default function Greeting({ id = "greeting" }) {
             <img
               src="/assets/photos/ph-stetho.png"
               alt=""
-              className="w-full h-full object-cover block"
+              className="w-full h-full object-cover block" loading="lazy" decoding="async"
             />
           </div>
         </div>

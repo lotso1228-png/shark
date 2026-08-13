@@ -46,7 +46,7 @@ export default function RecruitBanner() {
               <img
                 src="/assets/photos/ph-tablet.png"
                 alt="働く看護師"
-                className="w-full h-full object-cover block"
+                className="w-full h-full object-cover block" loading="lazy" decoding="async"
               />
             </div>
           </div>

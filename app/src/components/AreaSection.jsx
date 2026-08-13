@@ -50,14 +50,14 @@ export default function AreaSection({ id = "area" }) {
           <img
             src="/assets/photos/ph-nara.png"
             alt="奈良の風景"
-            className="w-full h-full object-cover block"
+            className="w-full h-full object-cover block" loading="lazy" decoding="async"
           />
         </div>
         <div className="aspect-[4/3] rounded-[14px] overflow-hidden shadow-[0_8px_18px_rgba(20,150,170,0.12)]">
           <img
             src="/assets/photos/ph-walk.png"
             alt="訪問に向かう看護師"
-            className="w-full h-full object-cover block"
+            className="w-full h-full object-cover block" loading="lazy" decoding="async"
           />
         </div>
       </div>

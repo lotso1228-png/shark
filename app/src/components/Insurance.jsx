@@ -31,7 +31,7 @@ export default function Insurance() {
                 <img
                   src="/assets/photos/ph-care.png"
                   alt="寄り添う看護師"
-                  className="w-full h-full object-cover block"
+                  className="w-full h-full object-cover block" loading="lazy" decoding="async"
                 />
               </div>
               <img

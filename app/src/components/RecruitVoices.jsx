@@ -17,7 +17,7 @@ export default function RecruitVoices({ id = "voices", bg = "#fcf6ed" }) {
               <img
                 src={v.photo}
                 alt=""
-                className="w-full h-full object-cover block"
+                className="w-full h-full object-cover block" loading="lazy" decoding="async"
               />
             </div>
             <div className="p-5 flex flex-col flex-1">

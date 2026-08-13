@@ -19,7 +19,7 @@ export default function Recruit() {
               <img
                 src="/assets/photos/ph-tablet.png"
                 alt="業務にあたる看護師"
-                className="w-full h-full object-cover block"
+                className="w-full h-full object-cover block" loading="lazy" decoding="async"
               />
             </div>
             <p className="flex-1 min-w-[180px] text-sm text-[#6a5a60] m-0">
