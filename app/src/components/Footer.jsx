@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { navLinks } from "../routes.js";
+import { relatedSites } from "../content.js";
 import { TEL, ADDRESS, CORP, RECEPTION } from "../data.js";
 
 export default function Footer() {
@@ -40,6 +41,20 @@ export default function Footer() {
           </p>
           <p className="text-[12px] mt-3 mb-0 opacity-75">
             医療保険／自立支援医療制度に対応
+          </p>
+          <p className="text-[12px] mt-3 mb-0 opacity-80">
+            <span className="opacity-75">関連事業所：</span>
+            {relatedSites.map((s) => (
+              <a
+                key={s.url}
+                href={s.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[#cfe6ec] underline underline-offset-2 hover:opacity-100"
+              >
+                {s.name}（奈良県橿原市の障がい者グループホーム）
+              </a>
+            ))}
           </p>
         </div>
         <nav className="flex flex-wrap gap-x-[22px] gap-y-2 max-w-[420px]">
