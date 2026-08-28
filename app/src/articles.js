@@ -238,7 +238,7 @@ export const articles = [
     related: [
       { label: "SHARKの採用情報（看護師募集）", to: "/recruit" },
       { label: "1日の流れ・先輩の声を見る", to: "/recruit#dayflow" },
-      { label: "LINEで気軽に質問する", to: "/contact" },
+      { label: "見学・カジュアル面談を申し込む", to: "/recruit#apply-form" },
     ],
   },
 ];

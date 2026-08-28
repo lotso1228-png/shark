@@ -3,8 +3,6 @@ import PageHero from "../components/PageHero.jsx";
 import Toc from "../components/Toc.jsx";
 import Recruit from "../components/Recruit.jsx";
 import RecruitDetails from "../components/RecruitDetails.jsx";
-import RecruitDayFlow from "../components/RecruitDayFlow.jsx";
-import RecruitVoices from "../components/RecruitVoices.jsx";
 import RecruitFaqSection from "../components/RecruitFaqSection.jsx";
 import RecruitApply from "../components/RecruitApply.jsx";
 import CtaBand from "../components/CtaBand.jsx";
@@ -36,16 +34,12 @@ export default function RecruitPage() {
           { id: "points", label: "働く魅力" },
           { id: "onboarding", label: "教育体制" },
           { id: "requirements", label: "募集要項" },
-          { id: "dayflow", label: "1日の流れ" },
-          { id: "voices", label: "先輩の声" },
           { id: "recruit-faq", label: "採用FAQ" },
           { id: "apply-form", label: "応募・見学申込" },
         ]}
       />
       <Recruit />
       <RecruitDetails />
-      <RecruitDayFlow />
-      <RecruitVoices />
       <RecruitFaqSection />
       <RecruitApply />
       <CtaBand

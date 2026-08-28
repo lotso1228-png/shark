@@ -70,8 +70,7 @@ const jobPostingSchema = () => {
     },
     qualifications: "正看護師または准看護師の免許（精神科・訪問看護の経験は不問）",
     industry: "訪問看護",
-    workHours: "日勤帯中心（シフト・時短相談可、24時間対応のオンコールあり）",
-    jobBenefits: "各種社会保険、交通費支給、未経験者教育制度（詳細は面談時にご案内）",
+    workHours: "日勤帯が中心（24時間対応体制のためオンコールあり。詳細は面談時にご案内）",
     directApply: true,
     url: `${SITE_URL}/recruit`,
   };

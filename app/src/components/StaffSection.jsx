@@ -9,7 +9,7 @@ export default function StaffSection({ id = "staff", compact = false, bg = "#fcf
     <Section id={id} bg={bg} maxWidth={1080}>
       <SectionHeading label="STAFF" title="スタッフ紹介" className="mb-3" />
       <p className="text-center text-[14px] text-muted m-0 mb-9">
-        <Jp>利用者様の気持ちに寄り添う、経験豊富なスタッフが対応します。</Jp>
+        <Jp>利用者様の気持ちに寄り添うことを大切に、スタッフが対応します。</Jp>
       </p>
 
       <div className="grid grid-cols-1 min-[640px]:grid-cols-3 gap-5">

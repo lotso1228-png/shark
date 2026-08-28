@@ -6,9 +6,7 @@ import Worries from "../components/Worries.jsx";
 import Reasons from "../components/Reasons.jsx";
 import Services from "../components/Services.jsx";
 import ConditionsSection from "../components/ConditionsSection.jsx";
-import StaffSection from "../components/StaffSection.jsx";
 import FlowSteps from "../components/FlowSteps.jsx";
-import Testimonials from "../components/Testimonials.jsx";
 import RecruitBanner from "../components/RecruitBanner.jsx";
 import CtaBand from "../components/CtaBand.jsx";
 
@@ -22,9 +20,7 @@ export default function HomePage() {
       <Reasons />
       <Services />
       <ConditionsSection compact bg="#fcf6ed" />
-      <StaffSection compact bg="#f0e8d6" />
-      <FlowSteps compact bg="#fcf6ed" />
-      <Testimonials bg="#f0e8d6" />
+      <FlowSteps compact bg="#f0e8d6" />
       <RecruitBanner />
       <CtaBand />
     </>

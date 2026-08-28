@@ -8,6 +8,7 @@ export const navLinks = [
   { label: "よくある質問", to: "/faq" },
   { label: "コラム", to: "/column" },
   { label: "事業所概要", to: "/company" },
+  { label: "お問い合わせ", to: "/contact" },
   { label: "看護師採用", to: "/recruit", accent: true },
 ];
 

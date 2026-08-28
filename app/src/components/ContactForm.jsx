@@ -177,7 +177,7 @@ export default function ContactForm() {
 
       <p className="text-[12px] text-muted m-0 leading-[1.85]">
         <Jp>
-          ※ 本フォームは送信時にメールソフトを起動します（サーバー送信機能の接続も可能です）。お急ぎの場合はお電話・LINEもご利用ください。
+          ※ 本フォームは送信時にご利用のメールソフトが起動します。うまく送れない場合や、お急ぎの場合はお電話・LINEをご利用ください。
         </Jp>
       </p>
     </form>
