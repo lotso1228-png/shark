@@ -58,7 +58,7 @@
 - [サービス内容](https://shark-nara.jp/service): 提供するケア8項目、対象となる方・対応疾患、医療保険・自立支援医療制度、料金
 - [ご利用の流れ・対応エリア](https://shark-nara.jp/flow): 開始までの流れと奈良県内の対応エリア
 - [よくある質問](https://shark-nara.jp/faq): 対象・費用・訪問・体制・手続きに関するQ&A
-- [事業所概要](https://shark-nara.jp/company): 理念・事業所情報・スタッフ・アクセス
+- [事業所概要](https://shark-nara.jp/company): 理念・事業所情報・アクセス・関連事業所
 - [採用情報](https://shark-nara.jp/recruit): 看護師求人（正看護師・准看護師／常勤・非常勤）
 - [お問い合わせ](https://shark-nara.jp/contact): 電話・LINE・メール・相談フォーム
 - [コラム一覧](https://shark-nara.jp/column): お役立ち情報
@@ -67,6 +67,7 @@
   - [精神科訪問看護の料金](https://shark-nara.jp/column/houmon-kango-ryokin)
   - [家族だけで相談できる？](https://shark-nara.jp/column/kazoku-soudan)
   - [訪問看護師への転職（未経験の不安と実際）](https://shark-nara.jp/column/houmon-kango-tenshoku)
+  - [訪問看護ステーションの選び方（見学で確認したい10のこと）](https://shark-nara.jp/column/houmon-kango-station-erabikata)
 
 ## 看護師採用（求人）
 - 募集職種: 正看護師・准看護師（精神科訪問看護）。精神科・訪問看護の経験は不問
@@ -74,7 +75,7 @@
 - 教育体制: 先輩看護師との同行訪問から始め、段階的にひとり立ちできる体制
 - オンコール: 24時間対応体制のためオンコールあり（チームで分担。詳細は面談で説明）
 - 応募方法: 公式LINE（https://lin.ee/u0YNiI7）・電話（080-4767-0011）・サイト内フォーム。見学・カジュアル面談のみも歓迎、履歴書は面談決定後でOK
-- 給与・待遇: 経験・資格を考慮のうえ決定（面談時に提示）。各種社会保険・交通費支給
+- 給与・待遇: 経験・資格・勤務形態を考慮のうえ決定し、面談時に提示。待遇・福利厚生の詳細も面談時に案内
 - 採用ページ: https://shark-nara.jp/recruit
 
 ## 関連事業所

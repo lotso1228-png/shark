@@ -5,6 +5,7 @@ import Recruit from "../components/Recruit.jsx";
 import RecruitDetails from "../components/RecruitDetails.jsx";
 import RecruitFaqSection from "../components/RecruitFaqSection.jsx";
 import RecruitApply from "../components/RecruitApply.jsx";
+import RecruitColumns from "../components/RecruitColumns.jsx";
 import CtaBand from "../components/CtaBand.jsx";
 import { pageMeta } from "../routes.js";
 import { recruitBadges } from "../content.js";
@@ -36,12 +37,14 @@ export default function RecruitPage() {
           { id: "requirements", label: "募集要項" },
           { id: "recruit-faq", label: "採用FAQ" },
           { id: "apply-form", label: "応募・見学申込" },
+          { id: "recruit-columns", label: "看護師向けコラム" },
         ]}
       />
       <Recruit />
       <RecruitDetails />
       <RecruitFaqSection />
       <RecruitApply />
+      <RecruitColumns />
       <CtaBand
         title="迷っている段階でも、話してみませんか？"
         lead="転職を決めていなくても大丈夫です。仕事内容や働き方について、まずは気軽にお話ししましょう。"

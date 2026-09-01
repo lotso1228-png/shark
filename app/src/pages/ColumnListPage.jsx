@@ -18,7 +18,9 @@ export default function ColumnListPage() {
       />
       <Section bg="#fcf6ed" maxWidth={860}>
         <div className="flex flex-col gap-4">
-          {articles.map((a) => (
+          {[...articles]
+            .sort((a, b) => b.date.localeCompare(a.date))
+            .map((a) => (
             <Link
               key={a.slug}
               to={`/column/${a.slug}`}
