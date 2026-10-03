@@ -2,8 +2,8 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
-import type { LiveDb } from "@/lib/claude";
-import { LIVE_DOC, isLivePayload, type LivePayload } from "@/lib/live";
+import type { LivePayload } from "@/lib/live";
+import type { LiveChannel } from "@/lib/liveChannel";
 import { Confetti } from "../Confetti";
 import { FlowIndicator } from "../FlowIndicator";
 import { Eyebrow, Hairline } from "../ui";
@@ -23,31 +23,15 @@ const fade = {
 /**
  * 参加者画面：見るだけ。司会者が NEXT を押すと、この画面も同時に切り替わる。
  */
-export function AudienceView({ db }: { db: LiveDb | null }) {
+export function AudienceView({ channel }: { channel: LiveChannel | null }) {
   const [payload, setPayload] = useState<LivePayload | null>(null);
-  const [conn, setConn] = useState<Conn>(db ? "connecting" : "signed-out");
+  const [conn, setConn] = useState<Conn>(channel ? "connecting" : "signed-out");
   useWakeLock();
 
   useEffect(() => {
-    if (!db) return;
-    let unsub: (() => void) | null = null;
-    const subscribe = () => {
-      unsub = db.doc(LIVE_DOC).onSnapshot(
-        (snap) => {
-          const d = snap.exists ? snap.data() : undefined;
-          setPayload(isLivePayload(d) ? d : null);
-          setConn("live");
-        },
-        (e) => {
-          setConn("offline");
-          // 通信の中継が止まった場合のみ、少し待って購読し直す
-          if (e.code === "unavailable") setTimeout(subscribe, 3000);
-        },
-      );
-    };
-    subscribe();
-    return () => unsub?.();
-  }, [db]);
+    if (!channel) return;
+    return channel.subscribe(setPayload, (s) => setConn(s === "error" ? "offline" : s));
+  }, [channel]);
 
   const scene = payload?.scene ?? "idle";
 

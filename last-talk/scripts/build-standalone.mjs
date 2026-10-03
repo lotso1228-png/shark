@@ -51,3 +51,20 @@ ${css}
 `;
 writeFileSync(`${OUT_DIR}/last-talk.html`, html);
 console.log(`standalone/last-talk.html  ${(html.length / 1024).toFixed(0)} KB`);
+
+// GitHub Pages など、普通の Web サーバーに置く用（完全な HTML 文書）
+mkdirSync("site", { recursive: true });
+const page = `<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="description" content="卒業するその前に、聞いておきたい話がある。">
+${html.replace("<div id=\"root\"></div>", "</head>\n<body style=\"margin:0\">\n<div id=\"root\"></div>")}
+</body>
+</html>
+`;
+writeFileSync("site/index.html", page);
+writeFileSync("site/.nojekyll", "");
+console.log("site/index.html");

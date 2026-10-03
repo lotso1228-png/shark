@@ -2,12 +2,14 @@
 
 import { motion } from "framer-motion";
 import { useConfirm } from "../Confirm";
+import { useOpenShare } from "../live/LiveProvider";
 import { useStore } from "../StoreProvider";
 import { Button, Hairline, riseIn } from "../ui";
 
 export function TopScreen() {
   const { game, graduates, actions } = useStore();
   const confirm = useConfirm();
+  const openShare = useOpenShare();
   const inProgress = game.history.length > 0;
 
   const onStart = () => {
@@ -22,7 +24,18 @@ export function TopScreen() {
 
   return (
     <div className="flex h-full flex-col items-center justify-between px-6 py-[6vh] text-center">
-      <div className="flex w-full justify-end">
+      <div className="flex w-full justify-between">
+        {openShare ? (
+          <button
+            type="button"
+            onClick={openShare}
+            className="eyebrow min-h-11 px-3 text-[0.7rem] text-mist/50 transition-colors hover:text-gold-soft"
+          >
+            参加者用QR
+          </button>
+        ) : (
+          <span />
+        )}
         <button
           type="button"
           onClick={() => actions.goTo("setup")}

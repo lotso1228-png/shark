@@ -68,4 +68,6 @@ export interface GameState {
 export interface Settings {
   venueMode: boolean;
   mood: Mood;
+  /** 参加者のスマホへの同時表示（ログイン不要版）。司会者がオンにしたときだけ配信する */
+  liveOn?: boolean;
 }

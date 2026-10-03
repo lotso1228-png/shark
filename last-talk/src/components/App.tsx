@@ -16,15 +16,21 @@ import { screenFade } from "./ui";
 import { useFullscreen } from "./useFullscreen";
 import { useWakeLock } from "./useWakeLock";
 import { AudienceView } from "./live/AudienceView";
-import { LiveBroadcaster, useLiveRole } from "./live/LiveProvider";
+import {
+  LiveBroadcaster,
+  ShareContext,
+  useLive,
+  useLiveRole,
+} from "./live/LiveProvider";
+import { SharePanel } from "./live/SharePanel";
 
 export function App() {
-  const { role, db } = useLiveRole();
+  const { role, channel } = useLiveRole();
   if (role === "pending") return <main className="stage h-dvh w-full" />;
-  if (role === "audience") return <AudienceView db={db} />;
+  if (role === "audience") return <AudienceView channel={channel} />;
   return (
     <StoreProvider>
-      <LiveBroadcaster db={role === "host" ? db : null}>
+      <LiveBroadcaster channel={channel}>
         <ConfirmProvider>
           <Stage />
         </ConfirmProvider>
@@ -39,12 +45,17 @@ function Stage() {
   const { loaded, game, settings, graduates, actions } = useStore();
   const confirm = useConfirm();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [shareOpen, setShareOpen] = useState(false);
+  const { channel } = useLive();
+  const openShare = channel?.kind === "ntfy" ? () => setShareOpen(true) : null;
   const fullscreen = useFullscreen();
   useWakeLock();
   const screen = game.screen;
 
   const backFromLast = useCallback(() => {
-    actions.goTo(game.cursor >= 0 ? "topic" : game.graduateId ? "ready" : "select");
+    actions.goTo(
+      game.cursor >= 0 ? "topic" : game.graduateId ? "ready" : "select",
+    );
   }, [actions, game.cursor, game.graduateId]);
 
   /** キーボード / プレゼンター用リモコン（→・Space・PageDown で進む、← ・PageUp で戻る） */
@@ -52,12 +63,26 @@ function Stage() {
     if (!loaded) return;
     const onKey = (e: KeyboardEvent) => {
       const t = e.target as HTMLElement | null;
-      if (t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.isContentEditable)) return;
+      if (
+        t &&
+        (t.tagName === "INPUT" ||
+          t.tagName === "TEXTAREA" ||
+          t.isContentEditable)
+      )
+        return;
       if (document.querySelector("[data-modal-open]")) return;
       if (e.metaKey || e.ctrlKey || e.altKey) return;
 
-      const forward = ["ArrowRight", "PageDown", " ", "Enter", "ArrowDown"].includes(e.key);
-      const backward = ["ArrowLeft", "PageUp", "ArrowUp", "Backspace"].includes(e.key);
+      const forward = [
+        "ArrowRight",
+        "PageDown",
+        " ",
+        "Enter",
+        "ArrowDown",
+      ].includes(e.key);
+      const backward = ["ArrowLeft", "PageUp", "ArrowUp", "Backspace"].includes(
+        e.key,
+      );
       const k = e.key.toLowerCase();
 
       if (e.key === "Escape" || k === "h") {
@@ -76,16 +101,19 @@ function Stage() {
         return;
       }
       // ボタンにフォーカスがある状態の Enter/Space は、ボタン自身のクリックに任せる
-      if ((e.key === "Enter" || e.key === " ") && t?.tagName === "BUTTON") return;
+      if ((e.key === "Enter" || e.key === " ") && t?.tagName === "BUTTON")
+        return;
       e.preventDefault();
 
       switch (screen) {
         case "top":
-          if (forward) game.history.length > 0 ? actions.resume() : actions.start();
+          if (forward)
+            game.history.length > 0 ? actions.resume() : actions.start();
           break;
         case "ready":
           if (forward) actions.draw();
-          else if (backward) actions.goTo(graduates.length > 1 ? "select" : "top");
+          else if (backward)
+            actions.goTo(graduates.length > 1 ? "select" : "top");
           break;
         case "topic":
           if (forward) actions.next();
@@ -110,49 +138,67 @@ function Stage() {
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [loaded, screen, menuOpen, actions, graduates, game.history.length, backFromLast, fullscreen]);
+  }, [
+    loaded,
+    screen,
+    menuOpen,
+    actions,
+    graduates,
+    game.history.length,
+    backFromLast,
+    fullscreen,
+  ]);
 
   const venue = settings.venueMode && screen !== "setup";
 
   return (
-    <main
-      className={`stage relative h-dvh w-full overflow-hidden ${DARK_SCREENS.has(screen) ? "is-dark" : ""} ${venue ? "venue" : ""}`}
-    >
-      {loaded && (
-        <>
-          <AnimatePresence mode="wait">
-            <motion.div key={screen} className="absolute inset-0" {...screenFade}>
-              {screen === "top" && <TopScreen />}
-              {screen === "select" && <SelectScreen />}
-              {screen === "ready" && <ReadyScreen />}
-              {screen === "topic" && <TopicScreen />}
-              {screen === "last-intro" && <LastIntroScreen onBack={backFromLast} />}
-              {screen === "last-question" && <LastQuestionScreen />}
-              {screen === "finale" && <FinaleScreen />}
-              {screen === "setup" && <SetupScreen />}
-            </motion.div>
-          </AnimatePresence>
+    <ShareContext.Provider value={openShare}>
+      <main
+        className={`stage relative h-dvh w-full overflow-hidden ${DARK_SCREENS.has(screen) ? "is-dark" : ""} ${venue ? "venue" : ""}`}
+      >
+        {loaded && (
+          <>
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={screen}
+                className="absolute inset-0"
+                {...screenFade}
+              >
+                {screen === "top" && <TopScreen />}
+                {screen === "select" && <SelectScreen />}
+                {screen === "ready" && <ReadyScreen />}
+                {screen === "topic" && <TopicScreen />}
+                {screen === "last-intro" && (
+                  <LastIntroScreen onBack={backFromLast} />
+                )}
+                {screen === "last-question" && <LastQuestionScreen />}
+                {screen === "finale" && <FinaleScreen />}
+                {screen === "setup" && <SetupScreen />}
+              </motion.div>
+            </AnimatePresence>
 
-          {screen !== "setup" && (
-            <HostMenu
-              open={menuOpen}
-              onOpenChange={setMenuOpen}
-              fullscreen={fullscreen}
-              onRestart={() =>
-                confirm({
-                  title: "最初に戻りますか？",
-                  body: "進行状況（出たお題・LAST MESSAGE の記録）をリセットしてトップ画面へ戻ります。卒業生とお題の登録は残ります。",
-                  ok: "最初に戻る",
-                  onOk: () => {
-                    setMenuOpen(false);
-                    actions.restart();
-                  },
-                })
-              }
-            />
-          )}
-        </>
-      )}
-    </main>
+            {screen !== "setup" && (
+              <HostMenu
+                open={menuOpen}
+                onOpenChange={setMenuOpen}
+                fullscreen={fullscreen}
+                onRestart={() =>
+                  confirm({
+                    title: "最初に戻りますか？",
+                    body: "進行状況（出たお題・LAST MESSAGE の記録）をリセットしてトップ画面へ戻ります。卒業生とお題の登録は残ります。",
+                    ok: "最初に戻る",
+                    onOk: () => {
+                      setMenuOpen(false);
+                      actions.restart();
+                    },
+                  })
+                }
+              />
+            )}
+          </>
+        )}
+        <SharePanel open={shareOpen} onClose={() => setShareOpen(false)} />
+      </main>
+    </ShareContext.Provider>
   );
 }

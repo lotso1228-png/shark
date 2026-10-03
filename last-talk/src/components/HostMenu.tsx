@@ -4,7 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import type { ReactNode } from "react";
 import { CATEGORY_META, CATEGORY_ORDER, SPECIAL_META } from "@/lib/topics";
 import type { Mood, SpecialKind } from "@/lib/types";
-import { useLiveStatus } from "./live/LiveProvider";
+import { useLiveStatus, useOpenShare } from "./live/LiveProvider";
 import { useStore } from "./StoreProvider";
 import type { Fullscreen } from "./useFullscreen";
 
@@ -104,6 +104,7 @@ export function HostMenu({
   };
   const moodLabel = MOODS.find((m) => m.id === settings.mood)?.label;
   const live = useLiveStatus();
+  const openShare = useOpenShare();
 
   return (
     <>
@@ -155,7 +156,7 @@ export function HostMenu({
                       />
                       {live === "live" && "参加者のスマホにも同時表示中"}
                       {live === "connecting" && "同時表示に接続中…"}
-                      {live === "error" && "同時表示が止まっています（次の操作で再送）"}
+                      {live === "error" && "同時表示を再送しています…"}
                     </p>
                   )}
                 </div>
@@ -236,6 +237,11 @@ export function HostMenu({
                     LAST MESSAGE へ
                   </Action>
                   <Action onClick={run(() => actions.goTo("setup"))}>卒業生・お題の設定</Action>
+                  {openShare && (
+                    <Action onClick={run(openShare)} tone="gold">
+                      参加者に共有（QR）
+                    </Action>
+                  )}
                   <Action onClick={onRestart} tone="danger">
                     最初に戻る
                   </Action>

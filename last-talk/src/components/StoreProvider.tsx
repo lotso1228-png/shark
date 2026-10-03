@@ -161,6 +161,7 @@ function useStoreValue() {
       // ── 設定 ──
       setMood: (mood: Mood) => setSettings((s) => ({ ...s, mood })),
       toggleVenue: () => setSettings((s) => ({ ...s, venueMode: !s.venueMode })),
+      setLiveOn: (on: boolean) => setSettings((s) => ({ ...s, liveOn: on })),
     }),
     [ctx, graduates, setGame, setGraduates, setTopics, setSettings],
   );
