@@ -241,29 +241,39 @@ function ntfyStream(
   };
 }
 
-/** リアクションをまとめて送る（連打しても1.5秒に1回、混雑時は1分休む） */
-function reactionSender(room: string) {
+/** 1台あたりのリアクション送信：3秒に1回まとめて送り、1時間に40回まで */
+export const REACTION_BATCH_MS = 3000;
+export const REACTION_HOURLY_CAP = 40;
+
+/**
+ * リアクションをまとめて送る。
+ * ntfy.sh は回線ごとに1日250件までなので、会場の Wi-Fi に大勢がつないでいても
+ * 使い切らないよう、連打は1回分にまとめ、送信回数にも上限を設ける（混雑時は1分休む）。
+ */
+export function reactionSender(room: string, post: (body: string) => Promise<Response> = (body) =>
+  fetch(`${NTFY}/${reactTopicOf(room)}`, { method: "POST", body })) {
   let pending: Reactions = {};
   let timer: ReturnType<typeof setTimeout> | undefined;
   let pausedUntil = 0;
+  const sentAt: number[] = [];
   const flush = async () => {
     timer = undefined;
     const body = pending;
     pending = {};
-    if (!Object.keys(body).length || Date.now() < pausedUntil) return;
+    const now = Date.now();
+    while (sentAt.length && now - sentAt[0] > 3600_000) sentAt.shift();
+    if (!Object.keys(body).length || now < pausedUntil || sentAt.length >= REACTION_HOURLY_CAP) return;
+    sentAt.push(now);
     try {
-      const res = await fetch(`${NTFY}/${reactTopicOf(room)}`, {
-        method: "POST",
-        body: JSON.stringify({ r: body, s: deviceId }),
-      });
+      const res = await post(JSON.stringify({ r: body, s: deviceId }));
       if (res.status === 429) pausedUntil = Date.now() + 60000;
     } catch {
-      /* リアクションは届かなくても問題ない */
+      /* リアクションは届かなくても問題ない（本人の画面には浮かんでいる） */
     }
   };
   return (kind: ReactionKind) => {
     pending[kind] = Math.min(20, (pending[kind] ?? 0) + 1);
-    if (!timer) timer = setTimeout(flush, 1500);
+    if (!timer) timer = setTimeout(flush, REACTION_BATCH_MS);
   };
 }
 

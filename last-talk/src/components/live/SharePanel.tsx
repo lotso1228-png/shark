@@ -119,7 +119,7 @@ export function SharePanel({ open, onClose }: { open: boolean; onClose: () => vo
                 <p className="mt-4 text-left text-[0.7rem] leading-relaxed text-mist/60">
                   ・リンクは LINE などで送っても使えます。同じリンクは何度でも使えます。
                   <br />
-                  ・司会者のスマホはモバイル回線（4G/5G）での利用がおすすめです。会場の Wi-Fi を使う場合、同じ Wi-Fi から見られるのは約30台までです。
+                  ・<strong className="text-gold-soft">司会者のスマホは Wi-Fi をオフにして、モバイル回線（4G/5G）で使ってください。</strong>会場の Wi-Fi に参加者が大勢つながっても、お題の配信が止まらなくなります。
                 </p>
               </>
             )}

@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "npx serve out",
     "lint": "tsc --noEmit",
-    "test": "tsx --test tests/engine.test.ts",
+    "test": "tsx --test tests/engine.test.ts tests/reactions.test.ts",
     "standalone": "node scripts/build-standalone.mjs"
   },
   "dependencies": {
