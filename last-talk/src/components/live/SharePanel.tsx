@@ -6,6 +6,9 @@ import { useMemo, useState } from "react";
 import { useStore } from "../StoreProvider";
 import { useLive } from "./LiveProvider";
 
+const shareText = (url: string) =>
+  `LAST TALK（卒業生を送る会）の参加用リンクです。開くと、司会者が出したお題がスマホに表示されます。${url ? "\n" + url : ""}`;
+
 /** 参加者に配る QR コードとリンク。同時表示のオン／オフもここで切り替える */
 export function SharePanel({ open, onClose }: { open: boolean; onClose: () => void }) {
   const { channel, status } = useLive();
@@ -114,6 +117,27 @@ export function SharePanel({ open, onClose }: { open: boolean; onClose: () => vo
                     className="min-h-11 shrink-0 border border-gold/60 px-4 text-sm tracking-wider text-gold-soft"
                   >
                     {copied ? "コピー済み" : "コピー"}
+                  </button>
+                </div>
+                <div className="mt-3 grid grid-cols-2 gap-2">
+                  <a
+                    href={`https://line.me/R/share?text=${encodeURIComponent(shareText(url))}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex min-h-12 items-center justify-center bg-[#06c755] text-sm font-semibold tracking-wider text-white"
+                  >
+                    LINEで送る
+                  </a>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      navigator.share
+                        ? navigator.share({ title: "LAST TALK", text: shareText(""), url }).catch(() => {})
+                        : copy()
+                    }
+                    className="min-h-12 border border-ivory/20 text-sm tracking-wider text-ivory/90"
+                  >
+                    ほかのアプリで送る
                   </button>
                 </div>
                 <p className="mt-4 text-left text-[0.7rem] leading-relaxed text-mist/60">
