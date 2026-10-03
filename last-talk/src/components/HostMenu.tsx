@@ -248,6 +248,9 @@ export function HostMenu({
                   <Action onClick={run(actions.enterLast)} tone="gold" disabled={game.screen.startsWith("last") || game.screen === "finale"}>
                     LAST MESSAGE へ
                   </Action>
+                  <Action onClick={run(actions.enterAward)} disabled={game.screen === "award"}>
+                    優勝発表へ
+                  </Action>
                   <Action onClick={run(() => actions.goTo("setup"))}>卒業生・お題の設定</Action>
                   {openShare && (
                     <Action onClick={run(openShare)} tone="gold">

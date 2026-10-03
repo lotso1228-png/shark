@@ -50,6 +50,7 @@ export type Screen =
   | "topic"
   | "last-intro"
   | "last-question"
+  | "award"
   | "finale"
   | "setup";
 
@@ -73,11 +74,17 @@ export interface GameState {
   lastRevealed: boolean;
   /** 卒業生ルーレットの実行中（回り終わったら選ばれた人の画面へ進む） */
   roulette?: { id: string; winnerId: string } | null;
+  /** 優勝ポイント：卒業生ごとに受け取ったリアクションの数 */
+  scores?: Record<string, ReactionCounts>;
+  /** 優勝発表で結果を開いたか */
+  awardRevealed?: boolean;
   /** 現役ルーレットで指名中のメンバー */
   memberPick?: { id: string; memberId: string; name: string; names: string[] } | null;
   /** 設定画面を閉じたときに戻る画面 */
   returnTo?: Screen;
 }
+
+export type ReactionCounts = Partial<Record<"clap" | "laugh" | "cry" | "fire", number>>;
 
 export interface Settings {
   venueMode: boolean;

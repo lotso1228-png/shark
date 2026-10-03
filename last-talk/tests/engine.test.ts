@@ -233,3 +233,30 @@ test("乾杯カード：卒業生の名前が入る", async () => {
   assert.equal(v.text, "ここで全員、乾杯！");
   assert.ok(v.note?.includes("山田さんの音頭で"));
 });
+
+test("優勝ポイント：話している卒業生に加算し、それ以外の画面では数えない", () => {
+  let g = E.draw(startFor("a"), ctx({ rng: () => 0.99 }));
+  g = E.addScores(g, { clap: 3, laugh: 2 });
+  g = E.next(g, { ...ctx({ rng: () => 0.99 }), rotate: true }); // b に交代
+  g = E.addScores(g, { cry: 1 });
+  assert.equal(E.scoreTotal(g.scores!.a), 5);
+  assert.equal(E.scoreTotal(g.scores!.b), 1);
+  // 卒業生選択画面中のリアクションは数えない
+  const sel = E.addScores({ ...g, screen: "select" }, { fire: 9 });
+  assert.deepEqual(sel.scores, g.scores);
+  // 1回のメッセージで加算されるのは各種類20まで
+  assert.equal(E.scoreTotal(E.addScores(g, { clap: 999 }).scores!.b), 21);
+});
+
+test("優勝発表：LAST MESSAGE が全員終わると発表へ、同点は同順位", () => {
+  let g: GameState = { ...startFor("a"), screen: "topic", scores: { a: { clap: 5 }, b: { laugh: 5 }, c: { fire: 1 } } };
+  const r = E.ranking(g, grads);
+  assert.deepEqual(r.map((x) => [x.id, x.rank]), [["a", 1], ["b", 1], ["c", 3]]);
+  g = E.enterLast(g, grads);
+  for (let i = 0; i < grads.length; i++) g = E.finishLast(E.revealLast(g, ctx()), grads);
+  assert.equal(g.screen, "award");
+  // リアクションがひとつもなければ、発表は飛ばしてフィナーレへ
+  let h = E.enterLast({ ...startFor("a"), screen: "topic" }, grads);
+  for (let i = 0; i < grads.length; i++) h = E.finishLast(E.revealLast(h, ctx()), grads);
+  assert.equal(h.screen, "finale");
+});

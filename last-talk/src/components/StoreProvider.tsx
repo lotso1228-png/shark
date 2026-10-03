@@ -10,6 +10,7 @@ import type {
   GameState,
   Graduate,
   Member,
+  ReactionCounts,
   Mood,
   Screen,
   Settings,
@@ -172,6 +173,11 @@ function useStoreValue() {
         setGame((g) => ({ ...g, graduateId: id, lastCard: null, lastRevealed: false })),
       revealLast: () => setGame((g) => E.revealLast(g, ctx())),
       finishLast: (toFinale = false) => setGame((g) => E.finishLast(g, graduates, toFinale)),
+      // ── 優勝ポイント ──
+      /** 参加者のリアクションを、いま話している卒業生のポイントに加える */
+      addScores: (r: ReactionCounts) => setGame((g) => E.addScores(g, r)),
+      enterAward: () => setGame((g) => ({ ...g, screen: "award", awardRevealed: false })),
+      revealAward: () => setGame((g) => ({ ...g, awardRevealed: true })),
       restart: () => setGame({ ...E.initialGame(), screen: "top" }),
 
       // ── 卒業生 ──

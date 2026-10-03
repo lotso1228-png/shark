@@ -1,10 +1,24 @@
 "use client";
 
-import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from "react";
-import { REACTIONS, type LiveChannel, type ReactionKind, type Reactions } from "@/lib/liveChannel";
+import {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from "react";
+import {
+  REACTIONS,
+  type LiveChannel,
+  type ReactionKind,
+  type Reactions,
+} from "@/lib/liveChannel";
 import { useStore } from "../StoreProvider";
 
-const EMOJI = Object.fromEntries(REACTIONS.map((r) => [r.kind, r.emoji])) as Record<ReactionKind, string>;
+const EMOJI = Object.fromEntries(
+  REACTIONS.map((r) => [r.kind, r.emoji]),
+) as Record<ReactionKind, string>;
 const MAX_FLOATING = 40;
 
 interface Float {
@@ -31,7 +45,8 @@ export const ReactionLayer = forwardRef<
 
   const burst = useCallback(
     (r: Reactions) => {
-      if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) return;
+      if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches)
+        return;
       const add: Float[] = [];
       for (const [kind, n] of Object.entries(r) as [ReactionKind, number][]) {
         for (let i = 0; i < Math.min(n, 6); i++) {
@@ -39,7 +54,11 @@ export const ReactionLayer = forwardRef<
             id: ++seq.current,
             emoji: EMOJI[kind],
             // 司会者の画面では左右の端から浮かべて、お題とボタンを隠さない
-            x: edges ? (Math.random() < 0.5 ? 1 + Math.random() * 13 : 86 + Math.random() * 11) : 6 + Math.random() * 84,
+            x: edges
+              ? Math.random() < 0.5
+                ? 1 + Math.random() * 13
+                : 86 + Math.random() * 11
+              : 6 + Math.random() * 84,
             sway: (Math.random() - 0.5) * (edges ? 60 : 120),
             size: (big ? 3.2 : 2.2) * (0.8 + Math.random() * 0.5),
             dur: 2.4 + Math.random() * 1.2,
@@ -73,7 +92,9 @@ export const ReactionLayer = forwardRef<
               animationDelay: `${f.delay}s`,
             } as React.CSSProperties
           }
-          onAnimationEnd={() => setItems((cur) => cur.filter((x) => x.id !== f.id))}
+          onAnimationEnd={() =>
+            setItems((cur) => cur.filter((x) => x.id !== f.id))
+          }
         >
           {f.emoji}
         </span>
@@ -83,15 +104,28 @@ export const ReactionLayer = forwardRef<
 });
 
 /** 司会者側：参加者から届いたリアクションを画面に浮かべる */
-export function HostReactions({ channel, active, big }: { channel: LiveChannel | null; active: boolean; big?: boolean }) {
+export function HostReactions({
+  channel,
+  active,
+  big,
+}: {
+  channel: LiveChannel | null;
+  active: boolean;
+  big?: boolean;
+}) {
   const layer = useRef<ReactionLayerHandle>(null);
   const { actions } = useStore();
   const joined = useRef(actions.memberJoined);
   joined.current = actions.memberJoined;
+  const score = useRef(actions.addScores);
+  score.current = actions.addScores;
   useEffect(() => {
     if (!active || !channel?.onReactions) return;
     return channel.onReactions(
-      (r) => layer.current?.burst(r),
+      (r) => {
+        layer.current?.burst(r);
+        score.current(r); // 優勝ポイントに加算
+      },
       (id, name) => joined.current(id, name),
     );
   }, [active, channel]);
@@ -100,23 +134,38 @@ export function HostReactions({ channel, active, big }: { channel: LiveChannel |
 }
 
 /** 参加者側：リアクションボタン */
-export function ReactionBar({ onReact }: { onReact: (k: ReactionKind) => void }) {
+export function ReactionBar({
+  onReact,
+}: {
+  onReact: (k: ReactionKind) => void;
+}) {
   return (
-    <div className="flex items-end justify-center gap-[min(4vw,1.5rem)]" role="group" aria-label="リアクション">
-      {REACTIONS.map((r) => (
-        <button
-          key={r.kind}
-          type="button"
-          onClick={() => onReact(r.kind)}
-          className="flex flex-col items-center gap-1 active:scale-90 transition-transform"
-          aria-label={r.label}
-        >
-          <span className="flex h-[3.4rem] w-[3.4rem] items-center justify-center rounded-full border border-gold/35 bg-white/[0.04] text-[1.6rem] backdrop-blur-sm">
-            {r.emoji}
-          </span>
-          <span className="text-[0.62rem] tracking-[0.2em] text-mist/70">{r.label}</span>
-        </button>
-      ))}
+    <div className="flex flex-col items-center gap-2">
+      <p className="text-[0.62rem] tracking-[0.18em] text-gold/70">
+        リアクションは、話している卒業生の優勝ポイントに！
+      </p>
+      <div
+        className="flex items-end justify-center gap-[min(4vw,1.5rem)]"
+        role="group"
+        aria-label="リアクション"
+      >
+        {REACTIONS.map((r) => (
+          <button
+            key={r.kind}
+            type="button"
+            onClick={() => onReact(r.kind)}
+            className="flex flex-col items-center gap-1 active:scale-90 transition-transform"
+            aria-label={r.label}
+          >
+            <span className="flex h-[3.4rem] w-[3.4rem] items-center justify-center rounded-full border border-gold/35 bg-white/[0.04] text-[1.6rem] backdrop-blur-sm">
+              {r.emoji}
+            </span>
+            <span className="text-[0.62rem] tracking-[0.2em] text-mist/70">
+              {r.label}
+            </span>
+          </button>
+        ))}
+      </div>
     </div>
   );
 }

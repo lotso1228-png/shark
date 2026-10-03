@@ -6,6 +6,7 @@ import { ConfirmProvider, useConfirm } from "./Confirm";
 import { HostMenu } from "./HostMenu";
 import { StoreProvider, useStore } from "./StoreProvider";
 import { FinaleScreen } from "./screens/FinaleScreen";
+import { AwardScreen } from "./screens/AwardScreen";
 import { LastIntroScreen, LastQuestionScreen } from "./screens/LastScreens";
 import { ReadyScreen } from "./screens/ReadyScreen";
 import { SelectScreen } from "./screens/SelectScreen";
@@ -41,7 +42,7 @@ export function App() {
   );
 }
 
-const DARK_SCREENS = new Set(["last-intro", "last-question", "finale"]);
+const DARK_SCREENS = new Set(["last-intro", "last-question", "award", "finale"]);
 
 function Stage() {
   const { loaded, game, settings, graduates, actions } = useStore();
@@ -130,6 +131,10 @@ function Stage() {
           if (forward) actions.finishLast();
           else if (backward) actions.goTo("last-intro");
           break;
+        case "award":
+          if (forward) game.awardRevealed ? actions.goTo("finale") : actions.revealAward();
+          else if (backward) actions.goTo("last-intro");
+          break;
         case "finale":
           if (backward) actions.goTo("last-intro");
           break;
@@ -174,7 +179,8 @@ function Stage() {
                   <LastIntroScreen onBack={backFromLast} />
                 )}
                 {screen === "last-question" && <LastQuestionScreen />}
-                {screen === "finale" && <FinaleScreen />}
+                {screen === "award" && <AwardScreen />}
+              {screen === "finale" && <FinaleScreen />}
                 {screen === "setup" && <SetupScreen />}
               </motion.div>
             </AnimatePresence>

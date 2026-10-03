@@ -1,7 +1,7 @@
 import { cardView } from "./cardView";
-import { currentEntry } from "./engine";
+import { currentEntry, hasScores, ranking } from "./engine";
 import { FINALE_PROMPT } from "./topics";
-import type { Category, GameState, Graduate } from "./types";
+import type { Category, GameState, Graduate, ReactionCounts } from "./types";
 
 /**
  * 参加者のスマホに同時表示する内容。司会者の画面から作り、共有データとして配信する。
@@ -16,6 +16,7 @@ export interface LivePayload {
     | "topic"
     | "last-intro"
     | "last-question"
+    | "award"
     | "finale";
   /** 画面切り替えアニメーションの識別子 */
   key: string;
@@ -35,6 +36,17 @@ export interface LivePayload {
   roulette?: { id: string; winner: string };
   /** 現役ルーレットの指名（当たった人のスマホで知らせるため参加者IDも送る） */
   pick?: { id: string; memberId: string; name: string; names: string[] };
+  /** 優勝発表（順位はリアクションの多い順） */
+  award?: { revealed: boolean; rows: AwardEntry[] };
+  /** フィナーレで表示する優勝者 */
+  winners?: string[];
+}
+
+export interface AwardEntry {
+  name: string;
+  total: number;
+  rank: number;
+  counts: ReactionCounts;
 }
 
 const nameOf = (gs: Graduate[], id: string | null | undefined) => {
@@ -65,6 +77,18 @@ export function livePayload(
   // 現役ルーレットの指名中は、どの画面でも参加者に知らせる
   const scene = build();
   return scene && game.memberPick ? { ...scene, pick: game.memberPick } : scene;
+
+  function awardRows(): AwardEntry[] {
+    return ranking(game, graduates).map((r) => ({
+      name: nameOf(graduates, r.id),
+      total: r.total,
+      rank: r.rank,
+      counts: r.counts,
+    }));
+  }
+  function winnersOf(): string[] {
+    return hasScores(game) ? awardRows().filter((r) => r.rank === 1).map((r) => r.name) : [];
+  }
 
   function build(): LivePayload | null {
     switch (game.screen) {
@@ -138,12 +162,20 @@ export function livePayload(
           name,
           text: game.lastCard?.text ?? "",
         };
+      case "award":
+        return {
+          ...base,
+          scene: "award",
+          key: `award-${game.awardRevealed ? "open" : "wait"}`,
+          award: { revealed: !!game.awardRevealed, rows: awardRows() },
+        };
       case "finale":
         return {
           ...base,
           scene: "finale",
           key: "finale",
           names: graduates.map((g) => nameOf(graduates, g.id)),
+          winners: winnersOf(),
         };
     }
   }

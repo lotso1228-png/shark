@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Confetti } from "../Confetti";
+import { hasScores, ranking } from "@/lib/engine";
 import { displayName, useStore } from "../StoreProvider";
 import { BackArrow } from "../ui";
 
@@ -12,7 +13,12 @@ const reveal = (delay: number, y = 16) =>
   }) as const;
 
 export function FinaleScreen() {
-  const { graduates, settings, actions } = useStore();
+  const { graduates, settings, game, actions } = useStore();
+  const winners = hasScores(game)
+    ? ranking(game, graduates)
+        .filter((r) => r.rank === 1)
+        .map((r) => displayName(graduates.find((g) => g.id === r.id)))
+    : [];
 
   return (
     <div className="relative flex h-full flex-col px-5 pt-4 safe-bottom sm:px-10">
@@ -56,6 +62,14 @@ export function FinaleScreen() {
             className="mt-[6vh] max-w-5xl text-[clamp(0.8rem,min(1.6vw,2.6vh),1.6rem)] leading-loose tracking-[0.3em] text-mist/80"
           >
             {graduates.map(displayName).join("　·　")}
+          </motion.p>
+        )}
+        {winners.length > 0 && (
+          <motion.p
+            {...reveal(5, 0)}
+            className="mt-[2vh] text-[clamp(0.75rem,min(1.4vw,2.2vh),1.3rem)] tracking-[0.3em] text-gold/80"
+          >
+            本日の優勝　{winners.join("・")}
           </motion.p>
         )}
       </div>

@@ -1,5 +1,6 @@
 import { CATEGORY_ORDER } from "./topics";
 import type {
+  ReactionCounts,
   Card,
   Category,
   GameState,
@@ -335,6 +336,47 @@ export function finishLast(g: GameState, graduates: Graduate[], toFinale = false
     g.graduateId && !g.lastDone.includes(g.graduateId) ? [...g.lastDone, g.graduateId] : g.lastDone;
   const after = { ...g, lastDone, lastCard: null, lastRevealed: false };
   const pending = graduates.find((x) => !lastDone.includes(x.id));
-  if (toFinale || !pending) return { ...after, screen: "finale" };
+  // 最後は優勝発表（リアクションが1つでも届いていれば）→ フィナーレ
+  if (toFinale || !pending)
+    return { ...after, screen: hasScores(after) ? "award" : "finale", awardRevealed: false };
   return { ...after, screen: "last-intro", graduateId: pending.id };
+}
+
+/* ───────── 優勝ポイント ───────── */
+
+export const scoreTotal = (c: ReactionCounts | undefined) =>
+  Object.values(c ?? {}).reduce((s, n) => s + (n ?? 0), 0);
+
+export const hasScores = (g: GameState) => Object.values(g.scores ?? {}).some((c) => scoreTotal(c) > 0);
+
+/** いま話している卒業生（お題・LAST MESSAGE の画面のときだけ） */
+export function speakerOf(g: GameState): string | null {
+  if (g.screen === "topic") return currentEntry(g)?.graduateId ?? null;
+  if (g.screen === "last-intro" || g.screen === "last-question") return g.graduateId;
+  return null;
+}
+
+/** 届いたリアクションを、いま話している卒業生のポイントに加える */
+export function addScores(g: GameState, r: ReactionCounts): GameState {
+  const id = speakerOf(g);
+  if (!id) return g;
+  const cur = { ...(g.scores?.[id] ?? {}) };
+  for (const [k, n] of Object.entries(r) as [keyof ReactionCounts, number][]) {
+    if (n > 0) cur[k] = (cur[k] ?? 0) + Math.min(20, Math.floor(n));
+  }
+  return { ...g, scores: { ...g.scores, [id]: cur } };
+}
+
+export interface AwardRow {
+  id: string;
+  total: number;
+  counts: ReactionCounts;
+}
+
+/** 優勝発表の順位（多い順。同点は同じ順位） */
+export function ranking(g: GameState, graduates: Graduate[]): (AwardRow & { rank: number })[] {
+  const rows = graduates
+    .map((x) => ({ id: x.id, counts: g.scores?.[x.id] ?? {}, total: scoreTotal(g.scores?.[x.id]) }))
+    .sort((a, b) => b.total - a.total);
+  return rows.map((r) => ({ ...r, rank: rows.findIndex((x) => x.total === r.total) + 1 }));
 }

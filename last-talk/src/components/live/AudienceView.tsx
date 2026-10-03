@@ -12,6 +12,7 @@ import {
 } from "./Reactions";
 import { JoinSheet, loadMe, type Me } from "./JoinSheet";
 import { MemberPick } from "./MemberPick";
+import { AwardView } from "../AwardView";
 import { Confetti } from "../Confetti";
 import { FlowIndicator } from "../FlowIndicator";
 import { Eyebrow, Hairline } from "../ui";
@@ -20,7 +21,7 @@ import { useWakeLock } from "../useWakeLock";
 
 type Conn = "connecting" | "live" | "offline" | "signed-out";
 
-const DARK = new Set(["last-intro", "last-question", "finale"]);
+const DARK = new Set(["last-intro", "last-question", "award", "finale"]);
 
 const fade = {
   initial: { opacity: 0, y: 16 },
@@ -76,7 +77,7 @@ export function AudienceView({ channel }: { channel: LiveChannel | null }) {
       <AnimatePresence mode="wait">
         <motion.div
           key={payload?.key ?? `idle-${conn}`}
-          className={`absolute inset-x-0 top-0 ${canReact ? "bottom-[7.2rem]" : "bottom-0"}`}
+          className={`absolute inset-x-0 top-0 ${canReact ? "bottom-[8.6rem]" : "bottom-0"}`}
           {...fade}
         >
           {conn === "signed-out" ? (
@@ -115,7 +116,7 @@ export function AudienceView({ channel }: { channel: LiveChannel | null }) {
       )}
       {canReact && (
         <>
-          <ReactionLayer ref={layer} bottom="8rem" />
+          <ReactionLayer ref={layer} bottom="9.4rem" />
           <div className="fixed inset-x-0 bottom-[calc(max(0.6rem,env(safe-area-inset-bottom))+1.4rem)] z-30">
             <ReactionBar onReact={react} />
           </div>
@@ -206,6 +207,8 @@ function Scene({ payload }: { payload: LivePayload | null }) {
       );
     case "last-question":
       return <TopicScene p={p!} dark />;
+    case "award":
+      return <AwardView rows={p!.award?.rows ?? []} revealed={!!p!.award?.revealed} />;
     case "finale":
       return (
         <div className="relative h-full">
@@ -233,6 +236,11 @@ function Scene({ payload }: { payload: LivePayload | null }) {
             {p!.names.length > 0 && (
               <p className="mt-[6vh] max-w-5xl text-[clamp(0.8rem,min(3vw,2.6vh),1.6rem)] leading-loose tracking-[0.3em] text-mist/80">
                 {p!.names.join("　·　")}
+              </p>
+            )}
+            {!!p!.winners?.length && (
+              <p className="mt-[2vh] text-[clamp(0.75rem,min(2.8vw,2.2vh),1.3rem)] tracking-[0.3em] text-gold/80">
+                本日の優勝　{p!.winners.join("・")}
               </p>
             )}
           </div>
