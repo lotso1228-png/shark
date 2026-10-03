@@ -14,6 +14,7 @@ import { TopScreen } from "./screens/TopScreen";
 import { TopicScreen } from "./screens/TopicScreen";
 import { screenFade } from "./ui";
 import { useFullscreen } from "./useFullscreen";
+import { useWakeLock } from "./useWakeLock";
 
 export function App() {
   return (
@@ -32,6 +33,7 @@ function Stage() {
   const confirm = useConfirm();
   const [menuOpen, setMenuOpen] = useState(false);
   const fullscreen = useFullscreen();
+  useWakeLock();
   const screen = game.screen;
 
   const backFromLast = useCallback(() => {
