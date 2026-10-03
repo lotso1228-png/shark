@@ -225,6 +225,9 @@ export function HostMenu({
                   <Chip active={settings.shuffleFx !== false} onClick={actions.toggleShuffle}>
                     シャッフル演出
                   </Chip>
+                  <Chip active={settings.rotate !== false} onClick={actions.toggleRotate}>
+                    1問ごとに交代
+                  </Chip>
                   {fullscreen.supported && (
                     <Chip active={fullscreen.active} onClick={fullscreen.toggle}>
                       全画面

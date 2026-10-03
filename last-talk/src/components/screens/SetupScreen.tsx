@@ -410,6 +410,27 @@ function DisplayTab() {
       </button>
 
       <div className="mt-12">
+        <Heading
+          title="1問ごとに交代"
+          note="NEXT を押すたびに、話す卒業生が自動で次の人に替わります（話した回数が少ない人から順に）。オフにすると同じ人に続けて聞けます。"
+        />
+        <button
+          type="button"
+          role="switch"
+          aria-checked={settings.rotate !== false}
+          onClick={actions.toggleRotate}
+          className="flex min-h-14 w-full items-center justify-between border border-ivory/15 px-5 text-left"
+        >
+          <span className="tracking-wider">1問ごとに交代</span>
+          <span className={`relative h-6 w-11 rounded-full transition-colors ${settings.rotate !== false ? "bg-gold/80" : "bg-ivory/15"}`}>
+            <span
+              className={`absolute top-1 h-4 w-4 rounded-full bg-ivory transition-transform ${settings.rotate !== false ? "translate-x-6" : "translate-x-1"}`}
+            />
+          </span>
+        </button>
+      </div>
+
+      <div className="mt-12">
         <Heading title="シャッフル演出" note="お題を引くとき、カードが高速で切り替わってから止まります。参加者のスマホでも同時に流れます。" />
         <button
           type="button"

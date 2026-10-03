@@ -152,3 +152,28 @@ test("カテゴリー変更直後は特別カードを出さない", () => {
     assert.equal(c.kind === "topic" && c.category, "memory");
   }
 });
+
+test("1問ごとに交代：NEXTのたびに話す人が替わり、全員に均等に回る", () => {
+  let g = E.draw(startFor("a"), ctx());
+  const speakers = [g.history[0].graduateId];
+  for (let i = 0; i < 8; i++) {
+    g = E.next(g, { ...ctx(), rotate: true });
+    speakers.push(E.currentEntry(g)!.graduateId);
+  }
+  for (let i = 1; i < speakers.length; i++) assert.notEqual(speakers[i], speakers[i - 1], "同じ人が連続");
+  assert.deepEqual(speakers, ["a", "b", "c", "a", "b", "c", "a", "b", "c"]);
+});
+
+test("1問ごとに交代：戻ってから進むときは同じ人・同じお題のまま", () => {
+  let g = E.draw(startFor("a"), ctx());
+  g = E.next(g, { ...ctx(), rotate: true });
+  const second = E.currentEntry(g)!;
+  g = E.next(E.back(g), { ...ctx(), rotate: true });
+  assert.deepEqual(E.currentEntry(g), second);
+});
+
+test("1問ごとに交代：オフなら同じ人が続く", () => {
+  let g = E.draw(startFor("a"), ctx());
+  g = E.next(g, { ...ctx(), rotate: false });
+  assert.equal(E.currentEntry(g)!.graduateId, "a");
+});

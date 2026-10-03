@@ -210,12 +210,32 @@ export function draw(g: GameState, ctx: DrawContext): GameState {
 }
 
 /** NEXT：先の履歴があればそこへ進み、なければ新しく引く */
-export function next(g: GameState, ctx: DrawContext): GameState {
+export function next(g: GameState, ctx: DrawContext & { rotate?: boolean }): GameState {
   if (g.cursor < g.history.length - 1) {
     const cursor = g.cursor + 1;
     return { ...g, cursor, graduateId: g.history[cursor].graduateId, screen: "topic" };
   }
+  if (ctx.rotate) {
+    const id = nextSpeaker(g, ctx.graduates);
+    if (id) return draw({ ...g, graduateId: id }, ctx);
+  }
   return draw(g, ctx);
+}
+
+/**
+ * 1問ごとの交代：次に話す卒業生。
+ * まだ話した回数が少ない人を優先し、同じなら一覧で今の人の次にいる人。今の人は続けて選ばない。
+ */
+export function nextSpeaker(g: GameState, graduates: Graduate[]): string | null {
+  if (graduates.length === 0) return null;
+  if (graduates.length === 1) return graduates[0].id;
+  const cur = Math.max(0, graduates.findIndex((x) => x.id === g.graduateId));
+  const order = [...graduates.slice(cur + 1), ...graduates.slice(0, cur + 1)].filter(
+    (x) => x.id !== g.graduateId,
+  );
+  let best = order[0];
+  for (const x of order) if (countFor(g, x.id) < countFor(g, best.id)) best = x;
+  return best.id;
 }
 
 /** 戻る：1枚前のカードへ。最初のカードなら「お題を引く」画面へ */

@@ -76,4 +76,6 @@ export interface Settings {
   topicsVersion?: number;
   /** お題を引くときのシャッフル演出（既定でオン） */
   shuffleFx?: boolean;
+  /** 1問ごとに話す卒業生を交代する（既定でオン） */
+  rotate?: boolean;
 }

@@ -112,7 +112,7 @@ function useStoreValue() {
           return { ...g, screen: "select", roulette: { id: uid(), winnerId: winner.id } };
         }),
       draw: () => setGame((g) => E.draw(g, ctx())),
-      next: () => setGame((g) => E.next(g, ctx())),
+      next: () => setGame((g) => E.next(g, { ...ctx(), rotate: settings.rotate !== false })),
       back: () => setGame((g) => E.back(g)),
       skip: () => setGame((g) => E.skip(g, ctx())),
       reply: () => setGame((g) => E.reply(g)),
@@ -178,11 +178,12 @@ function useStoreValue() {
 
       // ── 設定 ──
       setMood: (mood: Mood) => setSettings((s) => ({ ...s, mood })),
+      toggleRotate: () => setSettings((s) => ({ ...s, rotate: s.rotate === false })),
       toggleShuffle: () => setSettings((s) => ({ ...s, shuffleFx: s.shuffleFx === false })),
       toggleVenue: () => setSettings((s) => ({ ...s, venueMode: !s.venueMode })),
       setLiveOn: (on: boolean) => setSettings((s) => ({ ...s, liveOn: on })),
     }),
-    [ctx, graduates, setGame, setGraduates, setTopics, setSettings],
+    [ctx, graduates, settings.rotate, setGame, setGraduates, setTopics, setSettings],
   );
 
   return { loaded, graduates, topics, settings, game, graduate, actions };

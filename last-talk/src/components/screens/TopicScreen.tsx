@@ -40,7 +40,18 @@ export function TopicScreen() {
           className="name-text font-semibold tracking-[0.16em] text-gold-soft transition-opacity hover:opacity-80"
           aria-label={`${name}（タップで卒業生を変更）`}
         >
-          {name}
+          {/* 話す人が替わったら名前を入れ替えて知らせる */}
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.span
+              key={name}
+              className="inline-block"
+              initial={{ opacity: 0, y: 14 }}
+              animate={{ opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } }}
+              exit={{ opacity: 0, y: -10, transition: { duration: 0.2 } }}
+            >
+              {name}
+            </motion.span>
+          </AnimatePresence>
         </button>
         {!venue && (
           <div className="absolute top-[2vh] right-0 hidden sm:block">
