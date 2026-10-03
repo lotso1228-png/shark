@@ -10,7 +10,40 @@ export interface LiveChannel {
   shareUrl?: string;
   send(p: LivePayload): Promise<void>;
   current(): Promise<LivePayload | null>;
-  subscribe(next: (p: LivePayload | null) => void, status: (s: ChannelStatus) => void): () => void;
+  subscribe(
+    next: (p: LivePayload | null) => void,
+    status: (s: ChannelStatus) => void,
+    onReaction?: (r: Reactions) => void,
+  ): () => void;
+  /** 参加者のリアクションを送る（対応している配信路のみ） */
+  react?(kind: ReactionKind): void;
+  /** 司会者側でリアクションを受け取る（対応している配信路のみ） */
+  onReactions?(cb: (r: Reactions) => void): () => void;
+}
+
+export type ReactionKind = "clap" | "laugh" | "cry" | "fire";
+export type Reactions = Partial<Record<ReactionKind, number>>;
+export const REACTIONS: { kind: ReactionKind; emoji: string; label: string }[] = [
+  { kind: "clap", emoji: "👏", label: "拍手" },
+  { kind: "laugh", emoji: "😂", label: "爆笑" },
+  { kind: "cry", emoji: "😭", label: "泣ける" },
+  { kind: "fire", emoji: "🔥", label: "アツい" },
+];
+
+/** 受け取ったリアクションを検証する（各種類20まで） */
+function parseReactions(raw: string, self: string): Reactions | null {
+  try {
+    const m = JSON.parse(raw) as { r?: Record<string, unknown>; s?: string };
+    if (!m.r || typeof m.r !== "object" || m.s === self) return null;
+    const out: Reactions = {};
+    for (const { kind } of REACTIONS) {
+      const n = Number(m.r[kind]);
+      if (Number.isFinite(n) && n > 0) out[kind] = Math.min(20, Math.floor(n));
+    }
+    return Object.keys(out).length ? out : null;
+  } catch {
+    return null;
+  }
 }
 
 /* ───────── claude.ai（ログインした参加者向け） ───────── */
@@ -76,6 +109,139 @@ interface Envelope {
 }
 
 const topicOf = (room: string) => `lasttalk-${room}`;
+const reactTopicOf = (room: string) => `lasttalk-${room}-r`;
+const deviceId = Math.random().toString(36).slice(2, 10);
+
+/**
+ * ntfy.sh のトピックを購読する。つなぎっぱなし（SSE）が使えない回線では、
+ * 数秒おきに最新を取りに行く方式（メインのトピックのみ）へ自動で切り替える。
+ */
+function ntfyStream(
+  topics: string[],
+  onMessage: (topic: string, message: string) => void,
+  status: (s: ChannelStatus) => void,
+  pollTopic?: string,
+  /** 予備方式で、取りこぼしなく順に受け取るトピック（リアクションなど） */
+  pollAll: string[] = [],
+) {
+  let es: EventSource | null = null;
+  let alive = true;
+  let delay = 4000;
+  let fails = 0;
+  let polling = false;
+  let timer: ReturnType<typeof setTimeout> | undefined;
+
+  const since: Record<string, string> = {};
+  const startedAt = String(Math.floor(Date.now() / 1000));
+  const poll = async () => {
+    if (!alive || (!pollTopic && pollAll.length === 0)) return;
+    // ntfy.sh の制限（1台あたり平均5秒に1回）を超えないよう、取りに行く数に合わせて間隔を空ける
+    const reqs = (pollTopic ? 1 : 0) + pollAll.length;
+    let wait = reqs * 4500 + Math.random() * 2000;
+    try {
+      if (pollTopic) {
+        const res = await fetch(`${NTFY}/${pollTopic}/json?poll=1&since=latest`, { cache: "no-store" });
+        if (res.status === 429) throw Object.assign(new Error("rate"), { rate: true });
+        if (!res.ok) throw new Error(String(res.status));
+        const line = (await res.text()).trim().split("\n").pop();
+        if (line) onMessage(pollTopic, JSON.parse(line).message);
+      }
+      for (const t of pollAll) {
+        const res = await fetch(`${NTFY}/${t}/json?poll=1&since=${since[t] ?? startedAt}`, { cache: "no-store" });
+        if (res.status === 429) throw Object.assign(new Error("rate"), { rate: true });
+        if (!res.ok) continue;
+        for (const line of (await res.text()).trim().split("\n")) {
+          if (!line) continue;
+          const m = JSON.parse(line);
+          if (m.event !== "message") continue;
+          since[t] = m.id;
+          onMessage(t, m.message);
+        }
+      }
+      status("live");
+    } catch (e) {
+      if ((e as { rate?: boolean }).rate) wait = 20000 + Math.random() * 5000;
+      status("offline");
+    }
+    if (alive) timer = setTimeout(poll, document.visibilityState === "visible" ? wait : wait * 3);
+  };
+
+  const connect = () => {
+    if (!alive) return;
+    status("connecting");
+    let opened = false;
+    es = new EventSource(`${NTFY}/${topics.join(",")}/sse`);
+    es.onopen = () => {
+      opened = true;
+      fails = 0;
+      delay = 4000;
+      status("live");
+    };
+    es.onmessage = (ev) => {
+      try {
+        const m = JSON.parse(ev.data);
+        if (m.event === "message" && typeof m.message === "string") onMessage(m.topic, m.message);
+      } catch {
+        /* 壊れたメッセージは無視 */
+      }
+    };
+    es.onerror = () => {
+      es?.close();
+      es = null;
+      if (!opened) fails++;
+      status("offline");
+      if (fails >= 2 && (pollTopic || pollAll.length)) {
+        polling = true;
+        void poll();
+        return;
+      }
+      // 会場の回線が混んでいても負荷をかけすぎないよう、間隔を空けて再接続
+      timer = setTimeout(connect, delay);
+      delay = Math.min(delay * 2, 60000);
+    };
+  };
+  connect();
+
+  const onVisible = () => {
+    if (document.visibilityState !== "visible" || polling || es) return;
+    clearTimeout(timer);
+    delay = 4000;
+    connect();
+  };
+  document.addEventListener("visibilitychange", onVisible);
+  return () => {
+    alive = false;
+    clearTimeout(timer);
+    es?.close();
+    document.removeEventListener("visibilitychange", onVisible);
+  };
+}
+
+/** リアクションをまとめて送る（連打しても1.5秒に1回、混雑時は1分休む） */
+function reactionSender(room: string) {
+  let pending: Reactions = {};
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  let pausedUntil = 0;
+  const flush = async () => {
+    timer = undefined;
+    const body = pending;
+    pending = {};
+    if (!Object.keys(body).length || Date.now() < pausedUntil) return;
+    try {
+      const res = await fetch(`${NTFY}/${reactTopicOf(room)}`, {
+        method: "POST",
+        body: JSON.stringify({ r: body, s: deviceId }),
+      });
+      if (res.status === 429) pausedUntil = Date.now() + 60000;
+    } catch {
+      /* リアクションは届かなくても問題ない */
+    }
+  };
+  return (kind: ReactionKind) => {
+    pending[kind] = Math.min(20, (pending[kind] ?? 0) + 1);
+    if (!timer) timer = setTimeout(flush, 1500);
+  };
+}
 
 /** 参加者用 URL のハッシュ部分：#live.<ルームID>.<公開鍵> */
 export function parseAudienceHash(hash: string): { room: string; pub: string } | null {
@@ -154,6 +320,18 @@ export async function ntfyHostChannel(baseUrl: string): Promise<LiveChannel | nu
       }
     },
     subscribe: () => () => {},
+    onReactions(cb) {
+      return ntfyStream(
+        [reactTopicOf(r.room)],
+        (_t, msg) => {
+          const x = parseReactions(msg, deviceId);
+          if (x) cb(x);
+        },
+        () => {},
+        undefined,
+        [reactTopicOf(r.room)],
+      );
+    },
   };
 }
 
@@ -178,87 +356,38 @@ export function ntfyAudienceChannel(room: string, pub: string): LiveChannel {
     kind: "ntfy",
     send: async () => {},
     current: async () => null,
-    subscribe(next, status) {
-      let es: EventSource | null = null;
+    react: reactionSender(room),
+    subscribe(next, status, onReaction) {
       let alive = true;
-      let delay = 4000;
-      let fails = 0;
-      let polling = false;
-      let timer: ReturnType<typeof setTimeout> | undefined;
-
+      const main = topicOf(room);
       const deliver = async (raw: string) => {
         const p = await open(raw);
         if (p !== undefined && alive) next(p);
       };
-
-      // 予備：つなぎっぱなしの接続が使えない回線では、数秒おきに最新を取りに行く
-      const poll = async () => {
-        if (!alive) return;
-        let wait = 4000 + Math.random() * 1500;
-        try {
-          const res = await fetch(`${NTFY}/${topicOf(room)}/json?poll=1&since=latest`, { cache: "no-store" });
-          if (res.status === 429) {
-            wait = 15000 + Math.random() * 5000;
-            status("offline");
-          } else if (res.ok) {
-            status("live");
-            const line = (await res.text()).trim().split("\n").pop();
-            if (line) await deliver(JSON.parse(line).message);
-          } else status("offline");
-        } catch {
-          status("offline");
-        }
-        if (alive) timer = setTimeout(poll, document.visibilityState === "visible" ? wait : wait * 3);
-      };
-
-      const connect = () => {
-        if (!alive) return;
-        status("connecting");
-        let opened = false;
-        es = new EventSource(`${NTFY}/${topicOf(room)}/sse?since=latest`);
-        es.onopen = () => {
-          opened = true;
-          fails = 0;
-          delay = 4000;
-          status("live");
-        };
-        es.onmessage = (ev) => {
-          try {
-            const m = JSON.parse(ev.data);
-            if (m.event === "message") void deliver(m.message);
-          } catch {
-            /* 壊れたメッセージは無視 */
+      // 途中から開いた人にも、いまのお題をすぐ出す
+      fetch(`${NTFY}/${main}/json?poll=1&since=latest`, { cache: "no-store" })
+        .then((res) => (res.ok ? res.text() : ""))
+        .then((t) => {
+          const line = t.trim().split("\n").pop();
+          if (line) void deliver(JSON.parse(line).message);
+        })
+        .catch(() => {});
+      const stop = ntfyStream(
+        [main, reactTopicOf(room)],
+        (topic, msg) => {
+          if (topic === main) void deliver(msg);
+          else if (onReaction) {
+            const x = parseReactions(msg, deviceId);
+            if (x) onReaction(x);
           }
-        };
-        es.onerror = () => {
-          es?.close();
-          es = null;
-          if (!opened) fails++;
-          status("offline");
-          if (fails >= 2) {
-            polling = true;
-            void poll();
-            return;
-          }
-          // 会場の回線が混んでいても負荷をかけすぎないよう、間隔を空けて再接続
-          timer = setTimeout(connect, delay);
-          delay = Math.min(delay * 2, 60000);
-        };
-      };
-      connect();
-
-      const onVisible = () => {
-        if (document.visibilityState !== "visible" || polling || es) return;
-        clearTimeout(timer);
-        delay = 4000;
-        connect();
-      };
-      document.addEventListener("visibilitychange", onVisible);
+        },
+        status,
+        main,
+        [reactTopicOf(room)],
+      );
       return () => {
         alive = false;
-        clearTimeout(timer);
-        es?.close();
-        document.removeEventListener("visibilitychange", onVisible);
+        stop();
       };
     },
   };

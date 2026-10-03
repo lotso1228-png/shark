@@ -23,6 +23,7 @@ import {
   useLiveRole,
 } from "./live/LiveProvider";
 import { SharePanel } from "./live/SharePanel";
+import { HostReactions } from "./live/Reactions";
 
 export function App() {
   const { role, channel } = useLiveRole();
@@ -197,6 +198,11 @@ function Stage() {
             )}
           </>
         )}
+        <HostReactions
+          channel={channel}
+          active={channel?.kind === "ntfy" && !!settings.liveOn && screen !== "setup"}
+          big={venue}
+        />
         <SharePanel open={shareOpen} onClose={() => setShareOpen(false)} />
       </main>
     </ShareContext.Provider>

@@ -78,8 +78,8 @@ export function LiveBroadcaster({ channel, children }: { channel: LiveChannel | 
     else setStatus((s) => (s === "off" ? "connecting" : s));
   }, [channel]);
   const payload = useMemo(
-    () => (loaded ? livePayload(game, graduates) : null),
-    [loaded, game, graduates],
+    () => (loaded ? livePayload(game, graduates, { shuffle: settings.shuffleFx !== false }) : null),
+    [loaded, game, graduates, settings.shuffleFx],
   );
   const json = payload ? JSON.stringify(payload) : null;
 

@@ -410,6 +410,24 @@ function DisplayTab() {
       </button>
 
       <div className="mt-12">
+        <Heading title="シャッフル演出" note="お題を引くとき、カードが高速で切り替わってから止まります。参加者のスマホでも同時に流れます。" />
+        <button
+          type="button"
+          role="switch"
+          aria-checked={settings.shuffleFx !== false}
+          onClick={actions.toggleShuffle}
+          className="flex min-h-14 w-full items-center justify-between border border-ivory/15 px-5 text-left"
+        >
+          <span className="tracking-wider">シャッフル演出</span>
+          <span className={`relative h-6 w-11 rounded-full transition-colors ${settings.shuffleFx !== false ? "bg-gold/80" : "bg-ivory/15"}`}>
+            <span
+              className={`absolute top-1 h-4 w-4 rounded-full bg-ivory transition-transform ${settings.shuffleFx !== false ? "translate-x-6" : "translate-x-1"}`}
+            />
+          </span>
+        </button>
+      </div>
+
+      <div className="mt-12">
         <Heading title="出題モード" note="当日の空気に合わせて、いつでも司会メニューから切り替えられます。" />
         <div className="grid gap-2">
           {MOOD_INFO.map((m) => (

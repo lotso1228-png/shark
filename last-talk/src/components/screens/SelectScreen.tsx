@@ -1,13 +1,35 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useEffect } from "react";
 import { countFor } from "@/lib/engine";
+import { useRoulette, useShuffleOnce } from "../Shuffle";
 import { displayName, useStore } from "../StoreProvider";
 import { BackArrow, Button, Eyebrow } from "../ui";
 
 export function SelectScreen() {
+  const { game } = useStore();
+  // ルーレットごとに作り直して、毎回はじめから回す
+  return <SelectBody key={game.roulette?.id ?? "idle"} />;
+}
+
+function SelectBody() {
   const { graduates, game, actions } = useStore();
   const many = graduates.length > 4;
+  const roulette = game.roulette ?? null;
+  const winner = roulette ? graduates.findIndex((g) => g.id === roulette.winnerId) : -1;
+  const play = useShuffleOnce(`roulette-${roulette?.id ?? ""}`, !!roulette && winner >= 0);
+  const spin = useRoulette(graduates.length, Math.max(winner, 0), play);
+  const spinning = !!roulette && winner >= 0;
+
+  // 止まったら少し間をおいて、選ばれた人の画面へ
+  useEffect(() => {
+    if (!roulette) return;
+    if (winner < 0) return actions.goTo("select");
+    if (!spin.done) return;
+    const t = setTimeout(() => actions.selectGraduate(roulette.winnerId), play ? 1400 : 300);
+    return () => clearTimeout(t);
+  }, [roulette, winner, spin.done, play, actions]);
 
   return (
     <div className="flex h-full flex-col px-5 pt-4 safe-bottom sm:px-10">
@@ -36,7 +58,9 @@ export function SelectScreen() {
           >
             {graduates.map((g, i) => {
               const n = countFor(game, g.id);
-              const current = g.id === game.graduateId;
+              const lit = spinning && spin.index === i;
+              const landed = lit && spin.done;
+              const current = spinning ? lit : g.id === game.graduateId;
               return (
                 <motion.li
                   key={g.id}
@@ -45,11 +69,16 @@ export function SelectScreen() {
                 >
                   <button
                     type="button"
-                    onClick={() => actions.selectGraduate(g.id)}
-                    className={`group flex w-full items-center justify-between gap-4 border px-6 py-[min(3.2vh,1.6rem)] text-left transition-colors duration-300 ${
-                      current
-                        ? "border-gold/60 bg-gold/[0.07]"
-                        : "border-ivory/12 bg-white/[0.02] hover:border-gold/50"
+                    onClick={() => !spinning && actions.selectGraduate(g.id)}
+                    disabled={spinning}
+                    className={`group flex w-full items-center justify-between gap-4 border px-6 py-[min(3.2vh,1.6rem)] text-left ${
+                      spinning ? "" : "transition-colors duration-300"
+                    } ${
+                      landed
+                        ? "border-gold bg-gold/[0.18] shadow-[0_0_40px_rgba(201,169,110,0.35)]"
+                        : current
+                          ? "border-gold/60 bg-gold/[0.07]"
+                          : "border-ivory/12 bg-white/[0.02] hover:border-gold/50"
                     }`}
                   >
                     <span className="min-w-0">
@@ -75,6 +104,14 @@ export function SelectScreen() {
               );
             })}
           </ul>
+        </div>
+      )}
+
+      {graduates.length > 1 && (
+        <div className="flex justify-center pb-[3vh]">
+          <Button variant="ghost" onClick={actions.startRoulette} disabled={spinning}>
+            {spinning ? (spin.done ? "決定！" : "ルーレット中…") : "ランダムで選ぶ"}
+          </Button>
         </div>
       )}
     </div>

@@ -133,3 +133,29 @@ button {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* リアクション：下からふわっと浮かんで消える */
+@keyframes float-up {
+  0% {
+    transform: translate3d(0, 0, 0) scale(0.6);
+    opacity: 0;
+  }
+  12% {
+    transform: translate3d(calc(var(--sway) * 0.3), -8vh, 0) scale(1.1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(var(--sway), -62vh, 0) scale(0.9);
+    opacity: 0;
+  }
+}
+
+.reaction-float {
+  position: absolute;
+  bottom: var(--rbottom, 6vh);
+  font-size: var(--rsize, 2.4rem);
+  line-height: 1;
+  animation: float-up var(--rdur, 2.8s) cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  will-change: transform, opacity;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.45));
+}

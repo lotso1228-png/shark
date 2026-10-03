@@ -20,6 +20,12 @@ export interface LivePayload {
   special: boolean;
   chapter: Category;
   names: string[];
+  /** シャッフル演出を見せるか（司会者の設定） */
+  shuffle?: boolean;
+  /** 表示中カードのカテゴリー（シャッフル中に流すダミーのお題を選ぶため） */
+  cat?: Category | "special";
+  /** 卒業生ルーレット（select 画面で回っているとき） */
+  roulette?: { id: string; winner: string };
 }
 
 const nameOf = (gs: Graduate[], id: string | null | undefined) => {
@@ -27,7 +33,11 @@ const nameOf = (gs: Graduate[], id: string | null | undefined) => {
   return g ? g.nickname.trim() || g.name.trim() : "";
 };
 
-export function livePayload(game: GameState, graduates: Graduate[]): LivePayload | null {
+export function livePayload(
+  game: GameState,
+  graduates: Graduate[],
+  opts: { shuffle?: boolean } = {},
+): LivePayload | null {
   const base: LivePayload = {
     v: 1,
     scene: "idle",
@@ -40,6 +50,7 @@ export function livePayload(game: GameState, graduates: Graduate[]): LivePayload
     special: false,
     chapter: game.chapter,
     names: [],
+    shuffle: opts.shuffle ?? true,
   };
   const name = nameOf(graduates, game.graduateId);
   switch (game.screen) {
@@ -48,7 +59,15 @@ export function livePayload(game: GameState, graduates: Graduate[]): LivePayload
     case "top":
       return base;
     case "select":
-      return { ...base, scene: "select", key: "select" };
+      return game.roulette
+        ? {
+            ...base,
+            scene: "select",
+            key: `select-${game.roulette.id}`,
+            names: graduates.map((g) => nameOf(graduates, g.id)),
+            roulette: { id: game.roulette.id, winner: nameOf(graduates, game.roulette.winnerId) },
+          }
+        : { ...base, scene: "select", key: "select", names: graduates.map((g) => nameOf(graduates, g.id)) };
     case "ready":
       return { ...base, scene: "ready", key: `ready-${game.graduateId}`, name };
     case "topic": {
@@ -66,6 +85,8 @@ export function livePayload(game: GameState, graduates: Graduate[]): LivePayload
         text: v.text,
         note: v.note ?? "",
         special: v.special,
+        cat: entry.card.kind === "topic" ? entry.card.category : "special",
+        shuffle: base.shuffle && entry.card.kind !== "reply",
       };
     }
     case "last-intro":

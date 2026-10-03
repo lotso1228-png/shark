@@ -8,6 +8,7 @@ import { displayName, useStore } from "../StoreProvider";
 import { FlowIndicator } from "../FlowIndicator";
 import { BackArrow, Button } from "../ui";
 import { useFitText } from "../useFitText";
+import { ShuffleReveal, useShuffleOnce } from "../Shuffle";
 
 export function TopicScreen() {
   const { game, graduates, settings, actions } = useStore();
@@ -25,7 +26,8 @@ export function TopicScreen() {
   }
 
   const view = cardView(entry.card, name);
-  const canNominate = entry.card.kind === "topic" && entry.card.category === "friends";
+  const canNominate =
+    entry.card.kind === "topic" && entry.card.category === "friends";
   const flowDone = isFlowComplete(game, graduates.length);
 
   return (
@@ -57,25 +59,55 @@ export function TopicScreen() {
             key={`${game.cursor}-${entry.card.kind === "topic" ? entry.card.topicId : entry.card.kind}`}
             fitKey={`${view.text}-${venue}`}
             initial={{ opacity: 0, y: 26 }}
-            animate={{ opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] } }}
-            exit={{ opacity: 0, y: -14, transition: { duration: 0.28, ease: "easeIn" } }}
+            animate={{
+              opacity: 1,
+              y: 0,
+              transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] },
+            }}
+            exit={{
+              opacity: 0,
+              y: -14,
+              transition: { duration: 0.28, ease: "easeIn" },
+            }}
           >
-            <p
-              className={`eyebrow mb-[3.5vh] text-[clamp(0.7rem,min(1.3vw,2vh),1.2rem)] ${
-                view.special ? "text-gold-soft" : "text-gold/80"
-              }`}
+            <Shuffled
+              shuffleKey={`${game.cursor}-${view.text}`}
+              enabled={
+                settings.shuffleFx !== false &&
+                game.cursor === game.history.length - 1 &&
+                entry.card.kind !== "reply"
+              }
+              cat={
+                entry.card.kind === "topic" ? entry.card.category : "special"
+              }
+              text={view.text}
+              special={view.special}
             >
-              {view.special && <span className="mr-3 inline-block align-middle text-[0.7em]">◆</span>}
-              {view.label}
-              <span className="ml-3 font-mincho tracking-[0.2em] text-mist/60">{view.sub}</span>
-            </p>
-            {view.special && <div className="hairline mb-[4vh] w-[min(40vw,18rem)]" />}
-            <h1 className="topic-text">{view.text}</h1>
-            {view.note && !venue && (
-              <p className="mt-[4vh] text-[clamp(0.85rem,min(1.6vw,2.6vh),1.5rem)] tracking-[0.14em] text-mist/80">
-                {view.note}
+              <p
+                className={`eyebrow mb-[3.5vh] text-[clamp(0.7rem,min(1.3vw,2vh),1.2rem)] ${
+                  view.special ? "text-gold-soft" : "text-gold/80"
+                }`}
+              >
+                {view.special && (
+                  <span className="mr-3 inline-block align-middle text-[0.7em]">
+                    ◆
+                  </span>
+                )}
+                {view.label}
+                <span className="ml-3 font-mincho tracking-[0.2em] text-mist/60">
+                  {view.sub}
+                </span>
               </p>
-            )}
+              {view.special && (
+                <div className="hairline mb-[4vh] w-[min(40vw,18rem)]" />
+              )}
+              <h1 className="topic-text">{view.text}</h1>
+              {view.note && !venue && (
+                <p className="mt-[4vh] text-[clamp(0.85rem,min(1.6vw,2.6vh),1.5rem)] tracking-[0.14em] text-mist/80">
+                  {view.note}
+                </p>
+              )}
+            </Shuffled>
           </FitCard>
         </AnimatePresence>
       </section>
@@ -113,7 +145,9 @@ function FitCard({
   fitKey,
   children,
   ...motionProps
-}: { fitKey: string; children: React.ReactNode } & React.ComponentProps<typeof motion.div>) {
+}: { fitKey: string; children: React.ReactNode } & React.ComponentProps<
+  typeof motion.div
+>) {
   const ref = useRef<HTMLDivElement>(null);
   useFitText(ref, [fitKey]);
   return (
@@ -125,4 +159,16 @@ function FitCard({
       {children}
     </motion.div>
   );
+}
+
+function Shuffled({
+  shuffleKey,
+  enabled,
+  ...rest
+}: { shuffleKey: string; enabled: boolean } & Omit<
+  React.ComponentProps<typeof ShuffleReveal>,
+  "play"
+>) {
+  const play = useShuffleOnce(shuffleKey, enabled);
+  return <ShuffleReveal play={play} {...rest} />;
 }

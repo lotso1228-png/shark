@@ -61,6 +61,8 @@ export interface GameState {
   /** LAST MESSAGE で表示中のお題 */
   lastCard: { topicId: string; text: string } | null;
   lastRevealed: boolean;
+  /** 卒業生ルーレットの実行中（回り終わったら選ばれた人の画面へ進む） */
+  roulette?: { id: string; winnerId: string } | null;
   /** 設定画面を閉じたときに戻る画面 */
   returnTo?: Screen;
 }
@@ -72,4 +74,6 @@ export interface Settings {
   liveOn?: boolean;
   /** 保存済みの標準お題がどの版か（新しい版が出たら自動で入れ替える） */
   topicsVersion?: number;
+  /** お題を引くときのシャッフル演出（既定でオン） */
+  shuffleFx?: boolean;
 }

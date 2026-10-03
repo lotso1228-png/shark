@@ -29,6 +29,7 @@ export function useFitText(ref: RefObject<HTMLElement | null>, deps: DependencyL
     fit();
     const ro = new ResizeObserver(fit);
     ro.observe(parent);
+    ro.observe(el); // シャッフル演出のあと本命のお題に切り替わったときも測り直す
     let alive = true;
     document.fonts?.ready.then(() => alive && fit());
     return () => {

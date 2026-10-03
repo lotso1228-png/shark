@@ -75,8 +75,8 @@ function useStoreValue() {
       goTo: (screen: Screen) =>
         setGame((g) =>
           screen === "setup" && g.screen !== "setup"
-            ? { ...g, screen, returnTo: g.screen }
-            : { ...g, screen },
+            ? { ...g, screen, returnTo: g.screen, roulette: null }
+            : { ...g, screen, roulette: null },
         ),
       closeSetup: () =>
         setGame((g) => {
@@ -99,7 +99,18 @@ function useStoreValue() {
           screen: g.cursor >= 0 ? "topic" : g.graduateId ? "ready" : "select",
         })),
       selectGraduate: (id: string) =>
-        setGame((g) => ({ ...g, graduateId: id, screen: "ready" })),
+        setGame((g) => ({ ...g, graduateId: id, screen: "ready", roulette: null })),
+      /** 卒業生ルーレット：まだ話していない人ほど当たりやすい */
+      startRoulette: () =>
+        setGame((g) => {
+          if (graduates.length === 0) return g;
+          const counts = graduates.map((x) => E.countFor(g, x.id));
+          const min = Math.min(...counts);
+          let pool = graduates.filter((_, i) => counts[i] === min);
+          if (pool.length > 1) pool = pool.filter((x) => x.id !== g.graduateId);
+          const winner = pool[Math.floor(Math.random() * pool.length)];
+          return { ...g, screen: "select", roulette: { id: uid(), winnerId: winner.id } };
+        }),
       draw: () => setGame((g) => E.draw(g, ctx())),
       next: () => setGame((g) => E.next(g, ctx())),
       back: () => setGame((g) => E.back(g)),
@@ -167,6 +178,7 @@ function useStoreValue() {
 
       // ── 設定 ──
       setMood: (mood: Mood) => setSettings((s) => ({ ...s, mood })),
+      toggleShuffle: () => setSettings((s) => ({ ...s, shuffleFx: s.shuffleFx === false })),
       toggleVenue: () => setSettings((s) => ({ ...s, venueMode: !s.venueMode })),
       setLiveOn: (on: boolean) => setSettings((s) => ({ ...s, liveOn: on })),
     }),
