@@ -2,6 +2,7 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import { useState, type FormEvent } from "react";
+import { Jp } from "../Jp";
 
 const KEY = "lasttalk:v1:me";
 
@@ -68,7 +69,7 @@ export function JoinSheet({
             <p className="eyebrow text-xs text-gold">Join</p>
             <h2 className="mt-3 text-xl font-semibold tracking-[0.12em]">お名前を教えてください</h2>
             <p className="mt-3 text-sm leading-relaxed text-mist">
-              現役ルーレットで指名されるかもしれません。呼ばれたら、このスマホが震えてお知らせします。
+              <Jp>{"現役ルーレットで指名されるかもしれません。呼ばれたら、このスマホが震えてお知らせします。"}</Jp>
             </p>
             <input
               id="join-name"

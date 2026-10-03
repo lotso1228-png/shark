@@ -22,6 +22,7 @@ import { FlowIndicator } from "../FlowIndicator";
 import { Eyebrow, Hairline } from "../ui";
 import { useFitText } from "../useFitText";
 import { useWakeLock } from "../useWakeLock";
+import { Jp } from "../Jp";
 
 type Conn = "connecting" | "live" | "offline" | "signed-out";
 
@@ -215,9 +216,9 @@ function Scene({ payload, howTo = false }: { payload: LivePayload | null; howTo?
           </p>
           {howTo && (
             <ul className="mt-[3vh] max-w-xs space-y-1.5 text-left text-[0.78rem] leading-relaxed text-ivory/75">
-              <li>・司会者がお題を出すと、この画面にも表示されます</li>
-              <li>・下のボタンで、話している卒業生に優勝ポイント</li>
-              <li>・名前を入れると、現役ルーレットで指名されるかも</li>
+              <li><Jp>{"・司会者がお題を出すと、この画面にも表示されます"}</Jp></li>
+              <li><Jp>{"・下のボタンで、話している卒業生に優勝ポイント"}</Jp></li>
+              <li><Jp>{"・名前を入れると、現役ルーレットで指名されるかも"}</Jp></li>
             </ul>
           )}
         </div>
@@ -243,7 +244,9 @@ function Scene({ payload, howTo = false }: { payload: LivePayload | null; howTo?
             Last Message
           </p>
           <Hairline className="my-[5vh] w-[min(56vw,30rem)]" />
-          <h1 className="topic-text font-semibold">{p!.text}</h1>
+          <h1 className="topic-text font-semibold">
+            <Jp>{p!.text}</Jp>
+          </h1>
           <p className="name-text mt-[5vh] tracking-[0.2em] text-gold-soft">
             {p!.name}
           </p>
@@ -384,10 +387,12 @@ function TopicScene({ p, dark = false }: { p: LivePayload; dark?: boolean }) {
                 </span>
               </p>
             )}
-            <h1 className="topic-text">{p.text}</h1>
+            <h1 className="topic-text">
+              <Jp>{p.text}</Jp>
+            </h1>
             {p.note && (
               <p className="mt-[4vh] text-[clamp(0.85rem,min(3.4vw,2.6vh),1.5rem)] tracking-[0.14em] text-mist/80">
-                {p.note}
+                <Jp>{p.note}</Jp>
               </p>
             )}
           </ShuffleReveal>

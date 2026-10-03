@@ -159,3 +159,18 @@ button {
   will-change: transform, opacity;
   filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.45));
 }
+
+/* 文節の切れ目（<wbr>）でだけ改行する。<Jp> と組み合わせて使う */
+.jp {
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
+/* お題は文節の途中で折り返さない。入りきらない文節があれば、文字サイズの自動調整（useFitText）で縮めて収める */
+.topic-text .jp {
+  overflow-wrap: normal;
+}
+/* お題では、句読点やかっこの直後でも文節の途中では改行しない */
+.topic-text .jp .ph {
+  white-space: nowrap;
+}

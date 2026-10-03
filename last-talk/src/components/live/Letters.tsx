@@ -2,6 +2,7 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState, type FormEvent } from "react";
+import { Jp } from "../Jp";
 
 export interface LettersInfo {
   id: string;
@@ -72,7 +73,7 @@ export function LettersOverlay({
                   animate={{ opacity: 1, transition: { delay: 0.3 + i * 0.9, duration: 0.9 } }}
                 >
                   <p className="text-[clamp(1.05rem,min(4.4vw,3.4vh),2rem)] leading-relaxed tracking-[0.04em] text-ivory [word-break:auto-phrase]">
-                    {l.text}
+                    <Jp>{l.text}</Jp>
                   </p>
                   <p className="mt-1 text-right text-[0.75rem] tracking-[0.2em] text-gold-soft/80">— {l.from}</p>
                 </motion.li>
@@ -144,7 +145,7 @@ export function LetterComposer({
             <p className="eyebrow text-center text-xs text-gold">Messages</p>
             <h2 className="mt-2 text-center text-xl font-semibold tracking-[0.12em]">卒業生に寄せ書き</h2>
             <p className="mt-2 text-center text-xs leading-relaxed text-mist">
-              最後のメッセージの前に、みんなのスマホに流れます。
+              <Jp>{"最後のメッセージの前に、みんなのスマホに流れます。"}</Jp>
             </p>
             <div className="mt-5 flex flex-wrap justify-center gap-2" role="radiogroup" aria-label="あて先">
               {grads.map((g) => (
@@ -199,7 +200,7 @@ export function LetterComposer({
             </button>
             <p className="mt-2 min-h-5 text-center text-xs tracking-wider" aria-live="polite">
               {state === "sent" && <span className="text-gold-soft">送りました。続けて書けます</span>}
-              {state === "error" && <span className="text-red-200/80">送れませんでした。電波のよい場所でもう一度</span>}
+              {state === "error" && <span className="text-red-200/80"><Jp>{"送れませんでした。電波のよい場所でもう一度"}</Jp></span>}
             </p>
             <button type="button" onClick={onClose} className="mt-1 min-h-11 w-full text-sm tracking-widest text-mist/70">
               閉じる

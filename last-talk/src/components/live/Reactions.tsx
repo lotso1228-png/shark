@@ -15,6 +15,7 @@ import {
   type Reactions,
 } from "@/lib/liveChannel";
 import { useStore } from "../StoreProvider";
+import { Jp } from "../Jp";
 
 const EMOJI = Object.fromEntries(
   REACTIONS.map((r) => [r.kind, r.emoji]),
@@ -148,7 +149,7 @@ export function ReactionBar({
   return (
     <div className="flex flex-col items-center gap-2">
       <p className="text-[0.62rem] tracking-[0.18em] text-gold/70">
-        リアクションは、話している卒業生の優勝ポイントに！
+        <Jp>{"リアクションは、話している卒業生の優勝ポイントに！"}</Jp>
       </p>
       <div
         className="flex items-end justify-center gap-[min(4vw,1.5rem)]"

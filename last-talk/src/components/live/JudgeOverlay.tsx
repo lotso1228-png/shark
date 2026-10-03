@@ -2,6 +2,7 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
+import { Jp } from "../Jp";
 
 export interface JudgeInfo {
   id: string;
@@ -96,7 +97,7 @@ function Body({
         <p className="mt-[2vh] text-[clamp(0.85rem,min(3vw,2.4vh),1.4rem)] tracking-[0.16em] text-mist/80 tabular-nums">
           リアクション {judge.count ?? 0} ／ 目標 {judge.target}
         </p>
-        {!safe && <p className="mt-2 text-xs tracking-[0.2em] text-mist/60">ソフトドリンクでもOK。無理はしないでください</p>}
+        {!safe && <p className="mt-2 text-xs tracking-[0.2em] text-mist/60"><Jp>{"ソフトドリンクでもOK。無理はしないでください"}</Jp></p>}
         {closable && <p className="mt-[4vh] text-xs tracking-[0.3em] text-mist/50">タップで閉じる</p>}
       </motion.div>
     );
@@ -107,7 +108,7 @@ function Body({
       <p className="eyebrow text-[clamp(0.75rem,min(2.4vw,2.2vh),1.3rem)] text-gold">Judge</p>
       <p className={`mt-[2vh] ${big} gold-text`}>判定タイム！</p>
       <p className="mt-[2vh] max-w-2xl text-[clamp(0.95rem,min(3.6vw,3vh),1.8rem)] leading-relaxed tracking-[0.1em] text-ivory/90">
-        リアクションが {judge.target} に届かなければ…一杯！
+        <Jp>{`リアクションが ${judge.target} に届かなければ…一杯！`}</Jp>
       </p>
       <motion.p
         key={remaining}

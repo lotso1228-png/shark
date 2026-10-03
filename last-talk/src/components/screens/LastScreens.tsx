@@ -6,6 +6,7 @@ import { FINALE_PROMPT } from "@/lib/topics";
 import { displayName, useStore } from "../StoreProvider";
 import { BackArrow, Button } from "../ui";
 import { useFitText } from "../useFitText";
+import { Jp } from "../Jp";
 
 const slow = (delay: number, y = 12) =>
   ({
@@ -38,7 +39,7 @@ export function LastIntroScreen({ onBack }: { onBack: () => void }) {
           animate={{ scaleX: 1, opacity: 1, transition: { duration: 1.6, delay: 0.9, ease: [0.22, 1, 0.36, 1] } }}
         />
         <motion.h1 {...slow(1.6)} className="topic-text font-semibold">
-          {FINALE_PROMPT}
+          <Jp>{FINALE_PROMPT}</Jp>
         </motion.h1>
         <AnimatePresence mode="wait">
           <motion.p
@@ -117,7 +118,7 @@ export function LastQuestionScreen() {
             animate={{ scaleX: 1, transition: { duration: 1.2, delay: 0.4 } }}
           />
           <motion.h1 {...slow(0.8, 20)} className="topic-text max-w-[min(92vw,1600px)]">
-            {game.lastCard?.text}
+            <Jp>{game.lastCard?.text ?? ""}</Jp>
           </motion.h1>
         </div>
       </div>

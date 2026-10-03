@@ -5,6 +5,7 @@ import type { AwardEntry } from "@/lib/live";
 import { REACTIONS } from "@/lib/liveChannel";
 import { Confetti } from "./Confetti";
 import { Button, Eyebrow, Hairline } from "./ui";
+import { Jp } from "./Jp";
 
 const STEP = 1.1; // 1人ずつ発表する間隔（秒）
 const DRUMROLL = 1.4; // 優勝者の前のため
@@ -53,7 +54,7 @@ export function AwardView({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1, transition: { duration: 1, delay: 1 } }}
         >
-          現役のリアクションが一番多かった卒業生
+          <Jp>{"現役のリアクションが一番多かった卒業生"}</Jp>
         </motion.p>
         <motion.div
           className="hairline w-[min(50vw,22rem)]"
@@ -88,7 +89,7 @@ export function AwardView({
             {winners.length ? winners.map((w) => w.name).join("・") : "全員優勝！"}
           </p>
           <p className="mt-1 text-[clamp(0.9rem,min(3.4vw,2.8vh),1.6rem)] tracking-[0.2em] text-ivory/85">
-            {winners.length > 1 ? "同点優勝、おめでとうございます！" : "優勝、おめでとうございます！"}
+            <Jp>{winners.length > 1 ? "同点優勝、おめでとうございます！" : "優勝、おめでとうございます！"}</Jp>
           </p>
         </motion.div>
 

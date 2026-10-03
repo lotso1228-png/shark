@@ -3,6 +3,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect } from "react";
 import { useRoulette, useShuffleOnce } from "../Shuffle";
+import { Jp } from "../Jp";
 
 export interface Pick {
   id: string;
@@ -63,7 +64,7 @@ function Spin({ pick, mine, closable }: { pick: Pick; mine: boolean; closable: b
         animate={{ scaleX: spin.done ? 1 : 0.2, opacity: spin.done ? 1 : 0.4 }}
       />
       <p className="mt-[4vh] min-h-[1.6em] text-[clamp(1rem,min(4vw,3.4vh),2rem)] tracking-[0.2em] text-ivory/90">
-        {spin.done ? (mine ? "あなたが指名されました！" : "指名されました。お願いします！") : "誰が指名される…？"}
+        <Jp>{spin.done ? (mine ? "あなたが指名されました！" : "指名されました。お願いします！") : "誰が指名される…？"}</Jp>
       </p>
       {closable && spin.done && <p className="mt-[5vh] text-xs tracking-[0.3em] text-mist/50">タップで閉じる</p>}
     </div>

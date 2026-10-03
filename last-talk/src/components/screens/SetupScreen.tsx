@@ -6,6 +6,7 @@ import type { Category, Graduate, Mood, Topic } from "@/lib/types";
 import { useConfirm } from "../Confirm";
 import { MAX_GRADUATES, useStore } from "../StoreProvider";
 import { Button } from "../ui";
+import { Jp } from "../Jp";
 
 type Tab = "graduates" | "topics" | "display";
 
@@ -75,7 +76,9 @@ function Heading({ title, note }: { title: string; note?: ReactNode }) {
   return (
     <div className="mb-6">
       <h2 className="text-lg font-semibold tracking-[0.2em]">{title}</h2>
-      {note && <p className="mt-2 text-sm leading-relaxed text-mist/80">{note}</p>}
+      {note && (
+        <p className="mt-2 text-sm leading-relaxed text-mist/80">{typeof note === "string" ? <Jp>{note}</Jp> : note}</p>
+      )}
     </div>
   );
 }
@@ -413,7 +416,7 @@ function TopicsTab() {
       <ul className="mt-6 divide-y divide-ivory/10 border-y border-ivory/10">
         {list.length === 0 && (
           <li className="py-8 text-center text-sm text-mist/60">
-            お題がありません（このカテゴリーは出題されません）
+            <Jp>{"お題がありません（このカテゴリーは出題されません）"}</Jp>
           </li>
         )}
         {list.map((t) => (
@@ -595,7 +598,9 @@ function DisplayTab() {
               }`}
             >
               <span className={`block tracking-wider ${settings.mood === m.id ? "text-gold-soft" : ""}`}>{m.label}</span>
-              <span className="mt-1 block text-xs text-mist/70">{m.note}</span>
+              <span className="mt-1 block text-xs text-mist/70">
+                <Jp>{m.note}</Jp>
+              </span>
             </button>
           ))}
         </div>
@@ -603,9 +608,9 @@ function DisplayTab() {
 
       <div className="mt-12 space-y-2 text-sm leading-relaxed text-mist/70">
         <h2 className="mb-3 text-lg font-semibold tracking-[0.2em] text-ivory">使い方のヒント</h2>
-        <p>・PC をプロジェクターにつなぐ場合は、全画面（F キー）＋会場モードがおすすめです。</p>
-        <p>・→ / Space / PageDown で次へ、← / PageUp で戻ります。プレゼン用リモコンでも操作できます。</p>
-        <p>・データはこの端末のブラウザに保存されます（ログイン・サーバー不要）。</p>
+        <p><Jp>{"・PC をプロジェクターにつなぐ場合は、全画面（F キー）＋会場モードがおすすめです。"}</Jp></p>
+        <p><Jp>{"・→ / Space / PageDown で次へ、← / PageUp で戻ります。プレゼン用リモコンでも操作できます。"}</Jp></p>
+        <p><Jp>{"・データはこの端末のブラウザに保存されます（ログイン・サーバー不要）。"}</Jp></p>
       </div>
     </>
   );

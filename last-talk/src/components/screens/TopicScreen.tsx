@@ -10,6 +10,7 @@ import { BackArrow, Button } from "../ui";
 import { useFitText } from "../useFitText";
 import { ShuffleReveal, useShuffleOnce } from "../Shuffle";
 import { useLive } from "../live/LiveProvider";
+import { Jp } from "../Jp";
 
 export function TopicScreen() {
   const { game, graduates, settings, members, topics, actions } = useStore();
@@ -115,10 +116,12 @@ export function TopicScreen() {
               {view.special && (
                 <div className="hairline mb-[4vh] w-[min(40vw,18rem)]" />
               )}
-              <h1 className="topic-text">{view.text}</h1>
+              <h1 className="topic-text">
+                <Jp>{view.text}</Jp>
+              </h1>
               {view.note && !venue && (
                 <p className="mt-[4vh] text-[clamp(0.85rem,min(1.6vw,2.6vh),1.5rem)] tracking-[0.14em] text-mist/80">
-                  {view.note}
+                  <Jp>{view.note}</Jp>
                 </p>
               )}
             </Shuffled>

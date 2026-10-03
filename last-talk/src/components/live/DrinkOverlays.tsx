@@ -2,6 +2,7 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
+import { Jp } from "../Jp";
 
 const big = "text-[clamp(2.4rem,min(12vw,14vh),8rem)] leading-tight font-extrabold tracking-[0.08em]";
 const shell = (audience: boolean) =>
@@ -50,7 +51,7 @@ export function PenaltyOverlay({
               Episode Judge<span className="font-mincho ml-3 tracking-[0.2em] text-mist/70">エピソード判定</span>
             </p>
             <p className="mt-[2vh] text-[clamp(1rem,min(4vw,3.4vh),2rem)] tracking-[0.14em] text-ivory/85">
-              リアクションが足りませんでした…
+              <Jp>{"リアクションが足りませんでした…"}</Jp>
             </p>
             <p className={`mt-[2vh] ${big} text-ivory`}>アウト！</p>
             <p className="gold-text mt-[2vh] text-[clamp(1.6rem,min(7vw,7vh),4.2rem)] font-bold tracking-[0.1em]">
@@ -59,7 +60,7 @@ export function PenaltyOverlay({
             <p className="mt-[2vh] text-[clamp(0.85rem,min(3vw,2.4vh),1.4rem)] tracking-[0.16em] text-mist/80 tabular-nums">
               リアクション {penalty.count} ／ 目標 {penalty.target}
             </p>
-            <p className="mt-2 text-xs tracking-[0.2em] text-mist/60">ソフトドリンクでもOK。無理はしないでください</p>
+            <p className="mt-2 text-xs tracking-[0.2em] text-mist/60"><Jp>{"ソフトドリンクでもOK。無理はしないでください"}</Jp></p>
             {onNext && <p className="mt-[4vh] text-xs tracking-[0.3em] text-mist/50">タップ（NEXT）で次のお題へ</p>}
           </motion.div>
         </motion.div>
@@ -164,7 +165,7 @@ function VoteBody({
         <p className="mt-[2vh] text-[clamp(0.9rem,min(3.4vw,2.6vh),1.5rem)] tracking-[0.16em] text-mist/85 tabular-nums">
           ホント {vote.real ?? 0} ／ 盛ってる {vote.fake ?? 0}
         </p>
-        {fake && <p className="mt-2 text-xs tracking-[0.2em] text-mist/60">ソフトドリンクでもOK。無理はしないでください</p>}
+        {fake && <p className="mt-2 text-xs tracking-[0.2em] text-mist/60"><Jp>{"ソフトドリンクでもOK。無理はしないでください"}</Jp></p>}
         {closable && <p className="mt-[4vh] text-xs tracking-[0.3em] text-mist/50">タップで閉じる</p>}
       </motion.div>
     );
@@ -174,11 +175,11 @@ function VoteBody({
   return (
     <div className="flex w-full max-w-xl flex-col items-center text-center">
       <p className="eyebrow text-[clamp(0.75rem,min(2.4vw,2.2vh),1.3rem)] text-gold">Real or Fake</p>
-      <p className="gold-text mt-[2vh] text-[clamp(2rem,min(9vw,10vh),6rem)] leading-tight font-extrabold tracking-[0.06em]">
-        ホント？盛ってる？
+      <p className="gold-text mt-[2vh] text-[clamp(1.7rem,min(8vw,10vh),6rem)] leading-tight font-extrabold tracking-[0.04em]">
+        <Jp>{"ホント？盛ってる？"}</Jp>
       </p>
       <p className="mt-[1.5vh] text-[clamp(0.95rem,min(3.6vw,3vh),1.8rem)] tracking-[0.1em] text-ivory/90">
-        {vote.name}の今の話は…（盛ってる判定なら一杯）
+        <Jp>{`${vote.name}の今の話は…（盛ってる判定なら一杯）`}</Jp>
       </p>
       <p className="mt-[2vh] font-display text-[clamp(2.4rem,min(12vw,12vh),7rem)] leading-none text-gold-soft tabular-nums">
         {done ? "…" : remaining}

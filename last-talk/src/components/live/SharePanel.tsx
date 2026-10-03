@@ -5,6 +5,7 @@ import qrcode from "qrcode-generator";
 import { useMemo, useState } from "react";
 import { useStore } from "../StoreProvider";
 import { useLive } from "./LiveProvider";
+import { Jp } from "../Jp";
 
 const shareText = (url: string) =>
   [
@@ -68,12 +69,12 @@ export function SharePanel({ open, onClose }: { open: boolean; onClose: () => vo
             <p className="eyebrow text-xs text-gold">Share</p>
             <h2 className="mt-3 text-xl font-semibold tracking-[0.12em]">参加者のスマホに同時表示</h2>
             <p className="mt-3 text-sm leading-relaxed text-mist">
-              QRコードを読み取ると、司会者が出したお題が参加者のスマホにも表示されます。ログインやアプリは不要です。
+              <Jp>{"QRコードを読み取ると、司会者が出したお題が参加者のスマホにも表示されます。ログインやアプリは不要です。"}</Jp>
             </p>
 
             {!url ? (
               <p className="mt-6 text-sm text-red-200/80">
-                このブラウザでは同時表示を使えません。最新の Safari / Chrome で開いてください。
+                <Jp>{"このブラウザでは同時表示を使えません。最新の Safari / Chrome で開いてください。"}</Jp>
               </p>
             ) : (
               <>
@@ -107,7 +108,7 @@ export function SharePanel({ open, onClose }: { open: boolean; onClose: () => vo
                   aria-label="参加者用QRコード"
                   dangerouslySetInnerHTML={{ __html: svg }}
                 />
-                {!on && <p className="mt-3 text-xs text-gold/80">同時表示をオンにしてから読み取ってもらってください</p>}
+                {!on && <p className="mt-3 text-xs text-gold/80"><Jp>{"同時表示をオンにしてから読み取ってもらってください"}</Jp></p>}
 
                 <div className="mt-5 flex gap-2">
                   <input
@@ -148,7 +149,7 @@ export function SharePanel({ open, onClose }: { open: boolean; onClose: () => vo
                   </button>
                 </div>
                 <p className="mt-4 text-left text-[0.7rem] leading-relaxed text-mist/60">
-                  ・リンクは LINE などで送っても使えます。同じリンクは何度でも使えます。
+                  <Jp>{"・リンクは LINE などで送っても使えます。同じリンクは何度でも使えます。"}</Jp>
                   <br />
                   ・<strong className="text-gold-soft">司会者のスマホは Wi-Fi をオフにして、モバイル回線（4G/5G）で使ってください。</strong>会場の Wi-Fi に参加者が大勢つながっても、お題の配信が止まらなくなります。
                 </p>

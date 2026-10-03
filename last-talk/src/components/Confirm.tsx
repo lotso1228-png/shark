@@ -3,6 +3,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { createContext, useCallback, useContext, useState, type ReactNode } from "react";
 import { Button } from "./ui";
+import { Jp } from "./Jp";
 
 interface ConfirmRequest {
   title: string;
@@ -47,7 +48,11 @@ export function ConfirmProvider({ children }: { children: ReactNode }) {
               <h2 id="confirm-title" className="text-xl font-semibold tracking-wider">
                 {req.title}
               </h2>
-              {req.body && <p className="mt-4 text-sm leading-relaxed text-mist">{req.body}</p>}
+              {req.body && (
+                <p className="mt-4 text-sm leading-relaxed text-mist">
+                  <Jp>{req.body}</Jp>
+                </p>
+              )}
               <div className="mt-8 flex flex-col-reverse gap-3 sm:flex-row sm:justify-center">
                 <Button variant="ghost" onClick={close} autoFocus>
                   キャンセル

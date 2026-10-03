@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { DEFAULT_TOPICS } from "@/lib/topics";
 import type { Category } from "@/lib/types";
+import { Jp } from "./Jp";
 
 const appStart = typeof performance !== "undefined" ? performance.now() : 0;
 const seen = new Set<string>();
@@ -128,7 +129,7 @@ export function ShuffleReveal({
             animate={{ y: "-50%", opacity: 1, transition: { duration: Math.min(0.18, STEPS[step] / 1000), ease: "linear" } }}
             exit={{ y: "60%", opacity: 0, transition: { duration: Math.min(0.18, STEPS[step] / 1000), ease: "linear" } }}
           >
-            {d}
+            <Jp>{d}</Jp>
           </motion.p>
         </AnimatePresence>
       </div>
