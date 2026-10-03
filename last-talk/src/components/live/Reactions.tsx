@@ -115,9 +115,28 @@ export function HostReactions({
   big?: boolean;
 }) {
   const layer = useRef<ReactionLayerHandle>(null);
-  const { actions } = useStore();
+  const { actions, members } = useStore();
   const joined = useRef(actions.memberJoined);
   joined.current = actions.memberJoined;
+  // 途中参加のお知らせ（すでに登録済みの人・再接続は出さない）
+  const known = useRef(new Set<string>());
+  members.forEach((m) => known.current.add(m.id));
+  const [arrivals, setArrivals] = useState<{ key: number; names: string[] } | null>(null);
+  const since = useRef(0);
+  const announce = useCallback((id: string, name: string) => {
+    // 接続直後は過去の参加記録がまとめて届くので知らせない
+    if (Date.now() - since.current < 8000 || known.current.has(id) || !name.trim()) {
+      known.current.add(id);
+      return;
+    }
+    known.current.add(id);
+    setArrivals((a) => ({ key: Date.now(), names: [...(a?.names ?? []), name.trim().slice(0, 16)].slice(-3) }));
+  }, []);
+  useEffect(() => {
+    if (!arrivals) return;
+    const t = setTimeout(() => setArrivals(null), 4500);
+    return () => clearTimeout(t);
+  }, [arrivals]);
   const score = useRef(actions.addScores);
   score.current = actions.addScores;
   const voted = useRef(actions.castVote);
@@ -126,18 +145,38 @@ export function HostReactions({
   lettered.current = actions.addLetter;
   useEffect(() => {
     if (!active || !channel?.onReactions) return;
+    since.current = Date.now();
     return channel.onReactions(
       (r) => {
         layer.current?.burst(r);
         score.current(r); // 優勝ポイントに加算
       },
-      (id, name) => joined.current(id, name),
+      (id, name) => {
+        announce(id, name);
+        joined.current(id, name);
+      },
       (voteId, voter, choice) => voted.current(voteId, voter, choice),
       (l) => lettered.current(l),
     );
-  }, [active, channel]);
+  }, [active, channel, announce]);
   if (!active || !channel?.onReactions) return null;
-  return <ReactionLayer ref={layer} big={big} edges bottom="4vh" />;
+  return (
+    <>
+      <ReactionLayer ref={layer} big={big} edges bottom="4vh" />
+      {arrivals && (
+        <div
+          key={arrivals.key}
+          role="status"
+          data-join-toast
+          className="pointer-events-none fixed inset-x-0 top-[max(0.75rem,env(safe-area-inset-top))] z-[70] flex justify-center px-4"
+        >
+          <p className="border border-gold/50 bg-night/95 px-5 py-2.5 text-center text-sm tracking-[0.12em] text-ivory shadow-xl">
+            <span className="text-gold-soft">{arrivals.names.join("・")}</span> さんが参加しました 🎉
+          </p>
+        </div>
+      )}
+    </>
+  );
 }
 
 /** 参加者側：リアクションボタン */
