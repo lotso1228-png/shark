@@ -101,7 +101,9 @@ export function claudeChannel(db: LiveDb): LiveChannel {
  * 誰でも同じトピックに書き込めるため、司会者の端末で作った鍵で署名し、
  * 参加者は署名を確かめたメッセージだけを表示する。 */
 
-const NTFY = "https://ntfy.sh";
+// 配信サービス。テストでは window.__LASTTALK_NTFY__ で差し替えられる（本番は常に ntfy.sh）
+const NTFY: string =
+  (typeof window !== "undefined" && (window as { __LASTTALK_NTFY__?: string }).__LASTTALK_NTFY__) || "https://ntfy.sh";
 const ROOM_KEY = "lasttalk:v1:room";
 
 const b64u = {
