@@ -70,4 +70,6 @@ export interface Settings {
   mood: Mood;
   /** 参加者のスマホへの同時表示（ログイン不要版）。司会者がオンにしたときだけ配信する */
   liveOn?: boolean;
+  /** 保存済みの標準お題がどの版か（新しい版が出たら自動で入れ替える） */
+  topicsVersion?: number;
 }

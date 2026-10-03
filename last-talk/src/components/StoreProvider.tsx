@@ -1,9 +1,9 @@
 "use client";
 
-import { createContext, useCallback, useContext, useMemo, type ReactNode } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, type ReactNode } from "react";
 import * as E from "@/lib/engine";
 import { STORAGE_KEYS, usePersistentState } from "@/lib/storage";
-import { DEFAULT_TOPICS } from "@/lib/topics";
+import { DEFAULT_TOPICS, TOPICS_VERSION } from "@/lib/topics";
 import type {
   Category,
   GameState,
@@ -50,6 +50,13 @@ function useStoreValue() {
     isGame,
   );
   const loaded = gLoaded && tLoaded && sLoaded && gmLoaded;
+
+  // 標準お題が新しくなっていたら入れ替える（自分で追加したお題は残す）
+  useEffect(() => {
+    if (!loaded || settings.topicsVersion === TOPICS_VERSION) return;
+    setTopics((list) => [...DEFAULT_TOPICS, ...list.filter((t) => !t.builtIn)]);
+    setSettings((s) => ({ ...s, topicsVersion: TOPICS_VERSION }));
+  }, [loaded, settings.topicsVersion, setTopics, setSettings]);
 
   const ctx = useCallback(
     (extra?: Partial<E.DrawContext>): E.DrawContext => ({
