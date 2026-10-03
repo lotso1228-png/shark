@@ -123,6 +123,8 @@ function ntfyStream(
   pollTopic?: string,
   /** 予備方式で、取りこぼしなく順に受け取るトピック（リアクションなど） */
   pollAll: string[] = [],
+  /** 予備方式の問い合わせ間隔（ミリ秒） */
+  pollEvery = 5000,
 ) {
   let es: EventSource | null = null;
   let alive = true;
@@ -131,33 +133,36 @@ function ntfyStream(
   let polling = false;
   let timer: ReturnType<typeof setTimeout> | undefined;
 
-  const since: Record<string, string> = {};
-  const startedAt = String(Math.floor(Date.now() / 1000));
+  // 予備方式：1回の問い合わせで全トピックの新着をまとめて受け取る（ntfy.sh の1台あたりの上限内に収める）
+  const polled = [...(pollTopic ? [pollTopic] : []), ...pollAll];
+  let sinceTime = Math.floor(Date.now() / 1000);
+  const seenIds = new Set<string>();
+  let first = true;
   const poll = async () => {
-    if (!alive || (!pollTopic && pollAll.length === 0)) return;
-    // ntfy.sh の制限（1台あたり平均5秒に1回）を超えないよう、取りに行く数に合わせて間隔を空ける
-    const reqs = (pollTopic ? 1 : 0) + pollAll.length;
-    let wait = reqs * 4500 + Math.random() * 2000;
+    if (!alive || polled.length === 0) return;
+    let wait = pollEvery + Math.random() * 1500;
     try {
-      if (pollTopic) {
+      // 初回だけ、メインのトピックは最新の1件を取り直す（途中参加でも今のお題を出す）
+      if (first && pollTopic) {
         const res = await fetch(`${NTFY}/${pollTopic}/json?poll=1&since=latest`, { cache: "no-store" });
-        if (res.status === 429) throw Object.assign(new Error("rate"), { rate: true });
-        if (!res.ok) throw new Error(String(res.status));
-        const line = (await res.text()).trim().split("\n").pop();
-        if (line) onMessage(pollTopic, JSON.parse(line).message);
-      }
-      for (const t of pollAll) {
-        const res = await fetch(`${NTFY}/${t}/json?poll=1&since=${since[t] ?? startedAt}`, { cache: "no-store" });
-        if (res.status === 429) throw Object.assign(new Error("rate"), { rate: true });
-        if (!res.ok) continue;
-        for (const line of (await res.text()).trim().split("\n")) {
-          if (!line) continue;
-          const m = JSON.parse(line);
-          if (m.event !== "message") continue;
-          since[t] = m.id;
-          onMessage(t, m.message);
+        if (res.ok) {
+          const line = (await res.text()).trim().split("\n").pop();
+          if (line) onMessage(pollTopic, JSON.parse(line).message);
         }
       }
+      first = false;
+      const res = await fetch(`${NTFY}/${polled.join(",")}/json?poll=1&since=${sinceTime}`, { cache: "no-store" });
+      if (res.status === 429) throw Object.assign(new Error("rate"), { rate: true });
+      if (!res.ok) throw new Error(String(res.status));
+      for (const line of (await res.text()).trim().split("\n")) {
+        if (!line) continue;
+        const m = JSON.parse(line);
+        if (m.event !== "message" || seenIds.has(m.id)) continue;
+        seenIds.add(m.id);
+        if (typeof m.time === "number") sinceTime = Math.max(sinceTime, m.time);
+        onMessage(m.topic, m.message);
+      }
+      if (seenIds.size > 500) seenIds.clear();
       status("live");
     } catch (e) {
       if ((e as { rate?: boolean }).rate) wait = 20000 + Math.random() * 5000;
@@ -189,7 +194,8 @@ function ntfyStream(
       es?.close();
       es = null;
       if (!opened) fails++;
-      status("offline");
+      // まだ一度もつながっていない間は「接続中」のまま（予備方式に切り替わるまでの数秒）
+      status(opened ? "offline" : "connecting");
       if (fails >= 2 && (pollTopic || pollAll.length)) {
         polling = true;
         void poll();
@@ -330,6 +336,8 @@ export async function ntfyHostChannel(baseUrl: string): Promise<LiveChannel | nu
         () => {},
         undefined,
         [reactTopicOf(r.room)],
+        // 司会者の端末はお題の送信を最優先。リアクションの取得は控えめに
+        11000,
       );
     },
   };
