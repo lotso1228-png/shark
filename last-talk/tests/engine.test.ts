@@ -269,3 +269,17 @@ test("お題の入れ替え（v5→v6）：未編集の旧お題は新しくな�
   assert.ok(out.some((t) => t.text === "いつか理事長になりそうな現役は？そう思うエピソードも。"));
   assert.ok(out.every((t) => !t.edited));
 });
+
+test("判定タイム：目標に届けばセーフ、届かなければアウト。受付終了後の猶予を過ぎたら数えない", () => {
+  const t0 = 1_000_000;
+  let g: GameState = E.draw(startFor("a"), ctx({ rng: () => 0.99 }));
+  g = E.startJudge(g, 15, t0, "j1");
+  assert.equal(g.judge!.target, 30);
+  g = E.countJudge(g, { clap: 20 }, t0 + 5000);
+  g = E.countJudge(g, { laugh: 9 }, t0 + E.JUDGE_SECONDS * 1000 + 2000); // 猶予内
+  g = E.countJudge(g, { fire: 20 }, t0 + E.JUDGE_SECONDS * 1000 + E.JUDGE_GRACE_MS + 1); // 猶予後
+  assert.equal(g.judge!.count, 29);
+  assert.equal(E.finishJudge(g).judge!.result, "out");
+  assert.equal(E.finishJudge(E.countJudge(g, { clap: 1 }, t0 + 6000)).judge!.result, "safe");
+  assert.equal(E.judgeTarget(0), 6);
+});

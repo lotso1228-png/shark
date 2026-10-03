@@ -380,3 +380,33 @@ export function ranking(g: GameState, graduates: Graduate[]): (AwardRow & { rank
     .sort((a, b) => b.total - a.total);
   return rows.map((r) => ({ ...r, rank: rows.findIndex((x) => x.total === r.total) + 1 }));
 }
+
+/* ───────── 判定タイム ───────── */
+
+export const JUDGE_SECONDS = 10;
+/** 受付終了後も、まとめて送られてくるリアクションを待つ時間 */
+export const JUDGE_GRACE_MS = 3500;
+
+/** 目標のリアクション数：参加者1人あたり2回が目安（最低6） */
+export const judgeTarget = (participants: number) => Math.max(6, Math.round(participants * 2));
+
+export function startJudge(g: GameState, participants: number, now: number, id: string): GameState {
+  return {
+    ...g,
+    memberPick: null,
+    judge: { id, endsAt: now + JUDGE_SECONDS * 1000, seconds: JUDGE_SECONDS, target: judgeTarget(participants), count: 0 },
+  };
+}
+
+/** 判定中に届いたリアクションを数える（受付終了＋猶予まで） */
+export function countJudge(g: GameState, r: ReactionCounts, now: number): GameState {
+  const j = g.judge;
+  if (!j || j.result || now > j.endsAt + JUDGE_GRACE_MS) return g;
+  return { ...g, judge: { ...j, count: j.count + scoreTotal(r) } };
+}
+
+export function finishJudge(g: GameState): GameState {
+  const j = g.judge;
+  if (!j || j.result) return g;
+  return { ...g, judge: { ...j, result: j.count >= j.target ? "safe" : "out" } };
+}

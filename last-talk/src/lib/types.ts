@@ -1,8 +1,8 @@
 /** laugh〜last は卒業生へのお題（この順に進行）。crowd は会場の現役メンバーが答えるお題 */
 export type Category = "laugh" | "memory" | "friends" | "last" | "crowd";
 
-/** hype: 盛り上がりモードで優先 / calm: しっとりモードで優先 */
-export type TopicTag = "hype" | "calm";
+/** hype: 盛り上がりモードで優先 / calm: しっとりモードで優先 / judge: 回答のあと「判定タイム」をすすめる（モノマネなど） */
+export type TopicTag = "hype" | "calm" | "judge";
 
 export interface Topic {
   id: string;
@@ -74,6 +74,8 @@ export interface GameState {
   lastRevealed: boolean;
   /** 卒業生ルーレットの実行中（回り終わったら選ばれた人の画面へ進む） */
   roulette?: { id: string; winnerId: string } | null;
+  /** 判定タイム：一定時間のリアクション数が目標に届かなければ一杯 */
+  judge?: Judge | null;
   /** 優勝ポイント：卒業生ごとに受け取ったリアクションの数 */
   scores?: Record<string, ReactionCounts>;
   /** 優勝発表で結果を開いたか */
@@ -82,6 +84,17 @@ export interface GameState {
   memberPick?: { id: string; memberId: string; name: string; names: string[] } | null;
   /** 設定画面を閉じたときに戻る画面 */
   returnTo?: Screen;
+}
+
+export interface Judge {
+  id: string;
+  /** 受付の終了時刻（司会者の端末の時計） */
+  endsAt: number;
+  /** 受付時間（秒） */
+  seconds: number;
+  target: number;
+  count: number;
+  result?: "safe" | "out";
 }
 
 export type ReactionCounts = Partial<Record<"clap" | "laugh" | "cry" | "fire", number>>;

@@ -9,9 +9,12 @@ import { FlowIndicator } from "../FlowIndicator";
 import { BackArrow, Button } from "../ui";
 import { useFitText } from "../useFitText";
 import { ShuffleReveal, useShuffleOnce } from "../Shuffle";
+import { useLive } from "../live/LiveProvider";
 
 export function TopicScreen() {
-  const { game, graduates, settings, members, actions } = useStore();
+  const { game, graduates, settings, members, topics, actions } = useStore();
+  const { channel } = useLive();
+  const reactionsOn = channel?.kind === "ntfy" && !!settings.liveOn;
   const entry = currentEntry(game);
   const grad = graduates.find((g) => g.id === entry?.graduateId) ?? null;
   const name = displayName(grad) || "卒業生";
@@ -131,6 +134,14 @@ export function TopicScreen() {
               その人を指名する
             </Button>
           )}
+          {reactionsOn &&
+            !game.judge &&
+            entry.card.kind === "topic" &&
+            topics.find((t) => t.id === (entry.card as { topicId: string }).topicId)?.tags.includes("judge") && (
+              <Button variant="ghost" onClick={actions.startJudge} className="!border-gold/60 !text-gold-soft">
+                判定タイム
+              </Button>
+            )}
           {members.length > 0 &&
             ((entry.card.kind === "topic" && entry.card.category === "crowd") ||
               (entry.card.kind === "special" && !["photo", "toast"].includes(entry.card.special))) && (

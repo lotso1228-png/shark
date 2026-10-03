@@ -121,9 +121,11 @@ function useStoreValue() {
         }),
       draw: () => setGame((g) => E.draw(g, ctx())),
       next: () =>
-        setGame((g) => E.next({ ...g, memberPick: null }, { ...ctx(), rotate: settings.rotate !== false })),
-      back: () => setGame((g) => E.back({ ...g, memberPick: null })),
-      skip: () => setGame((g) => E.skip({ ...g, memberPick: null }, ctx())),
+        setGame((g) =>
+          E.next({ ...g, memberPick: null, judge: null }, { ...ctx(), rotate: settings.rotate !== false }),
+        ),
+      back: () => setGame((g) => E.back({ ...g, memberPick: null, judge: null })),
+      skip: () => setGame((g) => E.skip({ ...g, memberPick: null, judge: null }, ctx())),
 
       // ── 現役メンバー ──
       /** 現役ルーレット：直前に当たった人は外して、ランダムに1人指名 */
@@ -175,7 +177,15 @@ function useStoreValue() {
       finishLast: (toFinale = false) => setGame((g) => E.finishLast(g, graduates, toFinale)),
       // ── 優勝ポイント ──
       /** 参加者のリアクションを、いま話している卒業生のポイントに加える */
-      addScores: (r: ReactionCounts) => setGame((g) => E.addScores(g, r)),
+      addScores: (r: ReactionCounts) => setGame((g) => E.countJudge(E.addScores(g, r), r, Date.now())),
+      // ── 判定タイム ──
+      /** 目標は QR で参加した人数（いなければ登録メンバー数）から決める */
+      startJudge: () =>
+        setGame((g) =>
+          E.startJudge(g, members.filter((m) => m.joined).length || members.length, Date.now(), uid()),
+        ),
+      finishJudge: () => setGame((g) => E.finishJudge(g)),
+      closeJudge: () => setGame((g) => ({ ...g, judge: null })),
       enterAward: () => setGame((g) => ({ ...g, screen: "award", awardRevealed: false })),
       revealAward: () => setGame((g) => ({ ...g, awardRevealed: true })),
       restart: () => setGame({ ...E.initialGame(), screen: "top" }),

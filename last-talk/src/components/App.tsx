@@ -26,6 +26,8 @@ import {
 import { SharePanel } from "./live/SharePanel";
 import { HostReactions } from "./live/Reactions";
 import { MemberPick } from "./live/MemberPick";
+import { JudgeOverlay } from "./live/JudgeOverlay";
+import { JUDGE_GRACE_MS } from "@/lib/engine";
 
 export function App() {
   const { role, channel } = useLiveRole();
@@ -54,6 +56,15 @@ function Stage() {
   const fullscreen = useFullscreen();
   useWakeLock();
   const screen = game.screen;
+
+  // 判定タイム：受付終了（＋届くまでの猶予）で結果を出す
+  const judge = game.judge;
+  useEffect(() => {
+    if (!judge || judge.result) return;
+    const wait = Math.max(0, judge.endsAt + JUDGE_GRACE_MS - Date.now());
+    const t = setTimeout(actions.finishJudge, wait);
+    return () => clearTimeout(t);
+  }, [judge, actions]);
 
   const backFromLast = useCallback(() => {
     actions.goTo(
@@ -206,6 +217,14 @@ function Stage() {
           </>
         )}
         {screen !== "setup" && <MemberPick pick={game.memberPick ?? null} onClose={actions.closeMemberPick} />}
+        {screen !== "setup" && (
+          <JudgeOverlay
+            judge={game.judge ?? null}
+            endsAt={game.judge?.endsAt}
+            liveCount={game.judge?.count}
+            onClose={actions.closeJudge}
+          />
+        )}
         <HostReactions
           channel={channel}
           active={channel?.kind === "ntfy" && !!settings.liveOn && screen !== "setup"}

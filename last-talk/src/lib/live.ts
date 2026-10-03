@@ -40,6 +40,8 @@ export interface LivePayload {
   award?: { revealed: boolean; rows: AwardEntry[] };
   /** フィナーレで表示する優勝者 */
   winners?: string[];
+  /** 判定タイム（数の途中経過は送らず、開始と結果だけ送る） */
+  judge?: { id: string; seconds: number; target: number; result?: "safe" | "out"; count?: number };
 }
 
 export interface AwardEntry {
@@ -76,7 +78,22 @@ export function livePayload(
   const name = nameOf(graduates, game.graduateId);
   // 現役ルーレットの指名中は、どの画面でも参加者に知らせる
   const scene = build();
-  return scene && game.memberPick ? { ...scene, pick: game.memberPick } : scene;
+  if (!scene) return scene;
+  const j = game.judge;
+  return {
+    ...scene,
+    ...(game.memberPick ? { pick: game.memberPick } : {}),
+    ...(j
+      ? {
+          judge: {
+            id: j.id,
+            seconds: j.seconds,
+            target: j.target,
+            ...(j.result ? { result: j.result, count: j.count } : {}),
+          },
+        }
+      : {}),
+  };
 
   function awardRows(): AwardEntry[] {
     return ranking(game, graduates).map((r) => ({

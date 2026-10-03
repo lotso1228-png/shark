@@ -201,6 +201,15 @@ export function HostMenu({
                 </div>
               </Section>
 
+              <Section title="判定タイム（10秒のリアクションが目標に届かなければ一杯）">
+                <Action
+                  onClick={run(actions.startJudge)}
+                  disabled={!(game.screen === "topic" && live !== "off")}
+                >
+                  {live === "off" ? "同時表示をオンにすると使えます" : "判定タイムを始める"}
+                </Action>
+              </Section>
+
               <Section title={`現役メンバー（${members.length}人）`}>
                 <Action onClick={run(actions.pickMember)} disabled={members.length === 0}>
                   {members.length === 0 ? "まだいません（QR参加・設定で追加）" : "現役をランダム指名"}

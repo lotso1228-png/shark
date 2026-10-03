@@ -12,6 +12,7 @@ import {
 } from "./Reactions";
 import { JoinSheet, loadMe, type Me } from "./JoinSheet";
 import { MemberPick } from "./MemberPick";
+import { JudgeOverlay } from "./JudgeOverlay";
 import { AwardView } from "../AwardView";
 import { Confetti } from "../Confetti";
 import { FlowIndicator } from "../FlowIndicator";
@@ -92,6 +93,7 @@ export function AudienceView({ channel }: { channel: LiveChannel | null }) {
       </AnimatePresence>
 
       <MemberPick pick={payload?.pick ?? null} mine={!!me && payload?.pick?.memberId === me.id} />
+      <JudgeOverlay judge={payload?.judge ?? null} audience={canReact} />
       {channel?.join && (
         <JoinSheet
           key={me?.id ?? "new"}
