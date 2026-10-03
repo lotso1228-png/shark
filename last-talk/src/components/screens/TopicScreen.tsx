@@ -11,7 +11,7 @@ import { useFitText } from "../useFitText";
 import { ShuffleReveal, useShuffleOnce } from "../Shuffle";
 
 export function TopicScreen() {
-  const { game, graduates, settings, actions } = useStore();
+  const { game, graduates, settings, members, actions } = useStore();
   const entry = currentEntry(game);
   const grad = graduates.find((g) => g.id === entry?.graduateId) ?? null;
   const name = displayName(grad) || "卒業生";
@@ -131,6 +131,13 @@ export function TopicScreen() {
               その人を指名する
             </Button>
           )}
+          {members.length > 0 &&
+            ((entry.card.kind === "topic" && entry.card.category === "crowd") ||
+              (entry.card.kind === "special" && entry.card.special !== "photo")) && (
+              <Button variant="ghost" onClick={actions.pickMember}>
+                現役をランダム指名
+              </Button>
+            )}
           {flowDone && !canNominate && (
             <Button variant="ghost" onClick={actions.enterLast}>
               Last Message ›

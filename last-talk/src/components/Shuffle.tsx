@@ -30,7 +30,7 @@ export const markSeen = (key: string) => seen.add(key);
 function decoysFor(cat: Category | "special" | undefined, final: string, n = 16) {
   const pool = DEFAULT_TOPICS.filter(
     (t) => t.text !== final && (cat === undefined || cat === "special" || t.category === cat) && t.category !== "last",
-  ).map((t) => t.text);
+  ).map((t) => t.text.replaceAll("{name}", "〇〇"));
   for (let i = pool.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [pool[i], pool[j]] = [pool[j], pool[i]];

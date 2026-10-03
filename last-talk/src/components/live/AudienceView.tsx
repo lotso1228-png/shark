@@ -10,6 +10,8 @@ import {
   ReactionLayer,
   type ReactionLayerHandle,
 } from "./Reactions";
+import { JoinSheet, loadMe, type Me } from "./JoinSheet";
+import { MemberPick } from "./MemberPick";
 import { Confetti } from "../Confetti";
 import { FlowIndicator } from "../FlowIndicator";
 import { Eyebrow, Hairline } from "../ui";
@@ -50,6 +52,17 @@ export function AudienceView({ channel }: { channel: LiveChannel | null }) {
 
   const scene = payload?.scene ?? "idle";
   const canReact = !!channel?.react && conn !== "signed-out";
+
+  // 名前を入れて参加（現役ルーレットの対象になる）
+  const [me, setMe] = useState<Me | null>(null);
+  const [askName, setAskName] = useState(false);
+  useEffect(() => {
+    if (!channel?.join) return;
+    const m = loadMe();
+    setMe(m);
+    if (m) channel.join(m.id, m.name);
+    else setAskName(true);
+  }, [channel]);
   const react = (k: ReactionKind) => {
     channel?.react?.(k);
     layer.current?.burst({ [k]: 1 });
@@ -77,6 +90,29 @@ export function AudienceView({ channel }: { channel: LiveChannel | null }) {
         </motion.div>
       </AnimatePresence>
 
+      <MemberPick pick={payload?.pick ?? null} mine={!!me && payload?.pick?.memberId === me.id} />
+      {channel?.join && (
+        <JoinSheet
+          key={me?.id ?? "new"}
+          open={askName}
+          current={me}
+          onJoin={(m) => {
+            setMe(m);
+            setAskName(false);
+            channel.join?.(m.id, m.name);
+          }}
+          onSkip={() => setAskName(false)}
+        />
+      )}
+      {canReact && channel?.join && (
+        <button
+          type="button"
+          onClick={() => setAskName(true)}
+          className="fixed top-[max(0.5rem,env(safe-area-inset-top))] right-2 z-30 min-h-10 px-3 text-[0.65rem] tracking-[0.2em] text-mist/50"
+        >
+          {me ? `${me.name} で参加中` : "名前を入れて参加"}
+        </button>
+      )}
       {canReact && (
         <>
           <ReactionLayer ref={layer} bottom="8rem" />

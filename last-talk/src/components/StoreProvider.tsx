@@ -8,6 +8,7 @@ import type {
   Category,
   GameState,
   Graduate,
+  Member,
   Mood,
   Screen,
   Settings,
@@ -49,7 +50,12 @@ function useStoreValue() {
     E.initialGame,
     isGame,
   );
-  const loaded = gLoaded && tLoaded && sLoaded && gmLoaded;
+  const [members, setMembers, mLoaded] = usePersistentState<Member[]>(
+    STORAGE_KEYS.members,
+    () => [],
+    isArray<Member>,
+  );
+  const loaded = gLoaded && tLoaded && sLoaded && gmLoaded && mLoaded;
 
   // 標準お題が新しくなっていたら入れ替える（自分で追加したお題は残す）
   useEffect(() => {
@@ -112,9 +118,39 @@ function useStoreValue() {
           return { ...g, screen: "select", roulette: { id: uid(), winnerId: winner.id } };
         }),
       draw: () => setGame((g) => E.draw(g, ctx())),
-      next: () => setGame((g) => E.next(g, { ...ctx(), rotate: settings.rotate !== false })),
-      back: () => setGame((g) => E.back(g)),
-      skip: () => setGame((g) => E.skip(g, ctx())),
+      next: () =>
+        setGame((g) => E.next({ ...g, memberPick: null }, { ...ctx(), rotate: settings.rotate !== false })),
+      back: () => setGame((g) => E.back({ ...g, memberPick: null })),
+      skip: () => setGame((g) => E.skip({ ...g, memberPick: null }, ctx())),
+
+      // ── 現役メンバー ──
+      /** 現役ルーレット：直前に当たった人は外して、ランダムに1人指名 */
+      pickMember: () =>
+        setGame((g) => {
+          if (members.length === 0) return g;
+          let pool = members.filter((m) => m.id !== g.memberPick?.memberId);
+          if (pool.length === 0) pool = members;
+          const win = pool[Math.floor(Math.random() * pool.length)];
+          // ルーレットに流す名前（多すぎると読めないので最大16人。当選者は必ず含める）
+          const others = members.filter((m) => m.id !== win.id).sort(() => Math.random() - 0.5).slice(0, 15);
+          const names = [...others.map((m) => m.name), win.name].sort(() => Math.random() - 0.5);
+          return { ...g, memberPick: { id: uid(), memberId: win.id, name: win.name, names } };
+        }),
+      closeMemberPick: () => setGame((g) => ({ ...g, memberPick: null })),
+      addMember: (name: string) =>
+        setMembers((list) =>
+          !name.trim() || list.length >= 80 ? list : [...list, { id: uid(), name: name.trim().slice(0, 16) }],
+        ),
+      removeMember: (id: string) => setMembers((list) => list.filter((m) => m.id !== id)),
+      /** QR から参加した人を登録（同じ端末なら名前を更新） */
+      memberJoined: (id: string, name: string) =>
+        setMembers((list) => {
+          const n = name.trim().slice(0, 16);
+          if (!n || !/^[a-z0-9]{4,24}$/.test(id)) return list;
+          const i = list.findIndex((m) => m.id === id);
+          if (i >= 0) return list[i].name === n ? list : list.map((m, k) => (k === i ? { ...m, name: n } : m));
+          return list.length >= 80 ? list : [...list, { id, name: n, joined: true }];
+        }),
       reply: () => setGame((g) => E.reply(g)),
       special: (kind: SpecialKind | "random") =>
         setGame((g) =>
@@ -183,10 +219,10 @@ function useStoreValue() {
       toggleVenue: () => setSettings((s) => ({ ...s, venueMode: !s.venueMode })),
       setLiveOn: (on: boolean) => setSettings((s) => ({ ...s, liveOn: on })),
     }),
-    [ctx, graduates, settings.rotate, setGame, setGraduates, setTopics, setSettings],
+    [ctx, graduates, members, settings.rotate, setMembers, setGame, setGraduates, setTopics, setSettings],
   );
 
-  return { loaded, graduates, topics, settings, game, graduate, actions };
+  return { loaded, graduates, topics, settings, game, graduate, members, actions };
 }
 
 type Store = ReturnType<typeof useStoreValue>;

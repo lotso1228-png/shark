@@ -2,6 +2,7 @@
 
 import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from "react";
 import { REACTIONS, type LiveChannel, type ReactionKind, type Reactions } from "@/lib/liveChannel";
+import { useStore } from "../StoreProvider";
 
 const EMOJI = Object.fromEntries(REACTIONS.map((r) => [r.kind, r.emoji])) as Record<ReactionKind, string>;
 const MAX_FLOATING = 40;
@@ -84,9 +85,15 @@ export const ReactionLayer = forwardRef<
 /** 司会者側：参加者から届いたリアクションを画面に浮かべる */
 export function HostReactions({ channel, active, big }: { channel: LiveChannel | null; active: boolean; big?: boolean }) {
   const layer = useRef<ReactionLayerHandle>(null);
+  const { actions } = useStore();
+  const joined = useRef(actions.memberJoined);
+  joined.current = actions.memberJoined;
   useEffect(() => {
     if (!active || !channel?.onReactions) return;
-    return channel.onReactions((r) => layer.current?.burst(r));
+    return channel.onReactions(
+      (r) => layer.current?.burst(r),
+      (id, name) => joined.current(id, name),
+    );
   }, [active, channel]);
   if (!active || !channel?.onReactions) return null;
   return <ReactionLayer ref={layer} big={big} edges bottom="4vh" />;

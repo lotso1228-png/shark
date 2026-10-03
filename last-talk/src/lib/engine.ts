@@ -28,7 +28,25 @@ export const initialGame = (): GameState => ({
 
 /** 1章あたりのお題数。卒業生が多いほど1章を長くし、全員に各章が回るようにする */
 export const chapterQuota = (graduateCount: number) =>
-  Math.min(10, Math.max(4, graduateCount));
+  Math.min(10, Math.max(3, graduateCount));
+
+/** 現役メンバー向けのお題を混ぜる割合 */
+const CROWD_RATE = 0.3;
+
+const nameOf = (graduates: Graduate[], id: string | null) => {
+  const x = graduates.find((g) => g.id === id);
+  return x ? x.nickname.trim() || x.name.trim() : "卒業生";
+};
+
+/** お題をカードにする。{name} は話題の卒業生の呼び名に置き換える */
+function topicCard(t: Topic, graduateId: string | null, graduates: Graduate[]): Card {
+  return {
+    kind: "topic",
+    topicId: t.id,
+    category: t.category,
+    text: t.text.replaceAll("{name}", nameOf(graduates, graduateId)),
+  };
+}
 
 /** 自動進行の最終章。LAST MESSAGE はクライマックス用に温存する */
 const AUTO_LAST_CHAPTER: Category = "friends";
@@ -175,9 +193,20 @@ export function draw(g: GameState, ctx: DrawContext): GameState {
 
   if (!card) {
     let cat = resolveCategory(state, ctx.mood, rng);
+    // ときどき現役メンバーが答えるお題を混ぜる（続けては出さない）
+    const prevCrowd = prev?.card.kind === "topic" && prev.card.category === "crowd";
+    if (
+      !g.chapterLocked &&
+      g.history.length > 0 &&
+      !prevCrowd &&
+      ctx.topics.some((t) => t.category === "crowd") &&
+      rng() < CROWD_RATE
+    ) {
+      cat = "crowd";
+    }
     // 自動進行中にカテゴリーを使い切ったら、すぐにリセットせず他カテゴリーの未使用お題を使う。
     // （LAST MESSAGE はクライマックス用に温存。全て使い切ったときだけリセットされる）
-    if (!g.chapterLocked && !hasUnused(ctx.topics, cat, used)) {
+    if (!g.chapterLocked && cat !== "crowd" && !hasUnused(ctx.topics, cat, used)) {
       const i = CATEGORY_ORDER.indexOf(chapter);
       const fallback = [
         ...CATEGORY_ORDER.slice(0, i).reverse(),
@@ -190,12 +219,7 @@ export function draw(g: GameState, ctx: DrawContext): GameState {
       pickTopic(ctx.topics, chapter, used, ctx.mood, rng, recent);
     if (!picked) return state;
     used = picked.used;
-    card = {
-      kind: "topic",
-      topicId: picked.topic.id,
-      category: picked.topic.category,
-      text: picked.topic.text,
-    };
+    card = topicCard(picked.topic, graduateId, ctx.graduates);
   }
 
   const history = [...g.history.slice(0, g.cursor + 1), { graduateId, card }];
@@ -256,10 +280,7 @@ export function skip(g: GameState, ctx: DrawContext): GameState {
   const picked = pickTopic(ctx.topics, cat, g.usedTopicIds, ctx.mood, rng, recentTopicIds(g));
   if (!picked) return g;
   const history = [...g.history.slice(0, g.cursor)];
-  history.push({
-    graduateId: cur.graduateId,
-    card: { kind: "topic", topicId: picked.topic.id, category: cat, text: picked.topic.text },
-  });
+  history.push({ graduateId: cur.graduateId, card: topicCard(picked.topic, cur.graduateId, ctx.graduates) });
   return { ...g, history, cursor: history.length - 1, usedTopicIds: picked.used };
 }
 

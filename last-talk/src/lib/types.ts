@@ -1,4 +1,5 @@
-export type Category = "laugh" | "memory" | "friends" | "last";
+/** laugh〜last は卒業生へのお題（この順に進行）。crowd は会場の現役メンバーが答えるお題 */
+export type Category = "laugh" | "memory" | "friends" | "last" | "crowd";
 
 /** hype: 盛り上がりモードで優先 / calm: しっとりモードで優先 */
 export type TopicTag = "hype" | "calm";
@@ -15,6 +16,13 @@ export interface Graduate {
   id: string;
   name: string;
   nickname: string;
+}
+
+/** 現役メンバー（司会者が登録、または参加者がQRから名前を入れて参加） */
+export interface Member {
+  id: string;
+  name: string;
+  joined?: boolean;
 }
 
 export type SpecialKind = "nominate" | "reverse" | "everyone" | "photo";
@@ -63,6 +71,8 @@ export interface GameState {
   lastRevealed: boolean;
   /** 卒業生ルーレットの実行中（回り終わったら選ばれた人の画面へ進む） */
   roulette?: { id: string; winnerId: string } | null;
+  /** 現役ルーレットで指名中のメンバー */
+  memberPick?: { id: string; memberId: string; name: string; names: string[] } | null;
   /** 設定画面を閉じたときに戻る画面 */
   returnTo?: Screen;
 }

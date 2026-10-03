@@ -1,6 +1,9 @@
 import type { Category, SpecialKind, Topic, TopicTag } from "./types";
 
+/** 進行の順番（卒業生へのお題） */
 export const CATEGORY_ORDER: Category[] = ["laugh", "memory", "friends", "last"];
+/** お題管理で扱う全カテゴリー（現役メンバー向けを含む） */
+export const TOPIC_CATEGORIES: Category[] = [...CATEGORY_ORDER, "crowd"];
 
 export const CATEGORY_META: Record<
   Category,
@@ -10,6 +13,11 @@ export const CATEGORY_META: Record<
   memory: { label: "思い出", en: "MEMORIES", note: "中盤：懐かしむ" },
   friends: { label: "仲間", en: "COMRADES", note: "終盤：仲間を振り返る" },
   last: { label: "LAST MESSAGE", en: "LAST MESSAGE", note: "最後：感謝を伝える" },
+  crowd: {
+    label: "現役へ",
+    en: "TO THE MEMBERS",
+    note: "会場の現役メンバーが答えるお題。ときどき混ざります。{name} は話題の卒業生の呼び名に置き換わります",
+  },
 };
 
 export const SPECIAL_META: Record<
@@ -96,6 +104,20 @@ const SEEDS: Record<Category, Seed[]> = {
     ["自分の後を任せたい人は？", ["calm"]],
     ["一番お世話になった人に、今ここで一言。", ["calm"]],
   ],
+  // 現役メンバーが答える（{name} は卒業生の呼び名に置き換わる）
+  crowd: [
+    ["現役のみんなに聞きます。{name}の一番の伝説は？", ["hype"]],
+    ["{name}に怒られたことがある現役、手を挙げて。何をした？", ["hype"]],
+    ["{name}の口ぐせ、誰かモノマネしてください。", ["hype"]],
+    ["{name}の、ここだけは真似したくないところは？", ["hype"]],
+    ["{name}に、今だから言える本音を一つ。", ["hype"]],
+    ["{name}が一番熱くなった会議、覚えている人は？", ["hype"]],
+    ["{name}を一言で表すと？会場からどうぞ。", ["hype"]],
+    ["{name}の後を継ぐのは誰？現役から立候補を。", ["hype"]],
+    ["{name}の一番カッコよかった瞬間を見た人は？", ["calm"]],
+    ["{name}に一番お世話になった現役は？手を挙げて一言。", ["calm"]],
+    ["{name}に、卒業後も相談したいことは？", ["calm"]],
+  ],
   // 最後：まっすぐに感謝を
   last: [
     ["JCに入って、本当に良かったですか？"],
@@ -112,10 +134,10 @@ const SEEDS: Record<Category, Seed[]> = {
 };
 
 /** 標準お題を差し替えたら上げる。保存済みの標準お題を新しいものに入れ替える */
-export const TOPICS_VERSION = 3;
+export const TOPICS_VERSION = 4;
 
 /** 標準お題（IDは固定。保存データとの照合に使う） */
-export const DEFAULT_TOPICS: Topic[] = CATEGORY_ORDER.flatMap((category) =>
+export const DEFAULT_TOPICS: Topic[] = TOPIC_CATEGORIES.flatMap((category) =>
   SEEDS[category].map(([text, tags], i) => ({
     id: `std${TOPICS_VERSION}-${category}-${String(i + 1).padStart(2, "0")}`,
     category,

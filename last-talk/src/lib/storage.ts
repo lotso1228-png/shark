@@ -9,6 +9,7 @@ export const STORAGE_KEYS = {
   topics: `${PREFIX}topics`,
   settings: `${PREFIX}settings`,
   game: `${PREFIX}game`,
+  members: `${PREFIX}members`,
 } as const;
 
 function read<T>(key: string): T | undefined {

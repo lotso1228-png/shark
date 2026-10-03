@@ -95,7 +95,7 @@ export function HostMenu({
   fullscreen: Fullscreen;
   onRestart: () => void;
 }) {
-  const { game, settings, actions } = useStore();
+  const { game, settings, members, actions } = useStore();
   const inGame = !!game.graduateId && ["topic", "ready"].includes(game.screen);
   const onTopic = game.screen === "topic" && game.cursor >= 0;
   const run = (fn: () => void) => () => {
@@ -199,6 +199,12 @@ export function HostMenu({
                     </Chip>
                   ))}
                 </div>
+              </Section>
+
+              <Section title={`現役メンバー（${members.length}人）`}>
+                <Action onClick={run(actions.pickMember)} disabled={members.length === 0}>
+                  {members.length === 0 ? "まだいません（QR参加・設定で追加）" : "現役をランダム指名"}
+                </Action>
               </Section>
 
               <Section title="特別カード">

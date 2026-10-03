@@ -24,6 +24,7 @@ import {
 } from "./live/LiveProvider";
 import { SharePanel } from "./live/SharePanel";
 import { HostReactions } from "./live/Reactions";
+import { MemberPick } from "./live/MemberPick";
 
 export function App() {
   const { role, channel } = useLiveRole();
@@ -198,6 +199,7 @@ function Stage() {
             )}
           </>
         )}
+        {screen !== "setup" && <MemberPick pick={game.memberPick ?? null} onClose={actions.closeMemberPick} />}
         <HostReactions
           channel={channel}
           active={channel?.kind === "ntfy" && !!settings.liveOn && screen !== "setup"}

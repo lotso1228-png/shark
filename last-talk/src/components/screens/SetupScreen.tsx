@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, type FormEvent, type ReactNode } from "react";
-import { CATEGORY_META, CATEGORY_ORDER } from "@/lib/topics";
+import { CATEGORY_META, TOPIC_CATEGORIES } from "@/lib/topics";
 import type { Category, Graduate, Mood, Topic } from "@/lib/types";
 import { useConfirm } from "../Confirm";
 import { MAX_GRADUATES, useStore } from "../StoreProvider";
@@ -161,7 +161,67 @@ function GraduatesTab() {
           />
         ))}
       </ul>
+
+      <MembersSection />
     </>
+  );
+}
+
+/* ───────── 現役メンバー ───────── */
+
+function MembersSection() {
+  const { members, actions } = useStore();
+  const [name, setName] = useState("");
+  const submit = (e: FormEvent) => {
+    e.preventDefault();
+    if (!name.trim()) return;
+    actions.addMember(name);
+    setName("");
+  };
+  return (
+    <div className="mt-14">
+      <Heading
+        title={`現役メンバー（${members.length}人）`}
+        note="「現役をランダム指名」の対象です。参加者がQRコードから名前を入れて参加すると、自動でここに追加されます。手入力も可能です。"
+      />
+      <form onSubmit={submit} className="flex gap-2">
+        <input
+          id="member-name"
+          className={input}
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="例：佐藤"
+          maxLength={16}
+          aria-label="現役メンバーの名前"
+        />
+        <Button
+          variant="ghost"
+          className="!min-h-12 shrink-0 !border-gold/60 !text-gold-soft"
+          onClick={submit}
+          disabled={!name.trim()}
+        >
+          追加
+        </Button>
+      </form>
+      {members.length > 0 && (
+        <ul className="mt-4 flex flex-wrap gap-2">
+          {members.map((m) => (
+            <li key={m.id} className="flex items-center gap-1 border border-ivory/15 py-1 pr-1 pl-3 text-sm">
+              <span>{m.name}</span>
+              {m.joined && <span className="text-[0.6rem] tracking-widest text-gold/70">QR</span>}
+              <button
+                type="button"
+                onClick={() => actions.removeMember(m.id)}
+                className="min-h-8 min-w-8 text-mist/60 hover:text-red-200"
+                aria-label={`${m.name}を削除`}
+              >
+                ×
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
   );
 }
 
@@ -264,7 +324,7 @@ function TopicsTab() {
         note="笑い → 思い出 → 仲間 → LAST MESSAGE の順に自動で進行します。各カテゴリーにお題を追加・編集・削除できます。"
       />
       <div className="mb-6 flex flex-wrap gap-2">
-        {CATEGORY_ORDER.map((c) => (
+        {TOPIC_CATEGORIES.map((c) => (
           <button
             key={c}
             type="button"

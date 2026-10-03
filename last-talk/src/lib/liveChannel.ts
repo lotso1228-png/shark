@@ -17,8 +17,10 @@ export interface LiveChannel {
   ): () => void;
   /** 参加者のリアクションを送る（対応している配信路のみ） */
   react?(kind: ReactionKind): void;
-  /** 司会者側でリアクションを受け取る（対応している配信路のみ） */
-  onReactions?(cb: (r: Reactions) => void): () => void;
+  /** 司会者側でリアクションと参加（名前の登録）を受け取る（対応している配信路のみ） */
+  onReactions?(cb: (r: Reactions) => void, onJoin?: (id: string, name: string) => void): () => void;
+  /** 参加者が名前を登録する（対応している配信路のみ） */
+  join?(id: string, name: string): void;
 }
 
 export type ReactionKind = "clap" | "laugh" | "cry" | "fire";
@@ -29,6 +31,18 @@ export const REACTIONS: { kind: ReactionKind; emoji: string; label: string }[] =
   { kind: "cry", emoji: "😭", label: "泣ける" },
   { kind: "fire", emoji: "🔥", label: "アツい" },
 ];
+
+/** 参加メッセージを検証する */
+function parseJoin(raw: string): { id: string; name: string } | null {
+  try {
+    const m = JSON.parse(raw) as { j?: { id?: unknown; n?: unknown } };
+    if (!m.j || typeof m.j.id !== "string" || typeof m.j.n !== "string") return null;
+    const name = m.j.n.trim().slice(0, 16);
+    return /^[a-z0-9]{4,24}$/.test(m.j.id) && name ? { id: m.j.id, name } : null;
+  } catch {
+    return null;
+  }
+}
 
 /** 受け取ったリアクションを検証する（各種類20まで） */
 function parseReactions(raw: string, self: string): Reactions | null {
@@ -151,7 +165,10 @@ function ntfyStream(
         }
       }
       first = false;
-      const res = await fetch(`${NTFY}/${polled.join(",")}/json?poll=1&since=${sinceTime}`, { cache: "no-store" });
+      // 同じ秒に届いた後続のメッセージを取りこぼさないよう1秒さかのぼり、受信済みは ID で除く
+      const res = await fetch(`${NTFY}/${polled.join(",")}/json?poll=1&since=${sinceTime - 1}`, {
+        cache: "no-store",
+      });
       if (res.status === 429) throw Object.assign(new Error("rate"), { rate: true });
       if (!res.ok) throw new Error(String(res.status));
       for (const line of (await res.text()).trim().split("\n")) {
@@ -162,7 +179,8 @@ function ntfyStream(
         if (typeof m.time === "number") sinceTime = Math.max(sinceTime, m.time);
         onMessage(m.topic, m.message);
       }
-      if (seenIds.size > 500) seenIds.clear();
+      // 古い受信済み ID を間引く（直近の分は残す。古いお題は署名の時刻で弾かれる）
+      if (seenIds.size > 500) for (const id of [...seenIds].slice(0, 250)) seenIds.delete(id);
       status("live");
     } catch (e) {
       if ((e as { rate?: boolean }).rate) wait = 20000 + Math.random() * 5000;
@@ -326,12 +344,31 @@ export async function ntfyHostChannel(baseUrl: string): Promise<LiveChannel | nu
       }
     },
     subscribe: () => () => {},
-    onReactions(cb) {
+    onReactions(cb, onJoin) {
+      // 司会者のページを開く前に参加した人も拾う（過去のリアクションは浮かべない）
+      if (onJoin) {
+        fetch(`${NTFY}/${reactTopicOf(r.room)}/json?poll=1&since=all`, { cache: "no-store" })
+          .then((res) => (res.ok ? res.text() : ""))
+          .then((t) => {
+            for (const line of t.trim().split("\n")) {
+              if (!line) continue;
+              try {
+                const j = parseJoin(JSON.parse(line).message);
+                if (j) onJoin(j.id, j.name);
+              } catch {
+                /* 壊れた行は無視 */
+              }
+            }
+          })
+          .catch(() => {});
+      }
       return ntfyStream(
         [reactTopicOf(r.room)],
         (_t, msg) => {
           const x = parseReactions(msg, deviceId);
-          if (x) cb(x);
+          if (x) return cb(x);
+          const j = parseJoin(msg);
+          if (j && onJoin) onJoin(j.id, j.name);
         },
         () => {},
         undefined,
@@ -365,6 +402,20 @@ export function ntfyAudienceChannel(room: string, pub: string): LiveChannel {
     send: async () => {},
     current: async () => null,
     react: reactionSender(room),
+    join(id, name) {
+      // 届かないと指名の対象にならないので、失敗したら間隔を空けて送り直す
+      const body = JSON.stringify({ j: { id, n: name.trim().slice(0, 16) }, s: deviceId });
+      const delays = [2000, 5000, 10000, 20000];
+      const attempt = (i: number) =>
+        fetch(`${NTFY}/${reactTopicOf(room)}`, { method: "POST", body })
+          .then((res) => {
+            if (!res.ok) throw new Error(String(res.status));
+          })
+          .catch(() => {
+            if (i < delays.length) setTimeout(() => attempt(i + 1), delays[i]);
+          });
+      void attempt(0);
+    },
     subscribe(next, status, onReaction) {
       let alive = true;
       const main = topicOf(room);
