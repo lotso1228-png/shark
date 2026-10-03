@@ -86,7 +86,7 @@ export function AudienceView({ channel }: { channel: LiveChannel | null }) {
               body="Claude にログインしてこのページを開き直すと、司会者が出したお題がここに表示されます。"
             />
           ) : (
-            <Scene payload={payload} />
+            <Scene payload={payload} howTo={canReact} />
           )}
         </motion.div>
       </AnimatePresence>
@@ -157,7 +157,7 @@ function Notice({ title, body }: { title: string; body: string }) {
   );
 }
 
-function Scene({ payload }: { payload: LivePayload | null }) {
+function Scene({ payload, howTo = false }: { payload: LivePayload | null; howTo?: boolean }) {
   const p = payload;
   switch (p?.scene ?? "idle") {
     case "idle":
@@ -176,6 +176,13 @@ function Scene({ payload }: { payload: LivePayload | null }) {
           <p className="mt-[6vh] text-xs tracking-[0.3em] text-mist/60">
             まもなく始まります
           </p>
+          {howTo && (
+            <ul className="mt-[3vh] max-w-xs space-y-1.5 text-left text-[0.78rem] leading-relaxed text-ivory/75">
+              <li>・司会者がお題を出すと、この画面にも表示されます</li>
+              <li>・下のボタンで、話している卒業生に優勝ポイント</li>
+              <li>・名前を入れると、現役ルーレットで指名されるかも</li>
+            </ul>
+          )}
         </div>
       );
     case "select":

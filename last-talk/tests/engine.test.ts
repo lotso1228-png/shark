@@ -260,3 +260,12 @@ test("優勝発表：LAST MESSAGE が全員終わると発表へ、同点は同�
   for (let i = 0; i < grads.length; i++) h = E.finishLast(E.revealLast(h, ctx()), grads);
   assert.equal(h.screen, "finale");
 });
+
+test("お題の入れ替え（v5→v6）：未編集の旧お題は新しくなり、編集扱いにならない", () => {
+  const out = upgradeTopics([
+    { id: "std5-friends-06", category: "friends", text: "次の理事長は誰？そう思う理由のエピソードも。", tags: [], builtIn: true },
+  ]);
+  assert.ok(!out.some((t) => t.text === "次の理事長は誰？そう思う理由のエピソードも。"));
+  assert.ok(out.some((t) => t.text === "いつか理事長になりそうな現役は？そう思うエピソードも。"));
+  assert.ok(out.every((t) => !t.edited));
+});

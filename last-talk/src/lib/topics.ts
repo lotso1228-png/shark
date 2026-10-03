@@ -101,7 +101,7 @@ const SEEDS: Record<Category, Seed[]> = {
     ["実はライバルだと思っていた人は？そう思ったきっかけも。", ["hype"]],
     ["正直、最初は苦手だった人は？仲良くなったきっかけは？", ["hype"]],
     ["一番放っておけない後輩は？心配になったエピソード付きで。", ["hype"]],
-    ["次の理事長は誰？そう思う理由のエピソードも。", ["hype"]],
+    ["いつか理事長になりそうな現役は？そう思うエピソードも。", ["hype"]],
     ["この人には今だから言える、という話を一つ。", ["hype"]],
     ["一番お世話になった人は？助けられた場面を教えてください。", ["calm"]],
     ["本当は一番尊敬していた人は？尊敬した瞬間の話を。", ["calm"]],
@@ -140,7 +140,7 @@ const SEEDS: Record<Category, Seed[]> = {
 };
 
 /** 標準お題を差し替えたら上げる。保存済みの標準お題を新しいものに入れ替える */
-export const TOPICS_VERSION = 5;
+export const TOPICS_VERSION = 6;
 
 /** 標準お題（IDは固定。保存データとの照合に使う） */
 export const DEFAULT_TOPICS: Topic[] = TOPIC_CATEGORIES.flatMap((category) =>

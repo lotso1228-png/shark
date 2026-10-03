@@ -7,7 +7,13 @@ import { useStore } from "../StoreProvider";
 import { useLive } from "./LiveProvider";
 
 const shareText = (url: string) =>
-  `LAST TALK（卒業生を送る会）の参加用リンクです。開くと、司会者が出したお題がスマホに表示されます。${url ? "\n" + url : ""}`;
+  [
+    "【LAST TALK】卒業生を送るトークゲームの参加用リンクです。",
+    "開くと、司会者が出したお題があなたのスマホにも表示されます（アプリ・ログイン不要）。",
+    "👏😂😭🔥 を押すと、話している卒業生の優勝ポイントに！最後に優勝を発表します。",
+    "名前を入れておくと、現役ルーレットで指名されるかも。",
+    ...(url ? [url] : []),
+  ].join("\n");
 
 /** 参加者に配る QR コードとリンク。同時表示のオン／オフもここで切り替える */
 export function SharePanel({ open, onClose }: { open: boolean; onClose: () => void }) {
