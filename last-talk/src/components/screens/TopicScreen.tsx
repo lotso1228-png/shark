@@ -3,37 +3,11 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useRef } from "react";
 import { currentEntry, isFlowComplete } from "@/lib/engine";
-import { CATEGORY_META, SPECIAL_META } from "@/lib/topics";
-import type { Card } from "@/lib/types";
+import { cardView } from "@/lib/cardView";
 import { displayName, useStore } from "../StoreProvider";
 import { FlowIndicator } from "../FlowIndicator";
 import { BackArrow, Button } from "../ui";
 import { useFitText } from "../useFitText";
-
-function cardView(card: Card, name: string) {
-  switch (card.kind) {
-    case "topic":
-      return {
-        label: `${CATEGORY_META[card.category].en}`,
-        sub: CATEGORY_META[card.category].label,
-        text: card.text,
-        note: null as string | null,
-        special: false,
-      };
-    case "special": {
-      const m = SPECIAL_META[card.special];
-      return { label: `Special · ${m.en}`, sub: m.label, text: m.text, note: m.sub, special: true };
-    }
-    case "reply":
-      return {
-        label: "Reply",
-        sub: "指名された方から",
-        text: `${name}へ、一言。`,
-        note: "指名された現役メンバーから、卒業生へ",
-        special: true,
-      };
-  }
-}
 
 export function TopicScreen() {
   const { game, graduates, settings, actions } = useStore();

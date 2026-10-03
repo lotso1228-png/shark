@@ -15,13 +15,20 @@ import { TopicScreen } from "./screens/TopicScreen";
 import { screenFade } from "./ui";
 import { useFullscreen } from "./useFullscreen";
 import { useWakeLock } from "./useWakeLock";
+import { AudienceView } from "./live/AudienceView";
+import { LiveBroadcaster, useLiveRole } from "./live/LiveProvider";
 
 export function App() {
+  const { role, db } = useLiveRole();
+  if (role === "pending") return <main className="stage h-dvh w-full" />;
+  if (role === "audience") return <AudienceView db={db} />;
   return (
     <StoreProvider>
-      <ConfirmProvider>
-        <Stage />
-      </ConfirmProvider>
+      <LiveBroadcaster db={role === "host" ? db : null}>
+        <ConfirmProvider>
+          <Stage />
+        </ConfirmProvider>
+      </LiveBroadcaster>
     </StoreProvider>
   );
 }

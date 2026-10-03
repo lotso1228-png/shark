@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import type { ReactNode } from "react";
 import { CATEGORY_META, CATEGORY_ORDER, SPECIAL_META } from "@/lib/topics";
 import type { Mood, SpecialKind } from "@/lib/types";
+import { useLiveStatus } from "./live/LiveProvider";
 import { useStore } from "./StoreProvider";
 import type { Fullscreen } from "./useFullscreen";
 
@@ -102,6 +103,7 @@ export function HostMenu({
     onOpenChange(false);
   };
   const moodLabel = MOODS.find((m) => m.id === settings.mood)?.label;
+  const live = useLiveStatus();
 
   return (
     <>
@@ -142,7 +144,21 @@ export function HostMenu({
               onClick={(e) => e.stopPropagation()}
             >
               <div className="mb-4 flex items-center justify-between">
-                <p className="eyebrow text-xs text-gold">Host Menu</p>
+                <div className="flex flex-col gap-1">
+                  <p className="eyebrow text-xs text-gold">Host Menu</p>
+                  {live !== "off" && (
+                    <p className="flex items-center gap-2 text-[0.7rem] tracking-wider text-mist/80">
+                      <span
+                        className={`h-1.5 w-1.5 rounded-full ${
+                          live === "live" ? "bg-gold" : live === "error" ? "bg-red-300/70" : "bg-ivory/30"
+                        }`}
+                      />
+                      {live === "live" && "参加者のスマホにも同時表示中"}
+                      {live === "connecting" && "同時表示に接続中…"}
+                      {live === "error" && "同時表示が止まっています（次の操作で再送）"}
+                    </p>
+                  )}
+                </div>
                 <button
                   type="button"
                   autoFocus
