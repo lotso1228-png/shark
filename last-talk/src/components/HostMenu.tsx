@@ -95,7 +95,7 @@ export function HostMenu({
   fullscreen: Fullscreen;
   onRestart: () => void;
 }) {
-  const { game, settings, members, actions } = useStore();
+  const { game, settings, members, letters, actions } = useStore();
   const inGame = !!game.graduateId && ["topic", "ready"].includes(game.screen);
   const onTopic = game.screen === "topic" && game.cursor >= 0;
   const run = (fn: () => void) => () => {
@@ -216,6 +216,15 @@ export function HostMenu({
                   </Chip>
                 </div>
                 {live === "off" && <p className="mt-2 text-xs text-mist/60">同時表示をオンにすると使えます</p>}
+              </Section>
+
+              <Section title={`寄せ書き（${letters.length}件）`}>
+                <Action
+                  onClick={run(() => game.graduateId && actions.openLetters(game.graduateId))}
+                  disabled={!game.graduateId || !letters.some((l) => l.to === game.graduateId)}
+                >
+                  いまの卒業生への寄せ書きを流す
+                </Action>
               </Section>
 
               <Section title={`現役メンバー（${members.length}人）`}>

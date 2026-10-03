@@ -1,7 +1,10 @@
 import { cardView } from "./cardView";
 import { currentEntry, hasScores, ranking } from "./engine";
 import { FINALE_PROMPT } from "./topics";
-import type { Category, GameState, Graduate, ReactionCounts } from "./types";
+import type { Category, GameState, Graduate, Letter, ReactionCounts } from "./types";
+
+/** 寄せ書きを1ページに何通ずつ流すか */
+export const LETTERS_PER_PAGE = 3;
 
 /**
  * 参加者のスマホに同時表示する内容。司会者の画面から作り、共有データとして配信する。
@@ -42,6 +45,10 @@ export interface LivePayload {
   winners?: string[];
   /** 判定タイム（数の途中経過は送らず、開始と結果だけ送る） */
   judge?: { id: string; seconds: number; target: number; result?: "safe" | "out"; count?: number };
+  /** 卒業生の呼び名（参加者が寄せ書きのあて先を選ぶため） */
+  grads?: string[];
+  /** 寄せ書きを流している（1ページ3通まで） */
+  letters?: { id: string; to: string; page: number; pages: number; items: { from: string; text: string }[] };
   /** エピソード判定でアウト */
   penalty?: { id: string; name: string; count: number; target: number };
   /** ホント？盛ってる？（途中の票数は送らず、開始と結果だけ） */
@@ -63,7 +70,7 @@ const nameOf = (gs: Graduate[], id: string | null | undefined) => {
 export function livePayload(
   game: GameState,
   graduates: Graduate[],
-  opts: { shuffle?: boolean } = {},
+  opts: { shuffle?: boolean; letters?: Letter[] } = {},
 ): LivePayload | null {
   const base: LivePayload = {
     v: 1,
@@ -87,6 +94,8 @@ export function livePayload(
   return {
     ...scene,
     ...(game.memberPick ? { pick: game.memberPick } : {}),
+    grads: graduates.map((g) => nameOf(graduates, g.id)),
+    ...(game.letters ? { letters: lettersPage() } : {}),
     ...(game.penalty ? { penalty: game.penalty } : {}),
     ...(game.vote
       ? {
@@ -110,6 +119,19 @@ export function livePayload(
       : {}),
   };
 
+  function lettersPage() {
+    const l = game.letters!;
+    const mine = (opts.letters ?? []).filter((x) => x.to === l.to);
+    const pages = Math.max(1, Math.ceil(mine.length / LETTERS_PER_PAGE));
+    const page = Math.min(l.page, pages - 1);
+    return {
+      id: l.id,
+      to: nameOf(graduates, l.to),
+      page,
+      pages,
+      items: mine.slice(page * LETTERS_PER_PAGE, (page + 1) * LETTERS_PER_PAGE).map((x) => ({ from: x.from, text: x.text })),
+    };
+  }
   function awardRows(): AwardEntry[] {
     return ranking(game, graduates).map((r) => ({
       name: nameOf(graduates, r.id),

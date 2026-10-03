@@ -15,8 +15,9 @@ const slow = (delay: number, y = 12) =>
 
 /** クライマックス：暗転 →「LAST MESSAGE」→「最後に、仲間へ伝えたいこと。」→ MESSAGE */
 export function LastIntroScreen({ onBack }: { onBack: () => void }) {
-  const { game, graduates, graduate, settings, actions } = useStore();
+  const { game, graduates, graduate, settings, letters, actions } = useStore();
   const name = displayName(graduate);
+  const letterCount = letters.filter((l) => l.to === game.graduateId).length;
 
   return (
     <div className="flex h-full flex-col px-5 pt-4 safe-bottom sm:px-10">
@@ -76,6 +77,11 @@ export function LastIntroScreen({ onBack }: { onBack: () => void }) {
               );
             })}
           </ul>
+        )}
+        {letterCount > 0 && graduate && (
+          <Button variant="ghost" onClick={() => actions.openLetters(graduate.id)}>
+            寄せ書き（{letterCount}件）を流す
+          </Button>
         )}
         <Button onClick={actions.revealLast} disabled={!graduate} className="min-w-[14rem]">
           Message

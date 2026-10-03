@@ -68,7 +68,7 @@ export const useLiveStatus = () => useContext(LiveContext).status;
 
 /** 司会者の画面の変化を、参加者のスマホへ配信する */
 export function LiveBroadcaster({ channel, children }: { channel: LiveChannel | null; children: ReactNode }) {
-  const { loaded, game, graduates, settings } = useStore();
+  const { loaded, game, graduates, settings, letters } = useStore();
   const offered = channel;
   // claude.ai 上は常に配信。ログイン不要版は司会者がオンにしたときだけ
   channel = channel && (channel.kind === "claude" || settings.liveOn) ? channel : null;
@@ -78,8 +78,8 @@ export function LiveBroadcaster({ channel, children }: { channel: LiveChannel | 
     else setStatus((s) => (s === "off" ? "connecting" : s));
   }, [channel]);
   const payload = useMemo(
-    () => (loaded ? livePayload(game, graduates, { shuffle: settings.shuffleFx !== false }) : null),
-    [loaded, game, graduates, settings.shuffleFx],
+    () => (loaded ? livePayload(game, graduates, { shuffle: settings.shuffleFx !== false, letters }) : null),
+    [loaded, game, graduates, settings.shuffleFx, letters],
   );
   const json = payload ? JSON.stringify(payload) : null;
 

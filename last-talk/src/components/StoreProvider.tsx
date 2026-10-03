@@ -10,6 +10,7 @@ import type {
   GameState,
   Graduate,
   Member,
+  Letter,
   ReactionCounts,
   Mood,
   Screen,
@@ -57,7 +58,12 @@ function useStoreValue() {
     () => [],
     isArray<Member>,
   );
-  const loaded = gLoaded && tLoaded && sLoaded && gmLoaded && mLoaded;
+  const [letters, setLetters, lLoaded] = usePersistentState<Letter[]>(
+    STORAGE_KEYS.letters,
+    () => [],
+    isArray<Letter>,
+  );
+  const loaded = gLoaded && tLoaded && sLoaded && gmLoaded && mLoaded && lLoaded;
 
   // 標準お題が新しくなっていたら入れ替える。自分で追加・編集したお題はそのまま残す
   useEffect(() => {
@@ -200,6 +206,20 @@ function useStoreValue() {
         setGame((g) => E.castVote(g, voteId, voter, choice, Date.now())),
       finishVote: () => setGame((g) => E.finishVote(g)),
       closeVote: () => setGame((g) => ({ ...g, vote: null })),
+      // ── 寄せ書き ──
+      /** 届いた寄せ書きを保存（あて先は卒業生の呼び名で照合。同じものは1回だけ） */
+      addLetter: (l: { id: string; to: string; from: string; text: string }) =>
+        setLetters((list) => {
+          const grad = graduates.find((x) => displayName(x) === l.to);
+          if (!grad || list.some((x) => x.id === l.id) || list.length >= 300) return list;
+          return [...list, { id: l.id, to: grad.id, from: l.from, text: l.text }];
+        }),
+      removeLetter: (id: string) => setLetters((list) => list.filter((x) => x.id !== id)),
+      openLetters: (to: string) =>
+        setGame((g) => ({ ...g, memberPick: null, letters: { id: uid(), to, page: 0 } })),
+      letterPage: (page: number) =>
+        setGame((g) => (g.letters ? { ...g, letters: { ...g.letters, page } } : g)),
+      closeLetters: () => setGame((g) => ({ ...g, letters: null })),
       toggleDrinkRule: () => setSettings((s) => ({ ...s, drinkRule: s.drinkRule === false })),
       // ── 判定タイム ──
       /** 目標は QR で参加した人数（いなければ登録メンバー数）から決める */
@@ -263,10 +283,10 @@ function useStoreValue() {
       toggleVenue: () => setSettings((s) => ({ ...s, venueMode: !s.venueMode })),
       setLiveOn: (on: boolean) => setSettings((s) => ({ ...s, liveOn: on })),
     }),
-    [ctx, graduates, members, joinedCount, settings.rotate, settings.drinkRule, settings.liveOn, setMembers, setGame, setGraduates, setTopics, setSettings],
+    [ctx, graduates, members, setLetters, joinedCount, settings.rotate, settings.drinkRule, settings.liveOn, setMembers, setGame, setGraduates, setTopics, setSettings],
   );
 
-  return { loaded, graduates, topics, settings, game, graduate, members, actions };
+  return { loaded, graduates, topics, settings, game, graduate, members, letters, actions };
 }
 
 type Store = ReturnType<typeof useStoreValue>;

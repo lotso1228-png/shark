@@ -163,7 +163,57 @@ function GraduatesTab() {
       </ul>
 
       <MembersSection />
+      <LettersSection />
     </>
+  );
+}
+
+/* ───────── 寄せ書き ───────── */
+
+function LettersSection() {
+  const { letters, graduates, actions } = useStore();
+  const confirm = useConfirm();
+  return (
+    <div className="mt-14">
+      <Heading
+        title={`寄せ書き（${letters.length}件）`}
+        note="参加者がスマホから送った、卒業生への一言です。LAST MESSAGE の画面の「寄せ書きを流す」で表示されます。流したくないものは削除できます。"
+      />
+      {letters.length === 0 ? (
+        <p className="text-sm text-mist/60">まだ届いていません</p>
+      ) : (
+        graduates.map((g) => {
+          const mine = letters.filter((l) => l.to === g.id);
+          if (mine.length === 0) return null;
+          return (
+            <div key={g.id} className="mt-5">
+              <h3 className="mb-2 text-sm tracking-[0.2em] text-gold-soft">
+                {g.nickname || g.name}へ（{mine.length}）
+              </h3>
+              <ul className="divide-y divide-ivory/10 border-y border-ivory/10">
+                {mine.map((l) => (
+                  <li key={l.id} className="flex items-start gap-3 py-2">
+                    <span className="min-w-0 flex-1 text-sm leading-relaxed">
+                      {l.text}
+                      <span className="ml-2 text-xs text-mist/60">— {l.from}</span>
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        confirm({ title: "この寄せ書きを削除しますか？", body: l.text, ok: "削除", onOk: () => actions.removeLetter(l.id) })
+                      }
+                      className={`${smallBtn} hover:!text-red-200`}
+                    >
+                      削除
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          );
+        })
+      )}
+    </div>
   );
 }
 

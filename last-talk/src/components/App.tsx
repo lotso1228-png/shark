@@ -28,6 +28,8 @@ import { HostReactions } from "./live/Reactions";
 import { MemberPick } from "./live/MemberPick";
 import { JudgeOverlay } from "./live/JudgeOverlay";
 import { PenaltyOverlay, VoteOverlay } from "./live/DrinkOverlays";
+import { LettersOverlay } from "./live/Letters";
+import { LETTERS_PER_PAGE } from "@/lib/live";
 import { JUDGE_GRACE_MS } from "@/lib/engine";
 
 export function App() {
@@ -48,7 +50,7 @@ export function App() {
 const DARK_SCREENS = new Set(["last-intro", "last-question", "award", "finale"]);
 
 function Stage() {
-  const { loaded, game, settings, graduates, actions } = useStore();
+  const { loaded, game, settings, graduates, letters, actions } = useStore();
   const confirm = useConfirm();
   const [menuOpen, setMenuOpen] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
@@ -66,6 +68,30 @@ function Stage() {
     const t = setTimeout(actions.finishJudge, wait);
     return () => clearTimeout(t);
   }, [judge, actions]);
+
+  // 寄せ書き：表示中のページ
+  const lettersInfo = (() => {
+    const l = game.letters;
+    if (!l) return null;
+    const mine = letters.filter((x) => x.to === l.to);
+    const pages = Math.max(1, Math.ceil(mine.length / LETTERS_PER_PAGE));
+    const page = Math.min(l.page, pages - 1);
+    const g = graduates.find((x) => x.id === l.to);
+    return {
+      id: l.id,
+      to: g ? g.nickname.trim() || g.name.trim() : "",
+      page,
+      pages,
+      items: mine.slice(page * LETTERS_PER_PAGE, (page + 1) * LETTERS_PER_PAGE),
+    };
+  })();
+  const lettersPage = lettersInfo?.page;
+  const lettersPages = lettersInfo?.pages;
+  const advanceLetters = useCallback(() => {
+    if (lettersPage === undefined || lettersPages === undefined) return;
+    if (lettersPage + 1 < lettersPages) actions.letterPage(lettersPage + 1);
+    else actions.closeLetters();
+  }, [lettersPage, lettersPages, actions]);
 
   // ホント？盛ってる？：締め切り（＋届くまでの猶予）で結果を出す
   const vote = game.vote;
@@ -227,6 +253,7 @@ function Stage() {
         )}
         {screen !== "setup" && <MemberPick pick={game.memberPick ?? null} onClose={actions.closeMemberPick} />}
         {screen !== "setup" && <PenaltyOverlay penalty={game.penalty ?? null} onNext={actions.next} />}
+        {screen !== "setup" && <LettersOverlay letters={lettersInfo} onAdvance={advanceLetters} />}
         {screen !== "setup" && (
           <VoteOverlay
             vote={game.vote ?? null}

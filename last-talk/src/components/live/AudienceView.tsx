@@ -14,6 +14,8 @@ import { JoinSheet, loadMe, type Me } from "./JoinSheet";
 import { MemberPick } from "./MemberPick";
 import { JudgeOverlay } from "./JudgeOverlay";
 import { PenaltyOverlay, VoteOverlay } from "./DrinkOverlays";
+import { LetterComposer, LettersOverlay } from "./Letters";
+import { LETTER_MAX } from "@/lib/liveChannel";
 import { AwardView } from "../AwardView";
 import { Confetti } from "../Confetti";
 import { FlowIndicator } from "../FlowIndicator";
@@ -59,6 +61,12 @@ export function AudienceView({ channel }: { channel: LiveChannel | null }) {
   // 名前を入れて参加（現役ルーレットの対象になる）
   const [me, setMe] = useState<Me | null>(null);
   const [askName, setAskName] = useState(false);
+  const [writing, setWriting] = useState(false);
+  // 寄せ書きが流れ始めたら、書きかけの画面は閉じて見てもらう
+  const lettersId = payload?.letters?.id;
+  useEffect(() => {
+    if (lettersId) setWriting(false);
+  }, [lettersId]);
   useEffect(() => {
     if (!channel?.join) return;
     const m = loadMe();
@@ -95,6 +103,26 @@ export function AudienceView({ channel }: { channel: LiveChannel | null }) {
 
       <MemberPick pick={payload?.pick ?? null} mine={!!me && payload?.pick?.memberId === me.id} />
       <JudgeOverlay judge={payload?.judge ?? null} audience={canReact} />
+      <LettersOverlay letters={payload?.letters ?? null} audience={canReact} />
+      {channel?.letter && (
+        <LetterComposer
+          open={writing}
+          grads={payload?.grads ?? []}
+          defaultFrom={me?.name ?? ""}
+          max={LETTER_MAX}
+          onSend={(to, text, from) => channel.letter!(to, text, from)}
+          onClose={() => setWriting(false)}
+        />
+      )}
+      {canReact && channel?.letter && (payload?.grads?.length ?? 0) > 0 && (
+        <button
+          type="button"
+          onClick={() => setWriting(true)}
+          className="fixed top-[max(0.5rem,env(safe-area-inset-top))] left-2 z-30 min-h-10 border border-gold/40 bg-ink/60 px-3 text-[0.7rem] tracking-[0.18em] text-gold-soft"
+        >
+          ✍ 寄せ書きを書く
+        </button>
+      )}
       <PenaltyOverlay penalty={payload?.penalty ?? null} audience={canReact} />
       <VoteOverlay
         vote={payload?.vote ?? null}

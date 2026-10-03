@@ -22,7 +22,10 @@ export interface LiveChannel {
     cb: (r: Reactions) => void,
     onJoin?: (id: string, name: string) => void,
     onVote?: (voteId: string, voter: string, choice: "real" | "fake") => void,
+    onLetter?: (l: { id: string; to: string; from: string; text: string }) => void,
   ): () => void;
+  /** 参加者が卒業生に寄せ書きを送る（to は卒業生の呼び名） */
+  letter?(to: string, text: string, from: string): Promise<boolean>;
   /** 参加者が「ホント？盛ってる？」に投票する */
   vote?(voteId: string, choice: "real" | "fake"): void;
   /** 参加者が名前を登録する（対応している配信路のみ） */
@@ -45,6 +48,22 @@ function parseJoin(raw: string): { id: string; name: string } | null {
     if (!m.j || typeof m.j.id !== "string" || typeof m.j.n !== "string") return null;
     const name = m.j.n.trim().slice(0, 16);
     return /^[a-z0-9]{4,24}$/.test(m.j.id) && name ? { id: m.j.id, name } : null;
+  } catch {
+    return null;
+  }
+}
+
+/** 寄せ書きメッセージを検証する */
+export const LETTER_MAX = 60;
+function parseLetter(raw: string): { id: string; to: string; from: string; text: string } | null {
+  try {
+    const m = JSON.parse(raw) as { lt?: { id?: unknown; to?: unknown; f?: unknown; t?: unknown } };
+    const l = m.lt;
+    if (!l || typeof l.id !== "string" || typeof l.to !== "string" || typeof l.t !== "string") return null;
+    const text = l.t.trim().slice(0, LETTER_MAX);
+    if (!/^[a-z0-9]{6,24}$/.test(l.id) || !text) return null;
+    const from = typeof l.f === "string" && l.f.trim() ? l.f.trim().slice(0, 16) : "匿名";
+    return { id: l.id, to: l.to.trim().slice(0, 24), from, text };
   } catch {
     return null;
   }
@@ -375,7 +394,7 @@ export async function ntfyHostChannel(baseUrl: string): Promise<LiveChannel | nu
       }
     },
     subscribe: () => () => {},
-    onReactions(cb, onJoin, onVote) {
+    onReactions(cb, onJoin, onVote, onLetter) {
       // 司会者のページを開く前に参加した人も拾う（過去のリアクションは浮かべない）
       if (onJoin) {
         fetch(`${NTFY}/${reactTopicOf(r.room)}/json?poll=1&since=all`, { cache: "no-store" })
@@ -384,8 +403,11 @@ export async function ntfyHostChannel(baseUrl: string): Promise<LiveChannel | nu
             for (const line of t.trim().split("\n")) {
               if (!line) continue;
               try {
-                const j = parseJoin(JSON.parse(line).message);
+                const msg = JSON.parse(line).message;
+                const j = parseJoin(msg);
                 if (j) onJoin(j.id, j.name);
+                const l = parseLetter(msg);
+                if (l && onLetter) onLetter(l);
               } catch {
                 /* 壊れた行は無視 */
               }
@@ -401,7 +423,9 @@ export async function ntfyHostChannel(baseUrl: string): Promise<LiveChannel | nu
           const j = parseJoin(msg);
           if (j && onJoin) return onJoin(j.id, j.name);
           const v = parseVote(msg);
-          if (v && onVote) onVote(v.voteId, v.voter, v.choice);
+          if (v && onVote) return onVote(v.voteId, v.voter, v.choice);
+          const l = parseLetter(msg);
+          if (l && onLetter) onLetter(l);
         },
         () => {},
         undefined,
@@ -435,6 +459,22 @@ export function ntfyAudienceChannel(room: string, pub: string): LiveChannel {
     send: async () => {},
     current: async () => null,
     react: reactionSender(room),
+    async letter(to, text, from) {
+      const body = JSON.stringify({
+        lt: { id: Math.random().toString(36).slice(2, 12), to, f: from, t: text.trim().slice(0, LETTER_MAX) },
+        s: deviceId,
+      });
+      for (let i = 0; i < 3; i++) {
+        try {
+          const res = await fetch(`${NTFY}/${reactTopicOf(room)}`, { method: "POST", body });
+          if (res.ok) return true;
+        } catch {
+          /* 送り直す */
+        }
+        await new Promise((r) => setTimeout(r, 1500 * (i + 1)));
+      }
+      return false;
+    },
     vote(voteId, choice) {
       const body = JSON.stringify({ vt: { id: voteId, c: choice }, s: deviceId });
       const attempt = (i: number) =>

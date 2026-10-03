@@ -20,6 +20,15 @@ export interface Graduate {
   nickname: string;
 }
 
+/** 寄せ書き：参加者から卒業生への一言 */
+export interface Letter {
+  id: string;
+  /** あて先の卒業生 ID */
+  to: string;
+  from: string;
+  text: string;
+}
+
 /** 現役メンバー（司会者が登録、または参加者がQRから名前を入れて参加） */
 export interface Member {
   id: string;
@@ -80,6 +89,8 @@ export interface GameState {
   judgedKey?: string;
   /** エピソード判定でアウトになった卒業生（NEXT で閉じて次へ） */
   penalty?: { id: string; name: string; count: number; target: number } | null;
+  /** 寄せ書きを流している卒業生とページ */
+  letters?: { id: string; to: string; page: number } | null;
   /** 「ホント？盛ってる？」投票 */
   vote?: Vote | null;
   /** 判定タイム：一定時間のリアクション数が目標に届かなければ一杯 */

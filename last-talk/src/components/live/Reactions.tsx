@@ -121,6 +121,8 @@ export function HostReactions({
   score.current = actions.addScores;
   const voted = useRef(actions.castVote);
   voted.current = actions.castVote;
+  const lettered = useRef(actions.addLetter);
+  lettered.current = actions.addLetter;
   useEffect(() => {
     if (!active || !channel?.onReactions) return;
     return channel.onReactions(
@@ -130,6 +132,7 @@ export function HostReactions({
       },
       (id, name) => joined.current(id, name),
       (voteId, voter, choice) => voted.current(voteId, voter, choice),
+      (l) => lettered.current(l),
     );
   }, [active, channel]);
   if (!active || !channel?.onReactions) return null;
