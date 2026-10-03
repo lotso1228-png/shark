@@ -42,6 +42,10 @@ export interface LivePayload {
   winners?: string[];
   /** 判定タイム（数の途中経過は送らず、開始と結果だけ送る） */
   judge?: { id: string; seconds: number; target: number; result?: "safe" | "out"; count?: number };
+  /** エピソード判定でアウト */
+  penalty?: { id: string; name: string; count: number; target: number };
+  /** ホント？盛ってる？（途中の票数は送らず、開始と結果だけ） */
+  vote?: { id: string; name: string; seconds: number; result?: "real" | "fake"; real?: number; fake?: number };
 }
 
 export interface AwardEntry {
@@ -83,6 +87,17 @@ export function livePayload(
   return {
     ...scene,
     ...(game.memberPick ? { pick: game.memberPick } : {}),
+    ...(game.penalty ? { penalty: game.penalty } : {}),
+    ...(game.vote
+      ? {
+          vote: {
+            id: game.vote.id,
+            name: game.vote.name,
+            seconds: game.vote.seconds,
+            ...(game.vote.result ? { result: game.vote.result, real: game.vote.real, fake: game.vote.fake } : {}),
+          },
+        }
+      : {}),
     ...(j
       ? {
           judge: {

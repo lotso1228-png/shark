@@ -13,6 +13,7 @@ import {
 import { JoinSheet, loadMe, type Me } from "./JoinSheet";
 import { MemberPick } from "./MemberPick";
 import { JudgeOverlay } from "./JudgeOverlay";
+import { PenaltyOverlay, VoteOverlay } from "./DrinkOverlays";
 import { AwardView } from "../AwardView";
 import { Confetti } from "../Confetti";
 import { FlowIndicator } from "../FlowIndicator";
@@ -94,6 +95,12 @@ export function AudienceView({ channel }: { channel: LiveChannel | null }) {
 
       <MemberPick pick={payload?.pick ?? null} mine={!!me && payload?.pick?.memberId === me.id} />
       <JudgeOverlay judge={payload?.judge ?? null} audience={canReact} />
+      <PenaltyOverlay penalty={payload?.penalty ?? null} audience={canReact} />
+      <VoteOverlay
+        vote={payload?.vote ?? null}
+        audience={canReact}
+        onVote={(c) => payload?.vote && channel?.vote?.(payload.vote.id, c)}
+      />
       {channel?.join && (
         <JoinSheet
           key={me?.id ?? "new"}

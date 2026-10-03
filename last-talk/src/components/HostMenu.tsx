@@ -201,13 +201,21 @@ export function HostMenu({
                 </div>
               </Section>
 
-              <Section title="判定タイム（10秒のリアクションが目標に届かなければ一杯）">
-                <Action
-                  onClick={run(actions.startJudge)}
-                  disabled={!(game.screen === "topic" && live !== "off")}
-                >
-                  {live === "off" ? "同時表示をオンにすると使えます" : "判定タイムを始める"}
-                </Action>
+              <Section title="飲みの仕掛け（ソフトドリンクOK）">
+                <div className="grid grid-cols-2 gap-2">
+                  <Action onClick={run(actions.startVote)} disabled={!(game.screen === "topic" && live !== "off")}>
+                    ホント？盛ってる？
+                  </Action>
+                  <Action onClick={run(actions.startJudge)} disabled={!(game.screen === "topic" && live !== "off")}>
+                    判定タイム（10秒）
+                  </Action>
+                </div>
+                <div className="mt-2 flex flex-wrap gap-2">
+                  <Chip active={settings.drinkRule !== false} onClick={actions.toggleDrinkRule}>
+                    リアクションが少なければ一杯
+                  </Chip>
+                </div>
+                {live === "off" && <p className="mt-2 text-xs text-mist/60">同時表示をオンにすると使えます</p>}
               </Section>
 
               <Section title={`現役メンバー（${members.length}人）`}>

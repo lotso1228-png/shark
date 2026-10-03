@@ -2,7 +2,7 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import { useRef } from "react";
-import { currentEntry, isFlowComplete } from "@/lib/engine";
+import { currentEntry, isEpisodeCard, isFlowComplete } from "@/lib/engine";
 import { cardView } from "@/lib/cardView";
 import { displayName, useStore } from "../StoreProvider";
 import { FlowIndicator } from "../FlowIndicator";
@@ -128,7 +128,7 @@ export function TopicScreen() {
 
       {/* 下部：NEXT（1画面1アクション） */}
       <footer className="relative flex flex-col items-center gap-3 pb-[3vh]">
-        <div className="flex min-h-12 items-center justify-center gap-3">
+        <div className="flex min-h-12 flex-wrap items-center justify-center gap-2 sm:gap-3">
           {canNominate && (
             <Button variant="ghost" onClick={actions.reply}>
               その人を指名する
@@ -142,11 +142,16 @@ export function TopicScreen() {
                 判定タイム
               </Button>
             )}
+          {reactionsOn && !game.vote && !game.penalty && isEpisodeCard(game) && (
+            <Button variant="ghost" onClick={actions.startVote}>
+              ホント？盛ってる？
+            </Button>
+          )}
           {members.length > 0 &&
             ((entry.card.kind === "topic" && entry.card.category === "crowd") ||
-              (entry.card.kind === "special" && !["photo", "toast"].includes(entry.card.special))) && (
+              (entry.card.kind === "special" && entry.card.special !== "photo")) && (
               <Button variant="ghost" onClick={actions.pickMember}>
-                現役をランダム指名
+                {entry.card.kind === "special" && entry.card.special === "toast" ? "音頭をルーレットで決める" : "現役をランダム指名"}
               </Button>
             )}
           {flowDone && !canNominate && (

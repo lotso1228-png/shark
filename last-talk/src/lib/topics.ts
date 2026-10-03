@@ -77,9 +77,6 @@ const SEEDS: Record<Category, Seed[]> = {
     ["一番話が長い先輩の、一番長かった話のエピソード。", ["hype"]],
     ["正直、JCにいくら使った？一番高くついた出来事は？", ["hype"]],
     ["JCに入って一番驚いた「JCの常識」と、その出来事は？"],
-    // 体を張る系：回答のあと「判定タイム」（リアクションが少なければ一杯）
-    ["この中の誰か一人のモノマネをどうぞ。会場が判定します。", ["hype", "judge"]],
-    ["あの頃の先輩の名言を、本人っぽく再現してください。", ["hype", "judge"]],
   ],
   // 中盤：笑いを残しつつ、本音と記憶に踏み込む
   memory: [
@@ -120,8 +117,6 @@ const SEEDS: Record<Category, Seed[]> = {
     ["{name}は酔うとどうなる？見たことある人、エピソードを。", ["hype"]],
     ["{name}に怒られたことがある現役、何をして怒られた？", ["hype"]],
     ["{name}の口ぐせ、誰かモノマネしてください。", ["hype", "judge"]],
-    ["{name}の乾杯の挨拶、誰かモノマネでどうぞ。", ["hype", "judge"]],
-    ["{name}が会議で熱くなったときの様子、誰か再現してください。", ["hype", "judge"]],
     ["{name}が一番熱くなった会議、そのときの様子を。", ["hype"]],
     ["{name}の、ここだけは真似したくないエピソードは？", ["hype"]],
     ["{name}の後を継ぐのは誰？現役から立候補を。", ["hype"]],
@@ -145,7 +140,7 @@ const SEEDS: Record<Category, Seed[]> = {
 };
 
 /** 標準お題を差し替えたら上げる。保存済みの標準お題を新しいものに入れ替える */
-export const TOPICS_VERSION = 7;
+export const TOPICS_VERSION = 8;
 
 /** 標準お題（IDは固定。保存データとの照合に使う） */
 export const DEFAULT_TOPICS: Topic[] = TOPIC_CATEGORIES.flatMap((category) =>

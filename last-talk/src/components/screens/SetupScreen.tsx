@@ -473,6 +473,27 @@ function DisplayTab() {
 
       <div className="mt-12">
         <Heading
+          title="リアクションが少なければ一杯"
+          note="卒業生が話したあと NEXT を押したとき、その話へのリアクションが目標（QRで参加した人数）に届いていなければ「アウト！一杯！」を出します。ソフトドリンクでもOK。"
+        />
+        <button
+          type="button"
+          role="switch"
+          aria-checked={settings.drinkRule !== false}
+          onClick={actions.toggleDrinkRule}
+          className="flex min-h-14 w-full items-center justify-between border border-ivory/15 px-5 text-left"
+        >
+          <span className="tracking-wider">リアクションが少なければ一杯</span>
+          <span className={`relative h-6 w-11 rounded-full transition-colors ${settings.drinkRule !== false ? "bg-gold/80" : "bg-ivory/15"}`}>
+            <span
+              className={`absolute top-1 h-4 w-4 rounded-full bg-ivory transition-transform ${settings.drinkRule !== false ? "translate-x-6" : "translate-x-1"}`}
+            />
+          </span>
+        </button>
+      </div>
+
+      <div className="mt-12">
+        <Heading
           title="1問ごとに交代"
           note="NEXT を押すたびに、話す卒業生が自動で次の人に替わります（話した回数が少ない人から順に）。オフにすると同じ人に続けて聞けます。"
         />

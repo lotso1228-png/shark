@@ -77,6 +77,8 @@ function useStoreValue() {
   );
 
   const graduate = graduates.find((g) => g.id === game.graduateId) ?? null;
+  /** QR から参加した人数（エピソード判定の目標に使う） */
+  const joinedCount = members.filter((m) => m.joined).length;
 
   const actions = useMemo(
     () => ({
@@ -121,11 +123,24 @@ function useStoreValue() {
         }),
       draw: () => setGame((g) => E.draw(g, ctx())),
       next: () =>
+        setGame((g) => {
+          // エピソード判定：リアクションが目標に届かなければ、進む前に「一杯！」を出す
+          if (!g.penalty && settings.drinkRule !== false && settings.liveOn) {
+            const out = E.episodeCheck(g, joinedCount, graduates, uid());
+            if (out) return { ...out, memberPick: null, judge: null, vote: null };
+          }
+          return E.next(
+            { ...g, memberPick: null, judge: null, vote: null, penalty: null },
+            { ...ctx(), rotate: settings.rotate !== false },
+          );
+        }),
+      back: () =>
         setGame((g) =>
-          E.next({ ...g, memberPick: null, judge: null }, { ...ctx(), rotate: settings.rotate !== false }),
+          g.penalty
+            ? { ...g, penalty: null }
+            : E.back({ ...g, memberPick: null, judge: null, vote: null, penalty: null }),
         ),
-      back: () => setGame((g) => E.back({ ...g, memberPick: null, judge: null })),
-      skip: () => setGame((g) => E.skip({ ...g, memberPick: null, judge: null }, ctx())),
+      skip: () => setGame((g) => E.skip({ ...g, memberPick: null, judge: null, vote: null, penalty: null }, ctx())),
 
       // ── 現役メンバー ──
       /** 現役ルーレット：直前に当たった人は外して、ランダムに1人指名 */
@@ -177,7 +192,15 @@ function useStoreValue() {
       finishLast: (toFinale = false) => setGame((g) => E.finishLast(g, graduates, toFinale)),
       // ── 優勝ポイント ──
       /** 参加者のリアクションを、いま話している卒業生のポイントに加える */
-      addScores: (r: ReactionCounts) => setGame((g) => E.countJudge(E.addScores(g, r), r, Date.now())),
+      addScores: (r: ReactionCounts) =>
+        setGame((g) => E.tallyCard(E.countJudge(E.addScores(g, r), r, Date.now()), r)),
+      // ── ホント？盛ってる？ ──
+      startVote: () => setGame((g) => E.startVote(g, graduates, Date.now(), uid())),
+      castVote: (voteId: string, voter: string, choice: "real" | "fake") =>
+        setGame((g) => E.castVote(g, voteId, voter, choice, Date.now())),
+      finishVote: () => setGame((g) => E.finishVote(g)),
+      closeVote: () => setGame((g) => ({ ...g, vote: null })),
+      toggleDrinkRule: () => setSettings((s) => ({ ...s, drinkRule: s.drinkRule === false })),
       // ── 判定タイム ──
       /** 目標は QR で参加した人数（いなければ登録メンバー数）から決める */
       startJudge: () =>
@@ -240,7 +263,7 @@ function useStoreValue() {
       toggleVenue: () => setSettings((s) => ({ ...s, venueMode: !s.venueMode })),
       setLiveOn: (on: boolean) => setSettings((s) => ({ ...s, liveOn: on })),
     }),
-    [ctx, graduates, members, settings.rotate, setMembers, setGame, setGraduates, setTopics, setSettings],
+    [ctx, graduates, members, joinedCount, settings.rotate, settings.drinkRule, settings.liveOn, setMembers, setGame, setGraduates, setTopics, setSettings],
   );
 
   return { loaded, graduates, topics, settings, game, graduate, members, actions };

@@ -119,6 +119,8 @@ export function HostReactions({
   joined.current = actions.memberJoined;
   const score = useRef(actions.addScores);
   score.current = actions.addScores;
+  const voted = useRef(actions.castVote);
+  voted.current = actions.castVote;
   useEffect(() => {
     if (!active || !channel?.onReactions) return;
     return channel.onReactions(
@@ -127,6 +129,7 @@ export function HostReactions({
         score.current(r); // 優勝ポイントに加算
       },
       (id, name) => joined.current(id, name),
+      (voteId, voter, choice) => voted.current(voteId, voter, choice),
     );
   }, [active, channel]);
   if (!active || !channel?.onReactions) return null;

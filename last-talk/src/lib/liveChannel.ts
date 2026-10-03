@@ -18,7 +18,13 @@ export interface LiveChannel {
   /** 参加者のリアクションを送る（対応している配信路のみ） */
   react?(kind: ReactionKind): void;
   /** 司会者側でリアクションと参加（名前の登録）を受け取る（対応している配信路のみ） */
-  onReactions?(cb: (r: Reactions) => void, onJoin?: (id: string, name: string) => void): () => void;
+  onReactions?(
+    cb: (r: Reactions) => void,
+    onJoin?: (id: string, name: string) => void,
+    onVote?: (voteId: string, voter: string, choice: "real" | "fake") => void,
+  ): () => void;
+  /** 参加者が「ホント？盛ってる？」に投票する */
+  vote?(voteId: string, choice: "real" | "fake"): void;
   /** 参加者が名前を登録する（対応している配信路のみ） */
   join?(id: string, name: string): void;
 }
@@ -39,6 +45,19 @@ function parseJoin(raw: string): { id: string; name: string } | null {
     if (!m.j || typeof m.j.id !== "string" || typeof m.j.n !== "string") return null;
     const name = m.j.n.trim().slice(0, 16);
     return /^[a-z0-9]{4,24}$/.test(m.j.id) && name ? { id: m.j.id, name } : null;
+  } catch {
+    return null;
+  }
+}
+
+/** 投票メッセージを検証する */
+function parseVote(raw: string): { voteId: string; voter: string; choice: "real" | "fake" } | null {
+  try {
+    const m = JSON.parse(raw) as { vt?: { id?: unknown; c?: unknown }; s?: unknown };
+    if (!m.vt || typeof m.vt.id !== "string" || typeof m.s !== "string") return null;
+    if (m.vt.c !== "real" && m.vt.c !== "fake") return null;
+    if (!/^[a-z0-9]{4,24}$/.test(m.vt.id) || !/^[a-z0-9]{4,24}$/.test(m.s)) return null;
+    return { voteId: m.vt.id, voter: m.s, choice: m.vt.c };
   } catch {
     return null;
   }
@@ -356,7 +375,7 @@ export async function ntfyHostChannel(baseUrl: string): Promise<LiveChannel | nu
       }
     },
     subscribe: () => () => {},
-    onReactions(cb, onJoin) {
+    onReactions(cb, onJoin, onVote) {
       // 司会者のページを開く前に参加した人も拾う（過去のリアクションは浮かべない）
       if (onJoin) {
         fetch(`${NTFY}/${reactTopicOf(r.room)}/json?poll=1&since=all`, { cache: "no-store" })
@@ -380,7 +399,9 @@ export async function ntfyHostChannel(baseUrl: string): Promise<LiveChannel | nu
           const x = parseReactions(msg, deviceId);
           if (x) return cb(x);
           const j = parseJoin(msg);
-          if (j && onJoin) onJoin(j.id, j.name);
+          if (j && onJoin) return onJoin(j.id, j.name);
+          const v = parseVote(msg);
+          if (v && onVote) onVote(v.voteId, v.voter, v.choice);
         },
         () => {},
         undefined,
@@ -414,6 +435,18 @@ export function ntfyAudienceChannel(room: string, pub: string): LiveChannel {
     send: async () => {},
     current: async () => null,
     react: reactionSender(room),
+    vote(voteId, choice) {
+      const body = JSON.stringify({ vt: { id: voteId, c: choice }, s: deviceId });
+      const attempt = (i: number) =>
+        fetch(`${NTFY}/${reactTopicOf(room)}`, { method: "POST", body })
+          .then((res) => {
+            if (!res.ok) throw new Error(String(res.status));
+          })
+          .catch(() => {
+            if (i < 2) setTimeout(() => attempt(i + 1), 1200);
+          });
+      void attempt(0);
+    },
     join(id, name) {
       // 届かないと指名の対象にならないので、失敗したら間隔を空けて送り直す
       const body = JSON.stringify({ j: { id, n: name.trim().slice(0, 16) }, s: deviceId });

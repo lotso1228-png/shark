@@ -394,6 +394,7 @@ export function startJudge(g: GameState, participants: number, now: number, id: 
   return {
     ...g,
     memberPick: null,
+    judgedKey: cardKey(g),
     judge: { id, endsAt: now + JUDGE_SECONDS * 1000, seconds: JUDGE_SECONDS, target: judgeTarget(participants), count: 0 },
   };
 }
@@ -409,4 +410,80 @@ export function finishJudge(g: GameState): GameState {
   const j = g.judge;
   if (!j || j.result) return g;
   return { ...g, judge: { ...j, result: j.count >= j.target ? "safe" : "out" } };
+}
+
+/* ───────── エピソード判定（リアクションが少なければ卒業生が一杯） ───────── */
+
+/** 表示中のカードの識別子 */
+export const cardKey = (g: GameState) => {
+  const e = currentEntry(g);
+  return e ? `${g.cursor}-${e.card.kind === "topic" ? e.card.topicId : e.card.kind}` : "";
+};
+
+/** 卒業生がエピソードを話すカードか（笑い・思い出・仲間。現役向け・特別カードは対象外） */
+export function isEpisodeCard(g: GameState) {
+  const e = currentEntry(g);
+  return (
+    g.screen === "topic" &&
+    !!e &&
+    e.card.kind === "topic" &&
+    (e.card.category === "laugh" || e.card.category === "memory" || e.card.category === "friends")
+  );
+}
+
+/** 目標：参加者1人あたり1回（最低4） */
+export const episodeTarget = (participants: number) => Math.max(4, participants);
+
+/** 届いたリアクションを、表示中のカードの数として数える */
+export function tallyCard(g: GameState, r: ReactionCounts): GameState {
+  if (g.screen !== "topic") return g;
+  const key = cardKey(g);
+  const prev = g.tally?.key === key ? g.tally.count : 0;
+  return { ...g, tally: { key, count: prev + scoreTotal(r) } };
+}
+
+/**
+ * NEXT を押したときの判定。リアクションが目標に届いていなければ、進まずにアウトを出す。
+ * すでにアウトを出していれば閉じて次へ進む（呼び出し側で next する）。
+ */
+export function episodeCheck(g: GameState, participants: number, graduates: Graduate[], id: string): GameState | null {
+  if (participants <= 0 || !isEpisodeCard(g) || g.penalty || g.judgedKey === cardKey(g)) return null;
+  const target = episodeTarget(participants);
+  const count = g.tally?.key === cardKey(g) ? g.tally.count : 0;
+  if (count >= target) return null;
+  return { ...g, penalty: { id, name: nameOf(graduates, currentEntry(g)!.graduateId), count, target } };
+}
+
+/* ───────── 「ホント？盛ってる？」投票 ───────── */
+
+export const VOTE_SECONDS = 10;
+const VOTE_GRACE_MS = 2500;
+
+export function startVote(g: GameState, graduates: Graduate[], now: number, id: string): GameState {
+  const e = currentEntry(g);
+  const name = nameOf(graduates, e?.graduateId ?? g.graduateId);
+  return {
+    ...g,
+    judge: null,
+    memberPick: null,
+    judgedKey: cardKey(g),
+    vote: { id, name, endsAt: now + VOTE_SECONDS * 1000, seconds: VOTE_SECONDS, real: 0, fake: 0, voters: [] },
+  };
+}
+
+/** 1人1票（同じ端末からの2票目は数えない） */
+export function castVote(g: GameState, voteId: string, voter: string, choice: "real" | "fake", now: number): GameState {
+  const v = g.vote;
+  if (!v || v.id !== voteId || v.result || now > v.endsAt + VOTE_GRACE_MS || v.voters.includes(voter)) return g;
+  return {
+    ...g,
+    vote: { ...v, voters: [...v.voters, voter], real: v.real + (choice === "real" ? 1 : 0), fake: v.fake + (choice === "fake" ? 1 : 0) },
+  };
+}
+
+/** 「盛ってる」が多ければ一杯。同数はホント扱い */
+export function finishVote(g: GameState): GameState {
+  const v = g.vote;
+  if (!v || v.result) return g;
+  return { ...g, vote: { ...v, result: v.fake > v.real ? "fake" : "real" } };
 }

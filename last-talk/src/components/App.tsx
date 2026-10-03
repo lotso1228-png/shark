@@ -27,6 +27,7 @@ import { SharePanel } from "./live/SharePanel";
 import { HostReactions } from "./live/Reactions";
 import { MemberPick } from "./live/MemberPick";
 import { JudgeOverlay } from "./live/JudgeOverlay";
+import { PenaltyOverlay, VoteOverlay } from "./live/DrinkOverlays";
 import { JUDGE_GRACE_MS } from "@/lib/engine";
 
 export function App() {
@@ -65,6 +66,14 @@ function Stage() {
     const t = setTimeout(actions.finishJudge, wait);
     return () => clearTimeout(t);
   }, [judge, actions]);
+
+  // ホント？盛ってる？：締め切り（＋届くまでの猶予）で結果を出す
+  const vote = game.vote;
+  useEffect(() => {
+    if (!vote || vote.result) return;
+    const t = setTimeout(actions.finishVote, Math.max(0, vote.endsAt + 2500 - Date.now()));
+    return () => clearTimeout(t);
+  }, [vote, actions]);
 
   const backFromLast = useCallback(() => {
     actions.goTo(
@@ -217,6 +226,15 @@ function Stage() {
           </>
         )}
         {screen !== "setup" && <MemberPick pick={game.memberPick ?? null} onClose={actions.closeMemberPick} />}
+        {screen !== "setup" && <PenaltyOverlay penalty={game.penalty ?? null} onNext={actions.next} />}
+        {screen !== "setup" && (
+          <VoteOverlay
+            vote={game.vote ?? null}
+            endsAt={game.vote?.endsAt}
+            live={game.vote ? { real: game.vote.real, fake: game.vote.fake } : undefined}
+            onClose={actions.closeVote}
+          />
+        )}
         {screen !== "setup" && (
           <JudgeOverlay
             judge={game.judge ?? null}

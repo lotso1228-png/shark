@@ -74,6 +74,14 @@ export interface GameState {
   lastRevealed: boolean;
   /** 卒業生ルーレットの実行中（回り終わったら選ばれた人の画面へ進む） */
   roulette?: { id: string; winnerId: string } | null;
+  /** いま表示中のカードに届いたリアクション数（エピソード判定用） */
+  tally?: { key: string; count: number };
+  /** 投票・判定タイムを済ませたカード（同じカードで二重に飲ませない） */
+  judgedKey?: string;
+  /** エピソード判定でアウトになった卒業生（NEXT で閉じて次へ） */
+  penalty?: { id: string; name: string; count: number; target: number } | null;
+  /** 「ホント？盛ってる？」投票 */
+  vote?: Vote | null;
   /** 判定タイム：一定時間のリアクション数が目標に届かなければ一杯 */
   judge?: Judge | null;
   /** 優勝ポイント：卒業生ごとに受け取ったリアクションの数 */
@@ -97,6 +105,18 @@ export interface Judge {
   result?: "safe" | "out";
 }
 
+export interface Vote {
+  id: string;
+  /** 投票の対象の卒業生（呼び名） */
+  name: string;
+  endsAt: number;
+  seconds: number;
+  real: number;
+  fake: number;
+  voters: string[];
+  result?: "real" | "fake";
+}
+
 export type ReactionCounts = Partial<Record<"clap" | "laugh" | "cry" | "fire", number>>;
 
 export interface Settings {
@@ -110,4 +130,6 @@ export interface Settings {
   shuffleFx?: boolean;
   /** 1問ごとに話す卒業生を交代する（既定でオン） */
   rotate?: boolean;
+  /** エピソード判定：卒業生の話へのリアクションが少なければ一杯（既定でオン） */
+  drinkRule?: boolean;
 }

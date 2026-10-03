@@ -283,3 +283,59 @@ test("判定タイム：目標に届けばセーフ、届かなければアウ�
   assert.equal(E.finishJudge(E.countJudge(g, { clap: 1 }, t0 + 6000)).judge!.result, "safe");
   assert.equal(E.judgeTarget(0), 6);
 });
+
+test("エピソード判定：卒業生の話へのリアクションが目標未満なら、NEXT でアウトを出す", () => {
+  // 笑いのお題（卒業生の話）
+  let g = E.draw(startFor("a"), ctx({ rng: () => 0.99 }));
+  assert.ok(E.isEpisodeCard(g));
+  g = E.tallyCard(g, { clap: 3 });
+  const out = E.episodeCheck(g, 10, grads, "p1");
+  assert.ok(out?.penalty);
+  assert.equal(out!.penalty!.name, "山田さん");
+  assert.equal(out!.penalty!.count, 3);
+  assert.equal(out!.penalty!.target, 10);
+  // 目標に届いていればアウトにならない
+  assert.equal(E.episodeCheck(E.tallyCard(g, { laugh: 7 }), 10, grads, "p2"), null);
+  // 参加者がいなければ判定しない
+  assert.equal(E.episodeCheck(g, 0, grads, "p3"), null);
+  // 次のカードではリアクション数が0から数え直し
+  const n = E.next(g, { ...ctx({ rng: () => 0.99 }), rotate: true });
+  assert.notEqual(E.cardKey(n), g.tally!.key);
+});
+
+test("エピソード判定：現役向け・特別カードは対象外", () => {
+  const crowdCard: GameState = {
+    ...startFor("a"),
+    screen: "topic",
+    history: [{ graduateId: "a", card: { kind: "topic", topicId: "x", category: "crowd", text: "t" } }],
+    cursor: 0,
+  };
+  assert.equal(E.isEpisodeCard(crowdCard), false);
+  const special: GameState = { ...crowdCard, history: [{ graduateId: "a", card: { kind: "special", special: "toast" } }] };
+  assert.equal(E.isEpisodeCard(special), false);
+});
+
+test("ホント？盛ってる？：1人1票、盛ってるが多ければ一杯、同数はホント", () => {
+  const t0 = 5_000_000;
+  let g: GameState = E.draw(startFor("b"), ctx({ rng: () => 0.99 }));
+  g = E.startVote(g, grads, t0, "v1");
+  assert.equal(g.vote!.name, "田中さん");
+  g = E.castVote(g, "v1", "dev1", "fake", t0 + 1000);
+  g = E.castVote(g, "v1", "dev1", "real", t0 + 2000); // 2票目は無効
+  g = E.castVote(g, "v1", "dev2", "fake", t0 + 3000);
+  g = E.castVote(g, "v1", "dev3", "real", t0 + 4000);
+  g = E.castVote(g, "old", "dev4", "real", t0 + 4000); // 別の投票
+  g = E.castVote(g, "v1", "dev5", "real", t0 + 60_000); // 締め切り後
+  assert.deepEqual([g.vote!.fake, g.vote!.real], [2, 1]);
+  assert.equal(E.finishVote(g).vote!.result, "fake");
+  assert.equal(E.finishVote(E.castVote(g, "v1", "dev6", "real", t0 + 5000)).vote!.result, "real");
+});
+
+test("エピソード判定：投票や判定タイムを済ませたカードでは二重に飲ませない", () => {
+  let g = E.draw(startFor("a"), ctx({ rng: () => 0.99 }));
+  g = E.finishVote(E.startVote(g, grads, 0, "v1"));
+  assert.equal(E.episodeCheck({ ...g, vote: null }, 10, grads, "p"), null);
+  let h = E.draw(startFor("b"), ctx({ rng: () => 0.99 }));
+  h = E.startJudge(h, 10, 0, "j");
+  assert.equal(E.episodeCheck({ ...h, judge: null }, 10, grads, "p"), null);
+});
