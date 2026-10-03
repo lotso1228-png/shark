@@ -190,7 +190,8 @@ export function livePayload(
           ...base,
           scene: "topic",
           key: `topic-${game.cursor}-${v.text}`,
-          name: n,
+          // 現役トークは現役が答える番なので、卒業生の名前ではなく「現役のみなさん」
+          name: entry.card.kind === "topic" && entry.card.category === "crowd" ? "現役のみなさん" : n,
           label: v.label,
           sub: v.sub,
           text: v.text,

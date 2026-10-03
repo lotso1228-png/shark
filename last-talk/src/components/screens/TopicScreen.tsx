@@ -30,6 +30,9 @@ export function TopicScreen() {
   }
 
   const view = cardView(entry.card, name);
+  // 現役トークは現役が答えるので、上には卒業生ではなく「現役のみなさん」を出す
+  const isCrowd = entry.card.kind === "topic" && entry.card.category === "crowd";
+  const headerName = isCrowd ? "現役のみなさん" : name;
   const canNominate =
     entry.card.kind === "topic" && entry.card.category === "friends";
   const flowDone = isFlowComplete(game, graduates.length);
@@ -47,13 +50,13 @@ export function TopicScreen() {
           {/* 話す人が替わったら名前を入れ替えて知らせる */}
           <AnimatePresence mode="wait" initial={false}>
             <motion.span
-              key={name}
+              key={headerName}
               className="inline-block"
               initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } }}
               exit={{ opacity: 0, y: -10, transition: { duration: 0.2 } }}
             >
-              {name}
+              {headerName}
             </motion.span>
           </AnimatePresence>
         </button>
