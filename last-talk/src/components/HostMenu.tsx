@@ -1,11 +1,13 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import type { ReactNode } from "react";
-import { CATEGORY_META, CATEGORY_ORDER, SPECIAL_META } from "@/lib/topics";
-import type { Mood, SpecialKind } from "@/lib/types";
+import { useState, type ReactNode } from "react";
+import { CATEGORY_META, CATEGORY_ORDER, SPECIAL_META, TOPIC_CATEGORIES } from "@/lib/topics";
+import type { Category, Mood, SpecialKind } from "@/lib/types";
 import { useLiveStatus, useOpenShare } from "./live/LiveProvider";
 import { useStore } from "./StoreProvider";
+import { nextSpeaker } from "@/lib/engine";
+import { Jp } from "./Jp";
 import type { Fullscreen } from "./useFullscreen";
 
 const MOODS: { id: Mood; label: string }[] = [
@@ -95,7 +97,15 @@ export function HostMenu({
   fullscreen: Fullscreen;
   onRestart: () => void;
 }) {
-  const { game, settings, members, letters, actions } = useStore();
+  const { game, settings, members, letters, actions, topics, graduates } = useStore();
+  const [pickCat, setPickCat] = useState<Category | null>(null);
+  // 選んだお題を話す人（交代オンなら次の人）
+  const pickFor =
+    settings.rotate !== false && game.screen === "topic" && game.cursor >= 0
+      ? nextSpeaker(game, graduates)
+      : game.graduateId;
+  const pickGrad = graduates.find((x) => x.id === pickFor);
+  const pickName = pickGrad?.nickname || pickGrad?.name || "卒業生";
   const inGame = !!game.graduateId && ["topic", "ready"].includes(game.screen);
   const onTopic = game.screen === "topic" && game.cursor >= 0;
   const run = (fn: () => void) => () => {
@@ -182,6 +192,39 @@ export function HostMenu({
                     ひとつ戻る
                   </Action>
                 </div>
+              </Section>
+
+              <Section title={`お題を選ぶ（次は${pickName}・タップで出す）`}>
+                <div className="flex flex-wrap gap-2">
+                  {TOPIC_CATEGORIES.map((c) => (
+                    <Chip key={c} disabled={!inGame} active={pickCat === c} onClick={() => setPickCat(pickCat === c ? null : c)}>
+                      {CATEGORY_META[c].label}
+                    </Chip>
+                  ))}
+                </div>
+                {pickCat && inGame && (
+                  <ul className="mt-3 flex flex-col gap-1.5" data-topic-picker>
+                    {topics
+                      .filter((t) => t.category === pickCat)
+                      .map((t) => {
+                        const used = game.usedTopicIds.includes(t.id);
+                        return (
+                          <li key={t.id}>
+                            <button
+                              type="button"
+                              onClick={run(() => actions.chooseTopic(t.id))}
+                              className={`flex w-full items-start gap-2 border px-3 py-2.5 text-left text-sm leading-relaxed tracking-wide transition-colors hover:border-gold/60 ${
+                                used ? "border-ivory/5 text-ivory/45" : "border-ivory/15 text-ivory/90"
+                              }`}
+                            >
+                              <span className="flex-1"><Jp>{t.text.replaceAll("{name}", pickName)}</Jp></span>
+                              {used && <span className="shrink-0 pt-0.5 text-[0.65rem] tracking-widest text-mist/50">済</span>}
+                            </button>
+                          </li>
+                        );
+                      })}
+                  </ul>
+                )}
               </Section>
 
               <Section title={`カテゴリー変更${game.chapterLocked ? "（固定中）" : "（自動で進行中）"}`}>

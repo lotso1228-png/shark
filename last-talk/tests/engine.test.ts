@@ -342,3 +342,16 @@ test("エピソード判定：投票や判定タイムを済ませたカード�
   h = E.startJudge(h, 10, 0, "j");
   assert.equal(E.episodeCheck({ ...h, judge: null }, 10, grads, "p"), null);
 });
+
+test("お題を選ぶ：選んだお題がすぐ出て、交代オンなら次の人に回り、戻るで前のお題に戻れる", () => {
+  let g = E.draw(startFor("a"), ctx());
+  const before = E.currentEntry(g)!;
+  const t = DEFAULT_TOPICS.find((x) => x.category === "memory")!;
+  g = E.chooseTopic(g, t.id, { ...ctx(), rotate: true });
+  const cur = E.currentEntry(g)!;
+  assert.equal(cur.card.kind === "topic" && cur.card.topicId, t.id);
+  assert.notEqual(cur.graduateId, "a");
+  assert.ok(g.usedTopicIds.includes(t.id));
+  g = E.back(g);
+  assert.deepEqual(E.currentEntry(g), before);
+});

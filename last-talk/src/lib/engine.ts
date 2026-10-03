@@ -241,6 +241,29 @@ export function draw(g: GameState, ctx: DrawContext): GameState {
   };
 }
 
+/** 司会者がお題を一覧から選んで出す（交代オンなら次の人に回す） */
+export function chooseTopic(
+  g: GameState,
+  topicId: string,
+  ctx: DrawContext & { rotate?: boolean },
+): GameState {
+  const t = ctx.topics.find((x) => x.id === topicId);
+  if (!t) return g;
+  let graduateId = g.graduateId;
+  if (ctx.rotate && g.screen === "topic" && currentEntry(g)) graduateId = nextSpeaker(g, ctx.graduates) ?? graduateId;
+  if (!graduateId) return g;
+  const card = topicCard(t, graduateId, ctx.graduates);
+  const history = [...g.history.slice(0, g.cursor + 1), { graduateId, card }];
+  return {
+    ...g,
+    graduateId,
+    screen: "topic",
+    history,
+    cursor: history.length - 1,
+    usedTopicIds: g.usedTopicIds.includes(t.id) ? g.usedTopicIds : [...g.usedTopicIds, t.id],
+  };
+}
+
 /** NEXT：先の履歴があればそこへ進み、なければ新しく引く */
 export function next(g: GameState, ctx: DrawContext & { rotate?: boolean }): GameState {
   if (g.cursor < g.history.length - 1) {

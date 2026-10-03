@@ -140,6 +140,14 @@ function useStoreValue() {
             { ...ctx(), rotate: settings.rotate !== false },
           );
         }),
+      chooseTopic: (topicId: string) =>
+        setGame((g) =>
+          E.chooseTopic(
+            { ...g, memberPick: null, judge: null, vote: null, penalty: null },
+            topicId,
+            { ...ctx(), rotate: settings.rotate !== false },
+          ),
+        ),
       back: () =>
         setGame((g) =>
           g.penalty
