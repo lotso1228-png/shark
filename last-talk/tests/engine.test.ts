@@ -201,3 +201,35 @@ test("卒業生3名：1章3問（全員に各章1問ずつ回る）", () => {
   assert.equal(E.chapterQuota(1), 3);
   assert.equal(E.chapterQuota(12), 10);
 });
+
+import { upgradeTopics } from "../src/lib/topicUpgrade";
+
+test("お題の入れ替え：自分で編集・追加したお題は残り、未編集の標準お題だけ新しくなる", () => {
+  const saved = [
+    // 前の版の標準お題（未編集）→ 新しい版に入れ替わる
+    { id: "std4-laugh-01", category: "laugh", text: "正直、JCにいくら使った？元は取れた？", tags: [], builtIn: true },
+    // 前の版の標準お題を書き換えたもの（edited フラグがない古いデータ）→ 残す
+    { id: "std4-laugh-02", category: "laugh", text: "うちの理事長の一番の伝説は？", tags: [], builtIn: true },
+    // 編集フラグ付き → 残す
+    { id: "std4-memory-01", category: "memory", text: "自分で直したお題", tags: [], builtIn: false, edited: true },
+    // 自分で追加 → 残す
+    { id: "custom-1", category: "friends", text: "自作のお題", tags: [], builtIn: false },
+  ] as const;
+  const out = upgradeTopics(saved.map((t) => ({ ...t, tags: [] })));
+  const texts = out.map((t) => t.text);
+  assert.ok(!texts.includes("正直、JCにいくら使った？元は取れた？"), "未編集の古い標準お題が残っている");
+  assert.ok(texts.includes("うちの理事長の一番の伝説は？"), "編集したお題が消えた");
+  assert.ok(texts.includes("自分で直したお題"));
+  assert.ok(texts.includes("自作のお題"));
+  assert.equal(out.find((t) => t.text === "うちの理事長の一番の伝説は？")!.builtIn, false);
+  assert.ok(texts.includes(DEFAULT_TOPICS[0].text), "新しい標準お題が入っていない");
+  // もう一度入れ替えても増えたり消えたりしない
+  assert.deepEqual(upgradeTopics(out).map((t) => t.text).sort(), texts.slice().sort());
+});
+
+test("乾杯カード：卒業生の名前が入る", async () => {
+  const { cardView } = await import("../src/lib/cardView");
+  const v = cardView({ kind: "special", special: "toast" }, "山田さん");
+  assert.equal(v.text, "ここで全員、乾杯！");
+  assert.ok(v.note?.includes("山田さんの音頭で"));
+});

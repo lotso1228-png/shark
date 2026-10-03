@@ -4,6 +4,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, type ReactN
 import * as E from "@/lib/engine";
 import { STORAGE_KEYS, usePersistentState } from "@/lib/storage";
 import { DEFAULT_TOPICS, TOPICS_VERSION } from "@/lib/topics";
+import { upgradeTopics } from "@/lib/topicUpgrade";
 import type {
   Category,
   GameState,
@@ -57,10 +58,10 @@ function useStoreValue() {
   );
   const loaded = gLoaded && tLoaded && sLoaded && gmLoaded && mLoaded;
 
-  // 標準お題が新しくなっていたら入れ替える（自分で追加したお題は残す）
+  // 標準お題が新しくなっていたら入れ替える。自分で追加・編集したお題はそのまま残す
   useEffect(() => {
     if (!loaded || settings.topicsVersion === TOPICS_VERSION) return;
-    setTopics((list) => [...DEFAULT_TOPICS, ...list.filter((t) => !t.builtIn)]);
+    setTopics((list) => upgradeTopics(list));
     setSettings((s) => ({ ...s, topicsVersion: TOPICS_VERSION }));
   }, [loaded, settings.topicsVersion, setTopics, setSettings]);
 
@@ -203,13 +204,17 @@ function useStoreValue() {
           { id: `custom-${uid()}`, category, text: text.trim(), tags: [], builtIn: false },
         ]),
       updateTopic: (id: string, text: string) =>
-        setTopics((list) => list.map((t) => (t.id === id ? { ...t, text: text.trim() } : t))),
+        setTopics((list) =>
+          // 標準お題を書き換えたら「自分のお題」にする（標準お題の入れ替えでも消えない）
+          list.map((t) =>
+            t.id === id ? { ...t, text: text.trim(), ...(t.builtIn ? { builtIn: false, edited: true } : {}) } : t,
+          ),
+        ),
       removeTopic: (id: string) => setTopics((list) => list.filter((t) => t.id !== id)),
       restoreDefaultTopics: () =>
         setTopics((list) => {
-          // 標準お題を初期状態に戻し、カスタムお題は残す
-          const custom = list.filter((t) => !t.builtIn);
-          return [...DEFAULT_TOPICS, ...custom];
+          // 消した標準お題を元に戻す（自分で追加・編集したお題は残す）
+          return upgradeTopics(list);
         }),
 
       // ── 設定 ──

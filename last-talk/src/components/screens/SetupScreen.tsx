@@ -384,7 +384,7 @@ function TopicsTab() {
           onClick={() =>
             confirm({
               title: "標準お題に戻しますか？",
-              body: "標準のお題を初期状態に戻します（編集・削除した標準お題が元に戻ります）。追加したお題は残ります。",
+              body: "削除した標準のお題を元に戻します。自分で追加・編集したお題はそのまま残ります。",
               ok: "標準に戻す",
               onOk: actions.restoreDefaultTopics,
             })
@@ -427,7 +427,9 @@ function TopicRow({ t, onRemove }: { t: Topic; onRemove: () => void }) {
     <li className="flex items-center gap-3 py-3">
       <span className="min-w-0 flex-1 leading-relaxed">
         {t.text}
-        {!t.builtIn && <span className="ml-2 text-[0.65rem] tracking-widest text-gold/70">追加</span>}
+        {!t.builtIn && (
+          <span className="ml-2 text-[0.65rem] tracking-widest text-gold/70">{t.edited ? "編集済" : "追加"}</span>
+        )}
       </span>
       <span className="flex shrink-0">
         <button type="button" className={smallBtn} onClick={() => setEditing(true)}>

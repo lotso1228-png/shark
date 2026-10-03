@@ -10,6 +10,8 @@ export interface Topic {
   text: string;
   tags: TopicTag[];
   builtIn: boolean;
+  /** 標準お題を自分で書き換えたもの（標準お題の入れ替えでも消さない） */
+  edited?: boolean;
 }
 
 export interface Graduate {
@@ -25,7 +27,7 @@ export interface Member {
   joined?: boolean;
 }
 
-export type SpecialKind = "nominate" | "reverse" | "everyone" | "photo";
+export type SpecialKind = "nominate" | "reverse" | "everyone" | "photo" | "toast";
 
 export type Mood = "normal" | "hype" | "calm";
 

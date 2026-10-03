@@ -209,7 +209,7 @@ export function HostMenu({
 
               <Section title="特別カード">
                 <div className="flex flex-wrap gap-2">
-                  {(["random", "nominate", "reverse", "everyone", "photo"] as const).map((k) => (
+                  {(["random", "toast", "nominate", "reverse", "everyone", "photo"] as const).map((k) => (
                     <Chip key={k} disabled={!inGame} onClick={run(() => actions.special(k as SpecialKind | "random"))}>
                       {k === "random" ? "ランダム" : SPECIAL_META[k].label}
                     </Chip>

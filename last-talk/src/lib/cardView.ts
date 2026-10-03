@@ -22,7 +22,13 @@ export function cardView(card: Card, name: string): CardView {
       };
     case "special": {
       const m = SPECIAL_META[card.special];
-      return { label: `Special · ${m.en}`, sub: m.label, text: m.text, note: m.sub, special: true };
+      return {
+        label: `Special · ${m.en}`,
+        sub: m.label,
+        text: m.text,
+        note: m.sub.replaceAll("{name}", name),
+        special: true,
+      };
     }
     case "reply":
       return {

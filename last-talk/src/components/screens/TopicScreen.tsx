@@ -133,7 +133,7 @@ export function TopicScreen() {
           )}
           {members.length > 0 &&
             ((entry.card.kind === "topic" && entry.card.category === "crowd") ||
-              (entry.card.kind === "special" && entry.card.special !== "photo")) && (
+              (entry.card.kind === "special" && !["photo", "toast"].includes(entry.card.special))) && (
               <Button variant="ghost" onClick={actions.pickMember}>
                 現役をランダム指名
               </Button>

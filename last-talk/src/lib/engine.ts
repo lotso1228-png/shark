@@ -118,14 +118,14 @@ export function pickTopic(
 
 const SPECIAL_RATE: Record<Mood, number> = { normal: 0.1, hype: 0.16, calm: 0.08 };
 const SPECIAL_WEIGHT: Record<Mood, Record<SpecialKind, number>> = {
-  normal: { nominate: 1, reverse: 1, everyone: 1, photo: 1 },
-  hype: { nominate: 3, reverse: 2, everyone: 2, photo: 1 },
-  calm: { nominate: 1, reverse: 0.5, everyone: 2, photo: 3 },
+  normal: { nominate: 1, reverse: 1, everyone: 1, photo: 1, toast: 1.2 },
+  hype: { nominate: 3, reverse: 2, everyone: 2, photo: 1, toast: 3 },
+  calm: { nominate: 1, reverse: 0.5, everyone: 2, photo: 3, toast: 1 },
 };
 
 export const pickSpecial = (mood: Mood, rng: Rng): SpecialKind =>
   weightedPick<SpecialKind>(
-    ["nominate", "reverse", "everyone", "photo"],
+    ["nominate", "reverse", "everyone", "photo", "toast"],
     (k) => SPECIAL_WEIGHT[mood][k],
     rng,
   )!;
