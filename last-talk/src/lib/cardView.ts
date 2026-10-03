@@ -17,7 +17,7 @@ export function cardView(card: Card, name: string): CardView {
         label: CATEGORY_META[card.category].en,
         sub: CATEGORY_META[card.category].label,
         text: card.text,
-        note: null,
+        note: card.category === "crowd" ? "現役のみなさんが答える番です" : null,
         special: false,
       };
     case "special": {

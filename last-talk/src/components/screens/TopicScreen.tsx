@@ -153,8 +153,16 @@ export function TopicScreen() {
           {members.length > 0 &&
             ((entry.card.kind === "topic" && entry.card.category === "crowd") ||
               (entry.card.kind === "special" && entry.card.special !== "photo")) && (
-              <Button variant="ghost" onClick={actions.pickMember}>
-                {entry.card.kind === "special" && entry.card.special === "toast" ? "音頭をルーレットで決める" : "現役をランダム指名"}
+              <Button
+                variant="ghost"
+                onClick={actions.pickMember}
+                className={entry.card.kind === "topic" ? "!border-gold/70 !text-gold-soft" : ""}
+              >
+                {entry.card.kind === "special" && entry.card.special === "toast"
+                  ? "音頭をルーレットで決める"
+                  : entry.card.kind === "topic"
+                    ? "答える現役をルーレットで決める"
+                    : "現役をランダム指名"}
               </Button>
             )}
           {flowDone && !canNominate && (

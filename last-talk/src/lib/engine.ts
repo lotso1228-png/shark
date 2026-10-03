@@ -32,7 +32,8 @@ export const chapterQuota = (graduateCount: number) =>
   Math.min(10, Math.max(3, graduateCount));
 
 /** 現役メンバー向けのお題を混ぜる割合 */
-const CROWD_RATE = 0.3;
+/** 卒業生のお題 2 枚ごとに、現役が答える「現役トーク」を 1 枚はさむ */
+export const CROWD_EVERY = 2;
 
 const nameOf = (graduates: Graduate[], id: string | null) => {
   const x = graduates.find((g) => g.id === id);
@@ -194,14 +195,19 @@ export function draw(g: GameState, ctx: DrawContext): GameState {
 
   if (!card) {
     let cat = resolveCategory(state, ctx.mood, rng);
-    // ときどき現役メンバーが答えるお題を混ぜる（続けては出さない）
-    const prevCrowd = prev?.card.kind === "topic" && prev.card.category === "crowd";
+    // 卒業生のトークの合間に、現役メンバーが答える「現役トーク」を一定間隔ではさむ
+    const view = g.history.slice(0, g.cursor + 1);
+    let sinceCrowd = 0;
+    for (let i = view.length - 1; i >= 0; i--) {
+      const c = view[i].card;
+      if (c.kind === "topic" && c.category === "crowd") break;
+      sinceCrowd++;
+    }
     if (
       !g.chapterLocked &&
       g.history.length > 0 &&
-      !prevCrowd &&
-      ctx.topics.some((t) => t.category === "crowd") &&
-      rng() < CROWD_RATE
+      sinceCrowd >= CROWD_EVERY &&
+      ctx.topics.some((t) => t.category === "crowd")
     ) {
       cat = "crowd";
     }
@@ -230,7 +236,8 @@ export function draw(g: GameState, ctx: DrawContext): GameState {
     usedTopicIds: used,
     history,
     cursor: history.length - 1,
-    chapterCount: chapterCount + 1,
+    // 現役トークは章の問数に数えない（卒業生のお題数を減らさない）
+    chapterCount: card.kind === "topic" && card.category === "crowd" ? chapterCount : chapterCount + 1,
   };
 }
 

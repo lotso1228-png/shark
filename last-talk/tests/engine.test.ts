@@ -136,8 +136,9 @@ test("仲間カテゴリーの指名カード", () => {
 test("自動進行：カテゴリーを使い切っても他の未使用お題を優先し、全体を使い切るまで重複しない", () => {
   let g = startFor("a");
   const total = DEFAULT_TOPICS.filter((t) => t.category !== "last" && t.category !== "crowd").length;
-  for (let i = 0; i < total; i++) g = E.draw(g, ctx({ rng: () => 0.99 }));
-  const ids = topicIds(g);
+  const gradIds = (x: GameState) => topicIds(x).filter((id) => !id.includes("-crowd-"));
+  for (let i = 0; i < total * 3 && gradIds(g).length < total; i++) g = E.draw(g, ctx({ rng: () => 0.99 }));
+  const ids = gradIds(g);
   assert.equal(ids.length, total);
   assert.equal(new Set(ids).size, total);
   assert.ok(ids.every((id) => !id.includes("-last-")));
@@ -178,7 +179,7 @@ test("1問ごとに交代：オフなら同じ人が続く", () => {
   assert.equal(E.currentEntry(g)!.graduateId, "a");
 });
 
-test("現役向けお題：ときどき混ざり、続けては出ず、{name} が卒業生の呼び名になる", () => {
+test("現役トーク：卒業生のお題2枚ごとに1枚はさまり、続けては出ず、{name} が卒業生の呼び名になる", () => {
   let g = E.draw(startFor("a"), ctx({ rng: () => 0.99 }));
   let crowd = 0;
   for (let i = 0; i < 300; i++) {
@@ -187,13 +188,15 @@ test("現役向けお題：ときどき混ざり、続けては出ず、{name} �
     const cur = E.currentEntry(g)!;
     if (cur.card.kind === "topic" && cur.card.category === "crowd") {
       crowd++;
+      const h = g.history;
+      assert.ok(h.length < 3 || h.slice(-3, -1).every((e) => !(e.card.kind === "topic" && e.card.category === "crowd")), "間隔が短い");
       assert.ok(!(prev.card.kind === "topic" && prev.card.category === "crowd"), "現役向けが連続");
       assert.ok(!cur.card.text.includes("{name}"));
       const n = grads.find((x) => x.id === cur.graduateId)!.nickname;
       assert.ok(cur.card.text.includes(n), `呼び名が入っていない: ${cur.card.text}`);
     }
   }
-  assert.ok(crowd > 30 && crowd < 120, `crowd=${crowd}`);
+  assert.ok(crowd >= 95 && crowd <= 100, `crowd=${crowd}`);
 });
 
 test("卒業生3名：1章3問（全員に各章1問ずつ回る）", () => {

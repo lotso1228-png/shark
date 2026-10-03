@@ -14,9 +14,9 @@ export const CATEGORY_META: Record<
   friends: { label: "仲間", en: "COMRADES", note: "終盤：仲間を振り返る" },
   last: { label: "LAST MESSAGE", en: "LAST MESSAGE", note: "最後：感謝を伝える" },
   crowd: {
-    label: "現役へ",
-    en: "TO THE MEMBERS",
-    note: "会場の現役メンバーが答えるお題。ときどき混ざります。{name} は話題の卒業生の呼び名に置き換わります",
+    label: "現役トーク",
+    en: "MEMBERS' TALK",
+    note: "現役メンバーが答えるお題。卒業生のお題2問ごとに1問はさまります。{name} は話題の卒業生の呼び名に置き換わります",
   },
 };
 
