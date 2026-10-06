@@ -1,0 +1,176 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ink: #07090f;
+  --color-night: #0c1120;
+  --color-navy: #121a30;
+  --color-ivory: #f4efe6;
+  --color-mist: #a9a49a;
+  --color-gold: #c9a96e;
+  --color-gold-soft: #e3cc9c;
+  --color-gold-deep: #8d7344;
+  --font-display: var(--nf-display), "Cormorant Garamond", "Times New Roman", serif;
+  --font-mincho: var(--nf-mincho), "Shippori Mincho", "Hiragino Mincho ProN", "Yu Mincho",
+    "YuMincho", serif;
+}
+
+:root {
+  color-scheme: dark;
+  /* お題の文字サイズ：幅と高さの小さい方に合わせ、スクリーンでも5〜10m先から読める大きさ */
+  --topic-size: clamp(1.9rem, min(6.4vw, 10.5vh), 8.5rem);
+  --name-size: clamp(1.1rem, min(3vw, 5vh), 3.4rem);
+}
+
+/* スマホ縦：幅が狭いので vw 基準で少し大きめに */
+@media (max-width: 640px) and (orientation: portrait) {
+  :root {
+    --topic-size: clamp(1.8rem, 8.4vw, 3rem);
+  }
+  .venue {
+    --topic-size: clamp(2rem, 9.6vw, 3.4rem) !important;
+  }
+}
+
+.venue {
+  --topic-size: clamp(2.2rem, min(8vw, 13.5vh), 11rem);
+  --name-size: clamp(1.3rem, min(3.8vw, 6vh), 4.4rem);
+}
+
+html,
+body {
+  height: 100%;
+  background: var(--color-ink);
+  color: var(--color-ivory);
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior: none;
+}
+
+body {
+  font-family: var(--font-mincho);
+  font-feature-settings: "palt";
+}
+
+/* 舞台背景：ダークネイビーのグラデーション＋ごく薄いビネット */
+.stage {
+  background:
+    radial-gradient(120% 80% at 50% 0%, rgba(201, 169, 110, 0.09), transparent 60%),
+    radial-gradient(100% 90% at 50% 110%, rgba(18, 26, 48, 0.9), transparent 70%),
+    linear-gradient(180deg, #0c1120 0%, #07090f 100%);
+  transition: background 1.2s ease;
+}
+
+.stage.is-dark {
+  background:
+    radial-gradient(60% 50% at 50% 50%, rgba(201, 169, 110, 0.07), transparent 70%),
+    #030407;
+}
+
+.stage::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  box-shadow: inset 0 0 18vmin rgba(0, 0, 0, 0.65);
+}
+
+.topic-text {
+  font-size: calc(var(--topic-size) * var(--fit, 1));
+  line-height: 1.38;
+  letter-spacing: 0.04em;
+  font-weight: 700;
+  text-wrap: balance;
+  word-break: auto-phrase;
+  overflow-wrap: anywhere;
+}
+
+.name-text {
+  font-size: var(--name-size);
+}
+
+.eyebrow {
+  font-family: var(--font-display);
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+}
+
+.hairline {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--color-gold), transparent);
+}
+
+.gold-text {
+  background: linear-gradient(180deg, #f1dfb6 0%, #c9a96e 55%, #9c7f4b 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.safe-bottom {
+  padding-bottom: max(1rem, env(safe-area-inset-bottom));
+}
+
+button {
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+:focus-visible {
+  outline: 1px solid var(--color-gold);
+  outline-offset: 4px;
+}
+
+.scroll-thin {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(201, 169, 110, 0.35) transparent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* リアクション：下からふわっと浮かんで消える */
+@keyframes float-up {
+  0% {
+    transform: translate3d(0, 0, 0) scale(0.6);
+    opacity: 0;
+  }
+  12% {
+    transform: translate3d(calc(var(--sway) * 0.3), -8vh, 0) scale(1.1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(var(--sway), -62vh, 0) scale(0.9);
+    opacity: 0;
+  }
+}
+
+.reaction-float {
+  position: absolute;
+  bottom: var(--rbottom, 6vh);
+  font-size: var(--rsize, 2.4rem);
+  line-height: 1;
+  animation: float-up var(--rdur, 2.8s) cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  will-change: transform, opacity;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.45));
+}
+
+/* 文節の切れ目（<wbr>）でだけ改行する。<Jp> と組み合わせて使う */
+.jp {
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
+/* お題は文節の途中で折り返さない。入りきらない文節があれば、文字サイズの自動調整（useFitText）で縮めて収める */
+.topic-text .jp {
+  overflow-wrap: normal;
+}
+/* お題では、句読点やかっこの直後でも文節の途中では改行しない */
+.topic-text .jp .ph {
+  white-space: nowrap;
+}
