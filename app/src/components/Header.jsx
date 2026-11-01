@@ -94,16 +94,33 @@ export default function Header() {
       {/* Mobile dropdown */}
       {menuOpen && (
         <div className="min-[880px]:hidden bg-white border-t border-[#e6dcc7] px-[22px] pt-3.5 pb-5 shadow-[0_12px_22px_rgba(20,120,140,0.1)]">
-          {navLinks.map((nav) => (
-            <Link
-              key={nav.to}
-              to={nav.to}
-              onClick={() => setMenuOpen(false)}
-              className="block py-[13px] px-1 no-underline text-ink text-[15px] font-medium border-b border-[#eae0cd]"
-            >
-              {nav.label}
-            </Link>
-          ))}
+          {/* Recruitment is the primary goal of this site, so the accent item
+              leads the mobile menu as a button instead of being the last plain row. */}
+          {navLinks
+            .filter((nav) => nav.accent)
+            .map((nav) => (
+              <Link
+                key={nav.to}
+                to={nav.to}
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center justify-center gap-2 mb-3.5 p-[13px] rounded-full bg-pink text-white no-underline font-bold text-[16px] font-zen shadow-[0_6px_14px_rgba(239,143,163,0.3)]"
+              >
+                {nav.label}
+                <span aria-hidden="true">→</span>
+              </Link>
+            ))}
+          {navLinks
+            .filter((nav) => !nav.accent)
+            .map((nav) => (
+              <Link
+                key={nav.to}
+                to={nav.to}
+                onClick={() => setMenuOpen(false)}
+                className="block py-[13px] px-1 no-underline text-ink text-[15px] font-medium border-b border-[#eae0cd]"
+              >
+                {nav.label}
+              </Link>
+            ))}
           <a
             href={`tel:${TEL}`}
             className="flex items-center justify-center gap-2 mt-3.5 p-[13px] rounded-full bg-teal text-white no-underline font-bold text-[18px] font-zen"

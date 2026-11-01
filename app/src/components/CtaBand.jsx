@@ -16,6 +16,8 @@ export default function CtaBand({
   ),
   showMascot = true,
   showDecorations = true,
+  buttons,
+  note,
 }) {
   return (
     <section
@@ -42,8 +44,14 @@ export default function CtaBand({
           <p className="text-[15px] opacity-95 m-0 mb-6 leading-[1.9]">
             <Jp>{lead}</Jp>
           </p>
-          <ContactButtons variant="cta" className="justify-center" />
-          <Reception tone="dark" className="mt-5 text-center" />
+          {buttons ?? <ContactButtons variant="cta" className="justify-center" />}
+          {note ? (
+            <p className="text-[13px] text-white/90 m-0 mt-5 text-center">
+              <Jp>{note}</Jp>
+            </p>
+          ) : (
+            <Reception tone="dark" className="mt-5 text-center" />
+          )}
         </div>
         {showMascot && (
           <div className="flex-[0_0_200px] flex flex-col items-center">

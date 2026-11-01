@@ -6,6 +6,7 @@ import RecruitDetails from "../components/RecruitDetails.jsx";
 import RecruitFaqSection from "../components/RecruitFaqSection.jsx";
 import RecruitApply from "../components/RecruitApply.jsx";
 import RecruitColumns from "../components/RecruitColumns.jsx";
+import RecruitCtaButtons from "../components/RecruitCtaButtons.jsx";
 import CtaBand from "../components/CtaBand.jsx";
 import { pageMeta } from "../routes.js";
 import { recruitBadges } from "../content.js";
@@ -33,7 +34,7 @@ export default function RecruitPage() {
       <Toc
         items={[
           { id: "points", label: "働く魅力" },
-          { id: "onboarding", label: "教育体制" },
+          { id: "onboarding", label: "入職後の進め方" },
           { id: "requirements", label: "募集要項" },
           { id: "recruit-faq", label: "採用FAQ" },
           { id: "apply-form", label: "応募・見学申込" },
@@ -49,6 +50,8 @@ export default function RecruitPage() {
         title="迷っている段階でも、話してみませんか？"
         lead="転職を決めていなくても大丈夫です。仕事内容や働き方について、まずは気軽にお話ししましょう。"
         showMascot={false}
+        buttons={<RecruitCtaButtons className="justify-center" />}
+        note="履歴書のご用意は、面談が決まってからで大丈夫です。"
       />
     </SubPage>
   );

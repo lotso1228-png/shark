@@ -2,11 +2,14 @@ import { recruitPoints, recruitRequirements } from "../content.js";
 import { Section, SectionHeading } from "./ui.jsx";
 import Jp from "./Jp.jsx";
 
+// 同行訪問の期間・カンファレンスの頻度・相談の実際の運用は事業者未確認のため、
+// 断定せず「こういう順序で進めます」という考え方の提示にとどめている。
+// 実運用をヒアリングできたら、期間と頻度を具体化すること。
 const onboardingSteps = [
   { n: "STEP 1", t: "同行訪問", d: "先輩看護師と一緒に訪問し、関わり方・記録・制度を学びます。" },
   { n: "STEP 2", t: "一部をおまかせ", d: "同行のなかで、できるところから少しずつ担当します。" },
-  { n: "STEP 3", t: "ひとり立ち", d: "習得度に合わせて単独訪問へ。迷ったらいつでも電話で相談できます。" },
-  { n: "STEP 4", t: "継続的な振り返り", d: "ケースをチームで共有し、ひとりで抱え込まない看護を続けられるようにします。" },
+  { n: "STEP 3", t: "単独訪問へ", d: "経験と習得度に合わせて進めます。期間を決め打ちにはしません。" },
+  { n: "STEP 4", t: "振り返りを続ける", d: "ケースを共有し、ひとりで抱え込まない看護を続けられるようにします。" },
 ];
 
 export default function RecruitDetails() {
@@ -37,9 +40,9 @@ export default function RecruitDetails() {
 
       {/* ひとり立ちまでのステップ */}
       <Section id="onboarding" bg="#f0e8d6" maxWidth={1000}>
-        <SectionHeading label="TRAINING" title="ひとり立ちまでのステップ" className="mb-3" />
+        <SectionHeading label="TRAINING" title="入職後の進め方" className="mb-3" />
         <p className="text-center text-[14px] text-muted m-0 mb-9">
-          <Jp>期間は決め打ちにせず、経験と習得度に合わせて調整します。</Jp>
+          <Jp>期間は決め打ちにせず、経験と習得度に合わせて調整します。実際の進め方は面談でご相談ください。</Jp>
         </p>
         <div className="grid grid-cols-1 min-[640px]:grid-cols-4 gap-4">
           {onboardingSteps.map((s) => (

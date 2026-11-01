@@ -55,6 +55,16 @@ export default function Hero({ showDecorations = true }) {
 
           <ContactButtons variant="hero" className="mb-[30px]" />
 
+          <p className="m-0 mb-[22px] text-[14px]">
+            <a
+              href="/recruit"
+              className="inline-flex items-center gap-1.5 font-bold text-pink no-underline border-b border-pink/40 pb-0.5"
+            >
+              看護師の方へ：採用情報を見る
+              <span aria-hidden="true">→</span>
+            </a>
+          </p>
+
           <div className="flex flex-wrap gap-2.5">
             {heroBadges.map((b) => (
               <span

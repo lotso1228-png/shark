@@ -24,6 +24,32 @@ const esc = (s) =>
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;");
 
+// --- head rewriting -------------------------------------------------------
+// index.html is Prettier-formatted, so a <meta> tag's attributes are spread
+// over several lines. A pattern that assumes one line silently no-ops and every
+// page ships with the home page's description — that happened, so these helpers
+// throw instead of returning the input unchanged.
+const setTitle = (html, title) => {
+  const re = /<title>[\s\S]*?<\/title>/;
+  if (!re.test(html)) throw new Error("prerender: <title> not found in index.html");
+  return html.replace(re, `<title>${esc(title)}</title>`);
+};
+
+const setMeta = (html, attr, key, content) => {
+  const re = new RegExp(
+    `<meta\\s+${attr}="${key}"\\s+content="[\\s\\S]*?"\\s*/?>`,
+    "i"
+  );
+  if (!re.test(html)) {
+    throw new Error(
+      `prerender: <meta ${attr}="${key}"> not found in index.html. ` +
+        "If the tag was renamed or reformatted beyond recognition, update this pattern — " +
+        "do not let the replacement fail silently."
+    );
+  }
+  return html.replace(re, `<meta ${attr}="${key}" content="${esc(content)}" />`);
+};
+
 const faqSchema = () => {
   const data = {
     "@context": "https://schema.org",
@@ -112,22 +138,19 @@ for (const route of PRERENDER_PATHS) {
   if (route === "/recruit") head += jobPostingSchema();
   if (meta.article) head += articleSchema(meta.article, canonical);
 
-  let html = template
-    .replace('<div id="root"></div>', `<div id="root">${appHtml}</div>`)
-    .replace(/<title>[\s\S]*?<\/title>/, `<title>${esc(meta.title)}</title>`)
-    .replace(
-      /(<meta name="description" content=")[\s\S]*?(")/,
-      `$1${esc(meta.description)}$2`
-    )
-    .replace(
-      /(<meta property="og:title" content=")[\s\S]*?(")/,
-      `$1${esc(meta.title)}$2`
-    )
-    .replace(
-      /(<meta property="og:description" content=")[\s\S]*?(")/,
-      `$1${esc(meta.description)}$2`
-    )
-    .replace("</head>", `${head}</head>`);
+  let html = template.replace(
+    '<div id="root"></div>',
+    `<div id="root">${appHtml}</div>`
+  );
+  if (!html.includes(`<div id="root">${appHtml}</div>`)) {
+    throw new Error("prerender: #root placeholder not found in index.html");
+  }
+  html = setTitle(html, meta.title);
+  html = setMeta(html, "name", "description", meta.description);
+  html = setMeta(html, "property", "og:title", meta.title);
+  html = setMeta(html, "property", "og:description", meta.description);
+  if (meta.robots) html = setMeta(html, "name", "robots", meta.robots);
+  html = html.replace("</head>", `${head}</head>`);
 
   const outDir = route === "/" ? distDir : path.join(distDir, route);
   fs.mkdirSync(outDir, { recursive: true });
@@ -136,13 +159,18 @@ for (const route of PRERENDER_PATHS) {
 }
 
 // sitemap.xml
-const today = new Date().toISOString().slice(0, 10);
+// lastmod must track real content changes. Stamping every URL with the build
+// date (which this used to do) makes Google distrust and ignore the whole
+// signal, so articles carry their own publish date and the static pages carry
+// the date they were last edited — bump PAGE_LASTMOD when you change them.
+const PAGE_LASTMOD = "2026-11-01";
+const lastmodFor = (route) => ROUTE_META[route]?.article?.date ?? PAGE_LASTMOD;
 const sitemap =
   `<?xml version="1.0" encoding="UTF-8"?>\n` +
   `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
   PRERENDER_PATHS.map(
     (p) =>
-      `  <url><loc>${SITE_URL}${p}</loc><lastmod>${today}</lastmod>` +
+      `  <url><loc>${SITE_URL}${p}</loc><lastmod>${lastmodFor(p)}</lastmod>` +
       `<changefreq>monthly</changefreq><priority>${
         p === "/" ? "1.0" : p.startsWith("/column/") ? "0.6" : "0.8"
       }</priority></url>`

@@ -99,13 +99,22 @@ select:focus-visible,
   border-radius: 4px;
 }
 
-/* Scroll-reveal: hidden initial state, revealed when .is-visible is added */
+/* Scroll reveal is progressive enhancement only.
+   The pages are prerendered, so the initial HTML must be visible on its own:
+   hiding .reveal unconditionally left every section below the hero blank until
+   hydration finished (and permanently blank if the JS failed to load).
+   index.html adds the `js` class before paint, so the hidden state only ever
+   applies where the observer can actually reveal it again. */
 .reveal {
+  opacity: 1;
+  transform: none;
+}
+.js .reveal {
   opacity: 0;
   transform: translateY(30px);
   transition: opacity 0.7s ease, transform 0.7s ease;
 }
-.reveal.is-visible {
+.js .reveal.is-visible {
   opacity: 1;
   transform: none;
 }
@@ -122,7 +131,8 @@ select:focus-visible,
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
   }
-  .reveal {
+  .reveal,
+  .js .reveal {
     opacity: 1;
     transform: none;
   }
