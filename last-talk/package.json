@@ -1,0 +1,32 @@
+{
+  "name": "last-talk",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "npx serve out",
+    "lint": "tsc --noEmit",
+    "test": "tsx --test tests/engine.test.ts tests/reactions.test.ts",
+    "standalone": "node scripts/build-standalone.mjs"
+  },
+  "dependencies": {
+    "budoux": "^0.9.3",
+    "framer-motion": "^14.0.0",
+    "next": "^16.3.8",
+    "qrcode-generator": "^2.0.4",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.3.3",
+    "@tailwindcss/postcss": "^4.3.3",
+    "@types/node": "^26.6.4",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "esbuild": "^0.28.2",
+    "tailwindcss": "^4.3.3",
+    "tsx": "^4.23.15",
+    "typescript": "^5.9.3"
+  }
+}
